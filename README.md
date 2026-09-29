@@ -5,183 +5,100 @@
 ![iOS](https://img.shields.io/badge/platform-iOS-000000.svg)
 ![TypeScript](https://img.shields.io/badge/language-TypeScript-3178C6.svg)
 
-UniMovil es una aplicación móvil para facilitar los desplazamientos dentro del campus de Moncloa de la Universidad Complutense de Madrid, también conocido como Ciudad Universitaria.
+UniMovil es una aplicación móvil para facilitar los desplazamientos dentro del campus de Moncloa de la Universidad Complutense de Madrid.
 
-La plataforma reúne en un único lugar la información necesaria para orientarse por el campus, localizar edificios y servicios, planificar rutas, consultar el transporte disponible, conocer las condiciones de accesibilidad y comunicar incidencias relacionadas con la movilidad.
+La aplicación centraliza mapas, lugares, rutas, transporte, accesibilidad, avisos e incidencias de movilidad en una única plataforma.
 
 ## Objetivo
 
-UniMovil ayuda a estudiantes, profesores, personal universitario, visitantes y personas externas a responder rápidamente a las preguntas fundamentales de cualquier desplazamiento por el campus:
+UniMovil permite a la comunidad universitaria y a sus visitantes encontrar lugares, planificar desplazamientos y conocer el estado de la movilidad del campus de forma sencilla y accesible.
 
-- ¿Dónde estoy?
-- ¿Dónde está el lugar al que necesito llegar?
-- ¿Cuál es la mejor forma de llegar?
-- ¿Qué transporte y recursos de movilidad están disponibles?
-- ¿Existe alguna incidencia, obra o restricción en el recorrido?
-- ¿Cómo puedo comunicar un problema?
+La información general puede consultarse públicamente. Las cuentas registradas permiten personalizar la experiencia y participar en la comunicación de incidencias.
 
-La información general de movilidad puede consultarse públicamente. Las cuentas registradas permiten personalizar la experiencia y participar en el sistema de incidencias.
+## Funcionalidades
 
-## Funcionalidades principales
+- Mapa interactivo del campus con edificios, servicios, entradas y puntos de interés.
+- Búsqueda y consulta detallada de lugares.
+- Cálculo de rutas a pie, en bicicleta y combinadas con autobús.
+- Consulta de líneas, paradas, horarios y avisos de transporte.
+- Rutas y accesos adaptados para personas con movilidad reducida.
+- Información sobre aparcamientos, bicicletas y otros recursos de movilidad.
+- Comunicación y seguimiento de incidencias.
+- Publicación de avisos sobre obras, cierres y cambios de servicio.
+- Favoritos, rutas guardadas, preferencias y notificaciones.
+- Gestión administrativa de contenidos, incidencias y fuentes de datos.
+- Estadísticas agregadas para mejorar la movilidad del campus.
 
-### Mapa y lugares
+## Usuarios
 
-- Mapa interactivo del campus de Moncloa.
-- Edificios, facultades, escuelas y centros universitarios.
-- Entradas, salidas y accesos relevantes.
-- Servicios, bibliotecas, cafeterías, instalaciones y puntos de interés.
-- Búsqueda por nombre, categoría o ubicación.
-- Filtros de categorías y capas del mapa.
-- Fichas detalladas de lugares.
-- Cierres, obras y restricciones temporales.
-
-### Rutas y transporte
-
-- Cálculo de rutas a pie y en bicicleta.
-- Rutas combinadas con autobús y desplazamientos a pie.
-- Distancias, tiempos estimados e indicaciones paso a paso.
-- Rutas alternativas.
-- Preferencias por rapidez, accesibilidad o número de transbordos.
-- Líneas, paradas, recorridos y horarios de autobús.
-- Información de retrasos, cancelaciones y llegadas cuando exista una fuente en tiempo real.
-- Rutas y trayectos favoritos.
-
-### Accesibilidad y recursos de movilidad
-
-- Rutas que evitan escaleras y obstáculos conocidos.
-- Ascensores, rampas y entradas adaptadas.
-- Información sobre accesibilidad de edificios y paradas.
-- Aparcamientos y plazas reservadas.
-- Aparcamientos de bicicletas y recursos para movilidad personal.
-- Puntos de carga y mantenimiento cuando estén disponibles.
-
-### Incidencias y avisos
-
-- Comunicación de problemas de movilidad.
-- Ubicación, categoría, descripción y fotografías de una incidencia.
-- Seguimiento del estado de las incidencias propias.
-- Consulta de incidencias públicas autorizadas.
-- Avisos sobre obras, cierres, cambios de horario y alteraciones del transporte.
-- Gestión de incidencias y comunicaciones por parte de responsables autorizados.
-
-### Personalización
-
-- Registro para estudiantes, profesores, personal, visitantes y personas externas.
-- Favoritos de lugares, paradas, líneas y rutas.
-- Historial de búsquedas y rutas.
-- Preferencias de transporte y accesibilidad.
-- Notificaciones sobre avisos, incidencias y recursos favoritos.
-- Configuración de permisos de ubicación y notificaciones.
-
-### Administración y análisis
-
-- Gestión de edificios, lugares, categorías y recursos.
-- Gestión de líneas, paradas, recorridos y horarios.
-- Mantenimiento de la información de accesibilidad.
-- Publicación y retirada de avisos.
-- Revisión, clasificación y resolución de incidencias.
-- Importación y actualización de fuentes externas.
-- Estadísticas agregadas de uso y movilidad.
-- Auditoría de cambios administrativos.
-
-## Usuarios y permisos
-
-UniMovil utiliza un modelo de permisos sencillo:
-
-| Rol | Capacidades principales |
+| Rol | Capacidades |
 | --- | --- |
-| Público | Consultar mapas, lugares, rutas, transporte, accesibilidad y avisos públicos. |
-| Usuario registrado | Utilizar personalización, favoritos, historial, notificaciones e incidencias. |
-| Gestor | Mantener información de movilidad, revisar incidencias y publicar avisos. |
-| Administrador | Gestionar usuarios, roles, configuración, fuentes y permisos globales. |
+| Público | Consultar mapas, lugares, rutas, transporte y avisos públicos. |
+| Usuario registrado | Gestionar favoritos, preferencias, notificaciones e incidencias. |
+| Gestor | Mantener información de movilidad y gestionar avisos e incidencias. |
+| Administrador | Gestionar usuarios, roles, configuración y fuentes de datos. |
 
-La relación de una persona con la universidad —estudiante, profesor, trabajador o visitante— se almacena como información de perfil y no determina automáticamente sus permisos.
+El tipo de usuario —estudiante, profesor, personal o visitante— no determina automáticamente sus permisos.
 
-## Construcción del sistema
+## Arquitectura y tecnologías
 
-UniMovil se organiza como un monorepo con una aplicación móvil, una API y paquetes compartidos:
+UniMovil se organiza como un monorepo con aplicación móvil, API y paquetes compartidos:
 
 ```text
-apps/
-  mobile/       Aplicación Android e iOS
-  api/          Backend y API REST
-  admin/        Herramientas de gestión, cuando corresponda
-
-packages/
-  contracts/    Contratos y esquemas compartidos
-  config/       Configuración común
-  ui/           Componentes reutilizables
-
-docs/           Funcionalidades, historias y decisiones técnicas
-scripts/        Automatización y herramientas del proyecto
+apps/mobile    Aplicación Android e iOS
+apps/api       Backend y API REST
+packages/      Contratos y configuración compartida
+docs/          Documentación funcional y técnica
 ```
 
-La aplicación móvil nunca accede directamente a la base de datos. La comunicación se realiza mediante una API REST sobre HTTPS, que aplica autenticación, autorización, validación, reglas de negocio y control de errores.
+El stack tecnológico está formado por:
 
-## Stack tecnológico
+- React Native, Expo, Expo Router y TypeScript.
+- Node.js, TypeScript y NestJS para el backend.
+- Supabase sobre PostgreSQL con PostGIS.
+- API REST documentada con OpenAPI.
+- npm Workspaces para el monorepo.
+- ESLint, Prettier, TypeScript estricto y pruebas automatizadas.
+- GitHub Actions, Dependabot, CodeQL y OpenSSF Scorecard.
 
-- **Aplicación móvil:** React Native, Expo, Expo Router y TypeScript.
-- **Backend:** Node.js, TypeScript y NestJS.
-- **Base de datos:** Supabase sobre PostgreSQL con PostGIS.
-- **API:** REST, JSON y OpenAPI.
-- **Mapas móviles:** MapLibre React Native.
-- **Mapas base:** MapTiler Cloud Free.
-- **Rutas:** openrouteservice.
-- **Datos geográficos:** OpenStreetMap y datos propios del campus.
-- **Gestión de paquetes:** npm y npm Workspaces.
-- **Calidad:** ESLint, Prettier, TypeScript estricto y pruebas automatizadas.
-- **Automatización:** GitHub Actions, Dependabot, CodeQL, secret scanning y OpenSSF Scorecard.
+La aplicación móvil se comunica con el backend mediante HTTPS. La API aplica autenticación, autorización, validación y reglas de negocio; la aplicación no accede directamente a la base de datos.
 
-## Mapas y datos geográficos
+## Mapas y rutas
 
-MapLibre se utiliza para renderizar mapas sin acoplar la aplicación a un proveedor concreto. MapTiler proporciona inicialmente los mapas base y los estilos dentro de sus límites de uso gratuito.
+- MapLibre React Native renderiza los mapas.
+- MapTiler Cloud Free proporciona los mapas base iniciales.
+- openrouteservice calcula las rutas.
+- OpenStreetMap aporta datos geográficos respetando su atribución y políticas de uso.
+- Los edificios, servicios, paradas y recursos específicos del campus se mantienen en la base de datos de UniMovil.
 
-openrouteservice se utiliza para calcular rutas a pie, en bicicleta y adaptadas. Los edificios, servicios, paradas, accesos y recursos específicos del campus se mantienen en la base de datos de UniMovil para poder controlar su calidad y actualización.
-
-OpenStreetMap se utiliza respetando sus condiciones de atribución y sus políticas de uso. Las claves de los proveedores externos se gestionan mediante configuración segura y nunca se incluyen en el código fuente.
+Los proveedores externos se mantienen detrás de una configuración sustituible y sus claves nunca se incluyen en el código fuente.
 
 ## Seguridad y privacidad
 
-UniMovil aplica los siguientes principios:
-
 - Mínimo privilegio y permisos comprobados en el servidor.
-- Información pública separada de datos personales.
-- Ubicación utilizada únicamente con autorización del usuario.
+- Uso de ubicación únicamente con autorización del usuario.
 - Sin seguimiento continuo de ubicación por defecto.
-- No se almacenan secretos en el repositorio.
-- Datos de prueba ficticios y sin información personal real.
-- Incidencias y fotografías protegidas y moderables.
+- Datos personales e incidencias protegidos.
+- Datos de prueba ficticios y sin información real.
+- Secretos gestionados mediante variables de entorno y configuración segura.
 - Dependencias y workflows revisados automáticamente.
-- Registro de acciones administrativas relevantes.
 
 ## Documentación
 
-La documentación del proyecto se encuentra en [`docs/`](docs/):
+- [Funcionalidades](docs/funcionalidades.md)
+- [Historias de usuario](docs/historias-de-usuario/README.md)
+- [Fundamentos del proyecto](docs/fundamentos/README.md)
+- [Decisiones técnicas](docs/fundamentos/adr/README.md)
 
-- [Funcionalidades](docs/funcionalidades.md): catálogo completo de capacidades del producto.
-- [Historias de usuario](docs/historias-de-usuario/README.md): historias, criterios de aceptación y reglas de negocio.
-- [Fundamentos del proyecto](docs/fundamentos/README.md): decisiones de producto, arquitectura, tecnología, GitHub, seguridad y estándares.
-- [ADRs](docs/fundamentos/adr/README.md): decisiones técnicas importantes y sus alternativas.
+## Desarrollo
 
-## Desarrollo y calidad
-
-El proyecto utiliza una estrategia basada en ramas cortas y pull requests. La rama `main` se protege mediante revisiones y comprobaciones automáticas.
-
-Los cambios deben:
-
-- Relacionarse con una historia de usuario, requisito, incidencia o decisión.
-- Pasar formato, lint, comprobación de tipos, pruebas y build.
-- Mantener actualizada la documentación afectada.
-- Evitar secretos, datos personales y dependencias sin revisar.
-- Seguir Conventional Commits.
-
-Las acciones de GitHub utilizan permisos mínimos, dependencias fijadas y comprobaciones de seguridad para proteger el código y la cadena de suministro.
+El proyecto utiliza ramas cortas, pull requests, revisiones y una rama `main` protegida. Los cambios deben mantener la documentación, superar las comprobaciones de formato, lint, tipos, tests y build, y seguir Conventional Commits.
 
 ## Licencia
 
 UniMovil se distribuye bajo la [Apache License 2.0](LICENSE).
 
-La licencia del código no concede derechos sobre las marcas, logotipos, datos privados o servicios de la Universidad Complutense de Madrid. Las dependencias de terceros mantienen sus propias licencias y condiciones.
+La licencia del código no concede derechos sobre las marcas, logotipos, datos privados o servicios de la Universidad Complutense de Madrid. Las dependencias de terceros mantienen sus propias licencias.
 
 ## Equipo
 
