@@ -1,0 +1,83 @@
+# Sistema operativo
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Editores e IDEs
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.iml
+*.ipr
+*.iws
+
+# Variables de entorno y secretos
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+
+# Logs y archivos temporales
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+
+# Dependencias JavaScript/TypeScript
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.npm/
+.yarn/
+
+# Cobertura y resultados de pruebas
+coverage/
+.nyc_output/
+test-results/
+
+# Android / Gradle
+.gradle/
+build/
+captures/
+*.apk
+*.aab
+*.apks
+*.dex
+local.properties
+
+# iOS / Xcode
+DerivedData/
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.moved-aside
+*.ipa
+Pods/
+
+# Flutter, si se utiliza
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+
+# React Native / Expo, si se utiliza
+.expo/
+.expo-shared/
+.metro-health-check*
+
+# Archivos generados y distribuciones
+dist/
+out/
+release/
+*.app
+*.app.dSYM
