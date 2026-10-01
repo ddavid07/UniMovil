@@ -6,9 +6,10 @@ La documentación se organiza por propósito:
 
 ```text
 docs/
-  funcionalidades.md
+  plan-de-accion.md
   historias-de-usuario/
   fundamentos/
+    funcionalidades.md
     01-fundamentos-del-producto.md
     02-stack-tecnologico.md
     03-arquitectura.md
@@ -18,6 +19,16 @@ docs/
     07-seguridad-y-privacidad.md
     08-documentacion-y-gobierno.md
     adr/
+
+apps/
+  mobile/       aplicación Android e iOS
+  api/          backend NestJS
+  admin/        panel web de administración
+
+packages/
+  contracts/    contratos compartidos
+  config/       configuración técnica común
+  testing/      infraestructura de pruebas
 ```
 
 ## 8.2. Regla de actualización

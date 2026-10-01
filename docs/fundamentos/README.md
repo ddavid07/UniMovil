@@ -10,6 +10,7 @@ La documentación debe responder a tres preguntas:
 
 ## Estructura
 
+- [00. Catálogo de funcionalidades](funcionalidades.md)
 - [01. Fundamentos del producto](01-fundamentos-del-producto.md)
 - [02. Stack tecnológico](02-stack-tecnologico.md)
 - [03. Arquitectura](03-arquitectura.md)
@@ -22,7 +23,8 @@ La documentación debe responder a tres preguntas:
 
 ## Relación con el resto de la documentación
 
-- [Funcionalidades](../funcionalidades.md): catálogo funcional del producto.
+- [Funcionalidades](funcionalidades.md): catálogo funcional del producto.
+- [Plan de acción](../plan-de-accion.md): orden completo de implementación y puesta en producción.
 - [Historias de usuario](../historias-de-usuario/README.md): comportamiento esperado desde la perspectiva de los usuarios.
 - [Licencia](../../LICENSE): Apache License 2.0.
 - [.gitignore](../../.gitignore): archivos excluidos del control de versiones.
@@ -40,24 +42,31 @@ La documentación debe responder a tres preguntas:
 - Supabase proporcionará la plataforma de datos, utilizando PostgreSQL con PostGIS como base de datos principal.
 - La comunicación se realizará mediante una API REST documentada con OpenAPI.
 - npm Workspaces organizará el monorepo.
+- El panel de administración será una aplicación web React con Vite en `apps/admin`.
+- Node.js 24.21.0 LTS será la versión inicial fijada por el repositorio.
 - MapLibre React Native renderizará los mapas.
 - MapTiler Cloud Free será el proveedor inicial de mapas base.
 - openrouteservice se utilizará inicialmente para el cálculo de rutas.
 - OpenStreetMap será una fuente geográfica, respetando su atribución y políticas de uso.
 - El proyecto utilizará Apache License 2.0.
 - El repositorio seguirá una política de pull requests, CI, revisiones y protección de `main`.
+- Supabase Auth proporcionará identidad; los permisos de UniMovil se aplicarán en la API.
+- Drizzle será la capa tipada de acceso a PostgreSQL y SQL explícito cubrirá PostGIS.
+- Supabase Storage privado guardará las fotografías de incidencias, mediadas por la API.
+- El producto de usuario se limitará a Android/iOS y al panel administrativo; no se compromete web pública.
+- Expo Push Service será el primer transporte de notificaciones, desacoplado mediante adaptador backend.
+- Playwright cubrirá E2E del panel y Maestro cubrirá E2E móvil en builds nativos.
+- Solo se integrarán fuentes oficiales/autorizadas de transporte y se mostrará su vigencia.
 
-## Decisiones todavía abiertas
+## Decisiones cerradas y condiciones externas
 
-Estas cuestiones no se deben inventar en documentos posteriores hasta que el equipo las confirme:
+Las decisiones de producto y arquitectura para iniciar la implementación están registradas en ADR. Las condiciones siguientes delimitan acciones que dependen de cuentas, información o aprobaciones externas y no reabren dichas decisiones:
 
-- Proveedor concreto de autenticación.
-- Proveedor de despliegue del backend y de la base de datos.
-- Existencia y formato de los datos reales de autobuses de la UCM.
-- Si el panel de gestión será una aplicación web independiente.
-- Si se publicará una versión web para usuarios finales.
-- Estrategia definitiva de almacenamiento de fotografías de incidencias.
-- Política definitiva de retención de datos y registros.
-- Configuración exacta de las tiendas y credenciales de publicación móvil.
+- El hosting concreto de API y panel se elegirá al confirmar presupuesto, región y titularidad; la arquitectura será portable y Supabase seguirá como plataforma de datos.
+- No consta un feed UCM/operador autorizado para autobuses en tiempo real. Hasta verificarlo se usarán datos oficiales estáticos/manuales, con fecha/estado visibles; nunca se simulará tiempo real.
+- Las retenciones que requieran aprobación jurídica/institucional se fijarán antes de tratar datos reales. Hasta entonces se minimizan datos, no se conserva historial de ubicación y se usan fixtures ficticios.
+- La titularidad de las cuentas Apple Developer y Google Play Console se acordará antes de crear cuentas de publicación o certificados definitivos.
+- El repositorio es privado en GitHub Free: las protecciones de rama y ciertas funciones de seguridad hospedadas no están disponibles. No se hará público ni se contratará un plan sin aprobación expresa; se usarán controles propios de CI.
+- CODEOWNERS conserva al propietario actual como responsable temporal hasta confirmar los cinco usuarios y responsables de área.
 
-Las decisiones abiertas se resolverán mediante un ADR cuando exista información suficiente.
+Estas condiciones están asignadas a las fases que las necesitan y no impiden comenzar el desarrollo con datos ficticios.

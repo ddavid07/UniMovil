@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "UniMovil",
+    "slug": "unimovil",
+    "version": "0.1.0",
+    "platforms": ["ios", "android"],
+    "orientation": "portrait",
+    "scheme": "unimovil",
+    "userInterfaceStyle": "automatic",
+    "android": {
+      "predictiveBackGestureEnabled": false
+    },
+    "plugins": ["expo-router"],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}

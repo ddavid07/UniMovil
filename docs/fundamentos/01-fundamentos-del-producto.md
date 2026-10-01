@@ -55,5 +55,5 @@ Puede gestionar usuarios, roles, configuración, fuentes de datos y permisos glo
 
 ## 1.6. Documentos funcionales relacionados
 
-- `docs/funcionalidades.md` contiene el catálogo de funcionalidades.
+- `docs/fundamentos/funcionalidades.md` contiene el catálogo de funcionalidades.
 - `docs/historias-de-usuario/` contiene las historias de usuario, criterios de aceptación y reglas de negocio.

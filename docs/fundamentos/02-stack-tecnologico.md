@@ -31,7 +31,7 @@ Expo mantiene abierta la posibilidad de utilizar la misma base de código en web
 
 ## 2.4. Backend
 
-- Node.js en una versión LTS fijada por el repositorio.
+- Node.js 24.21.0 LTS, fijado en `.node-version` y en el campo `engines` del monorepo.
 - TypeScript.
 - NestJS.
 - API REST.
@@ -67,23 +67,25 @@ Se utilizará un monorepo con npm Workspaces:
 apps/
   mobile/
   api/
-  admin/          # solo si se confirma el panel web
+  admin/          # panel web con React y Vite
 
 packages/
   contracts/
   config/
-  ui/             # solo si aporta reutilización real
+  testing/
 
 docs/
 scripts/
 ```
 
-No se añadirá una herramienta de monorepo adicional hasta demostrar que npm Workspaces no cubre las necesidades del proyecto.
+Los componentes o tokens compartidos tendrán un paquete `ui` cuando exista una reutilización concreta entre las aplicaciones; no se crea una biblioteca vacía por anticipado. Tampoco se añadirá una herramienta de monorepo adicional hasta demostrar que npm Workspaces no cubre las necesidades.
 
-## 2.8. Decisiones todavía no fijadas
+## 2.8. Decisiones cerradas y condicionadas
 
-- ORM o estrategia definitiva de acceso a PostgreSQL.
-- Si se utilizarán los servicios de autenticación de Supabase o un proveedor independiente.
-- Proveedor de almacenamiento de imágenes.
-- Proveedor de despliegue.
-- Biblioteca definitiva para pruebas end-to-end.
+Las decisiones de acceso a datos, identidad, almacenamiento, notificaciones y E2E están registradas en ADR-0007 a ADR-0013. La selección concreta del hosting queda condicionada a presupuesto, región y titularidad, según ADR-0010; el dominio no dependerá de un proveedor concreto.
+
+- Drizzle para acceso tipado a PostgreSQL, con SQL/migraciones explícitas para PostGIS.
+- Supabase Auth, integrado en el backend para las operaciones del producto.
+- Supabase Storage privado para evidencias fotográficas.
+- Expo Push Service detrás de un adaptador backend.
+- Playwright para E2E del panel y Maestro para E2E móvil; integración EAS opcional.

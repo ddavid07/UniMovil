@@ -1,0 +1,34 @@
+name: Propuesta de funcionalidad
+description: Propón una mejora vinculada al alcance documentado de UniMovil.
+title: "feat: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: Necesidad
+      description: ¿Qué problema de movilidad o de uso se quiere resolver?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Propuesta
+      description: Describe el comportamiento que esperas.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Criterios de aceptación
+      description: Indica condiciones observables que permitirían validar la propuesta.
+    validations:
+      required: true
+  - type: textarea
+    id: references
+    attributes:
+      label: Referencias
+      description: Añade historias, documentación o decisiones relacionadas.
+    validations:
+      required: false

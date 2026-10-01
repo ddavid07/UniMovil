@@ -1,0 +1,7 @@
+node_modules/
+coverage/
+dist/
+.expo/
+web-build/
+docs/
+LICENSE

@@ -1,0 +1,37 @@
+.admin-shell {
+  width: min(100% - 3rem, 72rem);
+  margin: 0 auto;
+  padding: 4rem 0;
+}
+
+.admin-header {
+  margin-bottom: 2rem;
+}
+
+.admin-eyebrow {
+  margin: 0 0 0.5rem;
+  color: #53657a;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-header h1,
+.setup-card h2 {
+  margin: 0;
+}
+
+.setup-card {
+  max-width: 42rem;
+  padding: 1.5rem;
+  border: 1px solid #d8e0e8;
+  border-radius: 0.75rem;
+  background: #fff;
+}
+
+.setup-card p {
+  margin: 0.75rem 0 0;
+  color: #53657a;
+  line-height: 1.6;
+}

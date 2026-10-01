@@ -31,12 +31,12 @@ La información general puede consultarse públicamente. Las cuentas registradas
 
 ## Usuarios
 
-| Rol | Capacidades |
-| --- | --- |
-| Público | Consultar mapas, lugares, rutas, transporte y avisos públicos. |
-| Usuario registrado | Gestionar favoritos, preferencias, notificaciones e incidencias. |
-| Gestor | Mantener información de movilidad y gestionar avisos e incidencias. |
-| Administrador | Gestionar usuarios, roles, configuración y fuentes de datos. |
+| Rol                | Capacidades                                                         |
+| ------------------ | ------------------------------------------------------------------- |
+| Público            | Consultar mapas, lugares, rutas, transporte y avisos públicos.      |
+| Usuario registrado | Gestionar favoritos, preferencias, notificaciones e incidencias.    |
+| Gestor             | Mantener información de movilidad y gestionar avisos e incidencias. |
+| Administrador      | Gestionar usuarios, roles, configuración y fuentes de datos.        |
 
 El tipo de usuario —estudiante, profesor, personal o visitante— no determina automáticamente sus permisos.
 
@@ -47,7 +47,8 @@ UniMovil se organiza como un monorepo con aplicación móvil, API y paquetes com
 ```text
 apps/mobile    Aplicación Android e iOS
 apps/api       Backend y API REST
-packages/      Contratos y configuración compartida
+apps/admin     Panel web de gestión
+packages/      Contratos, configuración y utilidades de pruebas compartidas
 docs/          Documentación funcional y técnica
 ```
 
@@ -59,7 +60,7 @@ El stack tecnológico está formado por:
 - API REST documentada con OpenAPI.
 - npm Workspaces para el monorepo.
 - ESLint, Prettier, TypeScript estricto y pruebas automatizadas.
-- GitHub Actions, Dependabot, CodeQL y OpenSSF Scorecard.
+- GitHub Actions, Dependabot, auditoría npm, verificación de firmas, OSV-Scanner, Gitleaks y reglas de seguridad ESLint.
 
 La aplicación móvil se comunica con el backend mediante HTTPS. La API aplica autenticación, autorización, validación y reglas de negocio; la aplicación no accede directamente a la base de datos.
 
@@ -85,14 +86,16 @@ Los proveedores externos se mantienen detrás de una configuración sustituible 
 
 ## Documentación
 
-- [Funcionalidades](docs/funcionalidades.md)
+- [Funcionalidades](docs/fundamentos/funcionalidades.md)
+- [Plan de acción completo](docs/plan-de-accion.md)
 - [Historias de usuario](docs/historias-de-usuario/README.md)
 - [Fundamentos del proyecto](docs/fundamentos/README.md)
 - [Decisiones técnicas](docs/fundamentos/adr/README.md)
+- [Contribuir y preparar el entorno local](CONTRIBUTING.md)
 
 ## Desarrollo
 
-El proyecto utiliza ramas cortas, pull requests, revisiones y una rama `main` protegida. Los cambios deben mantener la documentación, superar las comprobaciones de formato, lint, tipos, tests y build, y seguir Conventional Commits.
+Consulta [Contribuir a UniMovil](CONTRIBUTING.md) para instalar el monorepo y ejecutar las aplicaciones y comprobaciones locales. El equipo trabaja con ramas cortas, pull requests, revisiones y CI; la protección técnica de `main` queda pendiente de cambiar el plan o visibilidad del repositorio GitHub, ahora privado en Free. Los cambios deben mantener la documentación y seguir Conventional Commits.
 
 ## Licencia
 

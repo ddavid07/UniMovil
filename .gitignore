@@ -38,6 +38,7 @@ yarn-error.log*
 pnpm-debug.log*
 .npm/
 .yarn/
+.pnp.*
 
 # Cobertura y resultados de pruebas
 coverage/
@@ -74,10 +75,13 @@ Pods/
 .expo/
 .expo-shared/
 .metro-health-check*
+expo-env.d.ts
 
 # Archivos generados y distribuciones
 dist/
 out/
 release/
+web-build/
+*.tsbuildinfo
 *.app
 *.app.dSYM

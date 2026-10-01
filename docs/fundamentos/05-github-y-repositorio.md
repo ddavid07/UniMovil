@@ -53,7 +53,7 @@ Se utilizará `.github/CODEOWNERS` para asignar responsables a:
 - Documentación.
 - Seguridad y licencia.
 
-Los responsables podrán ser miembros del equipo de cinco personas, no una única persona para todo el repositorio.
+Durante el arranque, el propietario actual del repositorio será el responsable predeterminado. Cuando se incorporen las cuentas de los cinco miembros, se asignarán responsables por área para que las partes críticas no dependan de una única persona.
 
 ## 5.6. GitHub Actions
 
@@ -110,18 +110,18 @@ Se activarán, cuando estén disponibles en el plan de la cuenta:
 - OSV-Scanner o herramienta equivalente.
 - OpenSSF Scorecard.
 
+El repositorio actual es privado y GitHub Free. La protección de ramas no está disponible para repositorios privados con ese plan, y CodeQL/secret scanning hospedados requieren los productos/planes correspondientes. No se afirmará que estén activos: el workflow ejecuta controles alternativos disponibles. Véase [ADR-0013](adr/0013-ci-y-cadena-de-suministro.md).
+
 ## 5.10. Workflows previstos
 
 ```text
 .github/workflows/
   ci.yml             Calidad, tipos, tests y build
-  security.yml       CodeQL, secretos, dependencias y licencias
-  scorecard.yml      OpenSSF Scorecard
-  performance.yml    Comprobaciones de rendimiento seleccionadas
+  security.yml       Secretos, dependencias y análisis estático
   release.yml        Publicación, cuando se definan versiones
 ```
 
-No se copiarán automáticamente todos los workflows de `verification-engine`. Fuzzing, mutation testing, SBOM avanzado y pipelines de publicación se añadirán solo cuando exista una necesidad documentada.
+No se copiarán automáticamente todos los workflows de `verification-engine`. Fuzzing, mutation testing, SBOM avanzado, CodeQL hospedado y pipelines de publicación se añadirán cuando haya disponibilidad de plan/credenciales y necesidad documentada.
 
 ## 5.11. Protección de datos en el repositorio
 

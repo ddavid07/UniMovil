@@ -17,7 +17,7 @@
 - La interfaz puede ocultar acciones, pero no sustituye al control del servidor.
 - Los roles serán público, usuario registrado, gestor y administrador.
 - El tipo de relación con la UCM no otorgará permisos automáticamente.
-- El proveedor concreto de autenticación todavía está pendiente de decisión.
+- Supabase Auth proporciona identidad; la API NestJS valida tokens y decide permisos de UniMovil. No se conceden roles por datos controlados por el cliente ni por relación con la UCM.
 
 ## 7.3. Ubicación
 
@@ -33,8 +33,9 @@
 - Se ocultará la identidad del autor en la vista pública.
 - Las fotografías se validarán por tamaño y formato.
 - Se evitará almacenar metadatos innecesarios.
-- Se definirá un mecanismo de moderación.
-- El almacenamiento concreto de imágenes todavía está pendiente.
+- Las evidencias se guardarán en Supabase Storage privado. Carga, validación, moderación y autorización se orquestan en backend; nunca se expone la service key.
+- La moderación tendrá estados explícitos (pendiente, aprobada, rechazada, retirada) y auditoría. Lo no aprobado no será público.
+- El periodo concreto de conservación se aprobará antes de operar con datos reales; hasta entonces se aplica minimización y se usan datos ficticios.
 
 ## 7.5. Secretos
 
@@ -78,3 +79,7 @@ Se registrarán cambios administrativos sobre lugares, transporte, accesibilidad
 ## 7.9. Cumplimiento y revisión
 
 Antes de una publicación real se revisarán privacidad, base legal, tratamiento de ubicación, conservación de datos y uso de marcas o datos de la UCM con las personas responsables correspondientes. Esta documentación técnica no sustituye una revisión legal.
+
+## 7.10. Límites operativos actuales
+
+El repositorio es privado y el plan GitHub Free no ofrece protección de ramas ni CodeQL/secret scanning hospedados para este caso. El pipeline ejecutará controles alternativos (auditoría de dependencias, análisis de secretos y análisis estático). La limitación se revisará si cambia el plan o la visibilidad; no se cambia la visibilidad ni se asume un coste como parte de la implementación.

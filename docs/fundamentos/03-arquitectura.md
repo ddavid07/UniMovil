@@ -91,7 +91,7 @@ Se prevén, como mínimo, entornos separados conceptualmente:
 - Integración: validación conjunta y datos de prueba.
 - Publicación: entorno usado para demostraciones o entrega.
 
-Los nombres, proveedores y credenciales de cada entorno se decidirán en la documentación de despliegue.
+La topología está registrada en ADR-0009: proyectos Supabase separados por entorno y servicios de API/panel independientes; el proveedor de hosting se seleccionará al confirmar presupuesto, región y titularidad institucional. Los nombres y secretos concretos se configuran al provisionar cada entorno, no se comparten y nunca se versionan.
 
 ## 3.8. Principios arquitectónicos
 
