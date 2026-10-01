@@ -99,7 +99,7 @@ No se activará auto-merge de Dependabot hasta comprobar que el CI es estable.
 
 ## 5.9. Seguridad de GitHub
 
-Se activarán, cuando estén disponibles en el plan de la cuenta:
+Están activados en el repositorio público:
 
 - Dependabot alerts.
 - Dependabot security updates.
@@ -108,20 +108,23 @@ Se activarán, cuando estén disponibles en el plan de la cuenta:
 - Dependency Review en pull requests.
 - CodeQL para TypeScript y JavaScript.
 - OSV-Scanner o herramienta equivalente.
-- OpenSSF Scorecard.
+- Protección de rama `main` con PR obligatorio, aprobación, checks y sin force push ni borrado.
 
-El repositorio actual es privado y GitHub Free. La protección de ramas no está disponible para repositorios privados con ese plan, y CodeQL/secret scanning hospedados requieren los productos/planes correspondientes. No se afirmará que estén activos: el workflow ejecuta controles alternativos disponibles. Véase [ADR-0013](adr/0013-ci-y-cadena-de-suministro.md).
+El repositorio es público para utilizar las prestaciones gratuitas de seguridad y gobernanza de GitHub. Secret scanning y push protection están habilitados; CodeQL analiza TypeScript/JavaScript y Dependency Review bloquea dependencias nuevas de severidad alta o crítica. OpenSSF Scorecard se ejecuta de forma periódica. Véanse [ADR-0014](adr/0014-repositorio-publico-y-controles-github.md) y [SECURITY.md](../../SECURITY.md).
 
 ## 5.10. Workflows previstos
 
 ```text
 .github/workflows/
   ci.yml             Calidad, tipos, tests y build
-  security.yml       Secretos, dependencias y análisis estático
+  security.yml       Secretos y dependencias
+  codeql.yml         Análisis CodeQL
+  dependency-review.yml Revisión de dependencias en PR
+  scorecard.yml      Métricas OpenSSF del repositorio
   release.yml        Publicación, cuando se definan versiones
 ```
 
-No se copiarán automáticamente todos los workflows de `verification-engine`. Fuzzing, mutation testing, SBOM avanzado, CodeQL hospedado y pipelines de publicación se añadirán cuando haya disponibilidad de plan/credenciales y necesidad documentada.
+No se copiarán automáticamente todos los workflows de `verification-engine`. Fuzzing, mutation testing, SBOM avanzado y pipelines de publicación se añadirán cuando haya necesidad documentada.
 
 ## 5.11. Protección de datos en el repositorio
 

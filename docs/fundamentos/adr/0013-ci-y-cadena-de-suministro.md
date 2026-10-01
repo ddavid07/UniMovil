@@ -2,7 +2,7 @@
 
 ## Estado
 
-Aceptada con limitaciones de plan GitHub
+Reemplazada por [ADR-0014](0014-repositorio-publico-y-controles-github.md)
 
 ## Contexto
 
