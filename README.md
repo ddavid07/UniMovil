@@ -95,7 +95,7 @@ Los proveedores externos se mantienen detrás de una configuración sustituible 
 
 ## Desarrollo
 
-Consulta [Contribuir a UniMovil](CONTRIBUTING.md) para instalar el monorepo y ejecutar las aplicaciones y comprobaciones locales. El equipo trabaja con ramas cortas, pull requests, revisiones y CI; la protección técnica de `main` queda pendiente de cambiar el plan o visibilidad del repositorio GitHub, ahora privado en Free. Los cambios deben mantener la documentación y seguir Conventional Commits.
+Consulta [Contribuir a UniMovil](CONTRIBUTING.md) para instalar el monorepo y ejecutar las aplicaciones y comprobaciones locales. El equipo trabaja con ramas cortas, pull requests, revisiones y CI. La rama `main` está protegida y requiere revisión y comprobaciones automatizadas. Los cambios deben mantener la documentación y seguir Conventional Commits.
 
 ## Licencia
 
