@@ -17,7 +17,7 @@ concurrency:
 jobs:
   validate:
     name: Validate monorepo
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       - name: Checkout
@@ -42,6 +42,10 @@ jobs:
 
       - name: Review dependency licenses
         run: npm run licenses:check
+
+      - name: Verify Expo SDK dependency alignment
+        run: npx expo install --check
+        working-directory: apps/mobile
 
       - name: Run all quality checks and builds
         run: npm run ci

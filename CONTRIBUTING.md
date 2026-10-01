@@ -49,7 +49,7 @@ npm run build
 npm run ci
 ```
 
-La CI verifica también las firmas del registro npm (`npm audit signatures`) y el inventario de licencias (`npm run licenses:check`). El workflow de seguridad comprueba dependencias, secretos y reglas de seguridad ESLint. OSV-Scanner es informativo mientras haya avisos heredados moderados documentados; `npm audit` bloquea vulnerabilidades altas o críticas.
+La CI verifica también las firmas del registro npm (`npm audit signatures`), el inventario de licencias (`npm run licenses:check`) y la alineación de dependencias con el SDK Expo. El workflow de seguridad comprueba dependencias, secretos y reglas de seguridad ESLint. OSV-Scanner informa dos avisos transitivos heredados, uno con CVSS 7.5; el job es temporalmente no bloqueante y los hallazgos se mantienen visibles. `npm audit` bloquea los avisos que npm clasifica como altos o críticos.
 
 La estrategia E2E queda fijada: Playwright para `apps/admin` y Maestro para Android/iOS en builds nativos. Los flujos se añadirán con las primeras pantallas funcionales; no se activan builds E2E en cada PR mientras la aplicación siga siendo un esqueleto.
 
