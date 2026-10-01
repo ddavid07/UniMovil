@@ -2,18 +2,29 @@ import "./App.css";
 
 export default function App() {
   return (
-    <main className="admin-shell">
-      <header className="admin-header">
-        <p className="admin-eyebrow">UniMovil</p>
-        <h1>Administración</h1>
-      </header>
-      <section aria-labelledby="setup-title" className="setup-card">
-        <h2 id="setup-title">Panel preparado</h2>
-        <p>
-          La base de la aplicación administrativa está lista para incorporar la
-          gestión del campus.
-        </p>
+    <main
+      aria-label="Presentación de UniMovil sobre el campus de Moncloa"
+      className="presentation-screen"
+    >
+      <img
+        alt="Universidad Complutense de Madrid"
+        className="university-logo"
+        src="/images/ucm-logo-secondary.jpg"
+      />
+
+      <section aria-labelledby="presentation-title" className="title-group">
+        <h1 id="presentation-title">UNIMOVIL</h1>
+        <p>próximamente…</p>
       </section>
+
+      <a
+        className="image-credit"
+        href="https://venalacomplu.ucm.es/mapa-campus"
+        rel="noreferrer"
+        target="_blank"
+      >
+        Plano oficial del campus · UCM
+      </a>
     </main>
   );
 }

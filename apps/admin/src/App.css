@@ -1,37 +1,147 @@
-.admin-shell {
-  width: min(100% - 3rem, 72rem);
-  margin: 0 auto;
-  padding: 4rem 0;
+.presentation-screen {
+  position: relative;
+  display: grid;
+  min-height: 100svh;
+  overflow: hidden;
+  place-items: center;
+  isolation: isolate;
+  padding: 2rem;
+  color: #fff;
+  background: #101a22;
 }
 
-.admin-header {
-  margin-bottom: 2rem;
+.presentation-screen::before,
+.presentation-screen::after {
+  position: absolute;
+  z-index: -1;
+  content: "";
+  inset: 0;
 }
 
-.admin-eyebrow {
-  margin: 0 0 0.5rem;
-  color: #53657a;
-  font-size: 0.875rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+.presentation-screen::before {
+  background-image:
+    linear-gradient(
+      105deg,
+      rgb(9 18 27 / 76%),
+      rgb(14 26 35 / 53%) 55%,
+      rgb(8 17 26 / 68%)
+    ),
+    url("/images/ucm-campus-map.webp");
+  background-position: center;
+  background-size: cover;
+  filter: saturate(0.75);
+  transform: scale(1.015);
 }
 
-.admin-header h1,
-.setup-card h2 {
+.presentation-screen::after {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 14%,
+    rgb(4 11 17 / 38%) 100%
+  );
+  pointer-events: none;
+}
+
+.university-logo {
+  position: absolute;
+  top: clamp(1.5rem, 4vw, 3.5rem);
+  left: clamp(1.5rem, 5vw, 5rem);
+  width: clamp(9rem, 17vw, 14rem);
+  height: auto;
+  filter: grayscale(1) invert(1);
+  mix-blend-mode: screen;
+  opacity: 0.9;
+}
+
+.title-group {
+  width: 100%;
+  text-align: center;
+  transform: translateY(2vh);
+}
+
+.title-group h1 {
   margin: 0;
+  font-size: clamp(4rem, 12.5vw, 11rem);
+  font-weight: 750;
+  letter-spacing: 0.1em;
+  line-height: 0.95;
+  text-indent: 0.1em;
+  text-shadow: 0 4px 36px rgb(0 0 0 / 24%);
 }
 
-.setup-card {
-  max-width: 42rem;
-  padding: 1.5rem;
-  border: 1px solid #d8e0e8;
-  border-radius: 0.75rem;
-  background: #fff;
+.title-group p {
+  margin: clamp(1rem, 3vw, 2rem) 0 0;
+  color: rgb(255 255 255 / 88%);
+  font-size: clamp(1.15rem, 2.2vw, 1.75rem);
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-indent: 0.28em;
+  text-shadow: 0 2px 18px rgb(0 0 0 / 35%);
 }
 
-.setup-card p {
-  margin: 0.75rem 0 0;
-  color: #53657a;
-  line-height: 1.6;
+.image-credit {
+  position: absolute;
+  right: 1.5rem;
+  bottom: 1.25rem;
+  color: rgb(255 255 255 / 72%);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-decoration-color: rgb(255 255 255 / 35%);
+  text-underline-offset: 0.2em;
+}
+
+.image-credit:hover {
+  color: #fff;
+}
+
+@media (max-width: 600px) {
+  .presentation-screen {
+    padding: 1.5rem;
+  }
+
+  .presentation-screen::before {
+    background-position: center 58%;
+    background-size: auto 122%;
+  }
+
+  .university-logo {
+    top: 1.5rem;
+    left: 1.5rem;
+    width: 8.5rem;
+  }
+
+  .title-group h1 {
+    font-size: clamp(2.4rem, 12vw, 4.5rem);
+    letter-spacing: 0.04em;
+    text-indent: 0.04em;
+  }
+
+  .title-group p {
+    letter-spacing: 0.2em;
+    text-indent: 0.2em;
+  }
+
+  .image-credit {
+    right: 1rem;
+    bottom: 1rem;
+    font-size: 0.62rem;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .presentation-screen::before {
+    animation: map-reveal 1.2s ease-out both;
+  }
+}
+
+@keyframes map-reveal {
+  from {
+    opacity: 0.65;
+    transform: scale(1.06);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1.015);
+  }
 }
