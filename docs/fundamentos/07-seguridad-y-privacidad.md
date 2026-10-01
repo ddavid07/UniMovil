@@ -82,4 +82,4 @@ Antes de una publicación real se revisarán privacidad, base legal, tratamiento
 
 ## 7.10. Límites operativos actuales
 
-El repositorio es privado y el plan GitHub Free no ofrece protección de ramas ni CodeQL/secret scanning hospedados para este caso. El pipeline ejecutará controles alternativos (auditoría de dependencias, análisis de secretos y análisis estático). La limitación se revisará si cambia el plan o la visibilidad; no se cambia la visibilidad ni se asume un coste como parte de la implementación.
+El repositorio público tiene habilitados Dependabot alerts/security updates, secret scanning y push protection. CodeQL, Dependency Review, OSV-Scanner y Gitleaks se ejecutan en GitHub Actions; `main` requiere pull request, aprobación y checks obligatorios. Dos avisos moderados transitivos de Expo siguen abiertos porque las propuestas automáticas rompen la compatibilidad del SDK; no se ocultan ni se aplican downgrades forzados. Véase [ADR-0014](adr/0014-repositorio-publico-y-controles-github.md).

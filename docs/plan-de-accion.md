@@ -148,9 +148,9 @@ Configurar GitHub Actions con permisos mínimos, acciones externas fijadas por S
 
 Controles automatizados: Dependabot para npm y Actions; `npm audit` con umbral bloqueante alto/crítico; verificación de firmas del registro npm; inventario bloqueante de licencias nuevas/no revisadas; OSV-Scanner; Gitleaks; reglas de seguridad ESLint; e informes de seguridad como artefactos cuando aplique. El lockfile actual conserva dos alertas OSV heredadas ([decode-uri-component](https://osv.dev/GHSA-vcc3-ghjq-m6fr) y [uuid](https://osv.dev/GHSA-w5hq-g745-h8pq), esta última CVSS 7.5); no se silencian y deben revisarse en una actualización compatible del SDK.
 
-Dependency Review, CodeQL hospedado, secret scanning/push protection nativos y protección de `main` son controles deseados, pero el repo actual es privado en GitHub Free y ese plan no permite activarlos aquí. No se cambiará visibilidad ni se asumirá gasto sin autorización. La limitación y alternativa están registradas en ADR-0013. Si se habilita un plan compatible o se hace público tras revisar exposición, se activarán y se exigirán los checks.
+El repositorio se hizo público tras revisar el historial completo con Gitleaks y comprobar que no hay secretos ni datos privados versionados. Están habilitados secret scanning y push protection, y se añadieron CodeQL, Dependency Review y OpenSSF Scorecard. `main` exige PR, aprobación, resolución de conversaciones, historial lineal y checks obligatorios. La decisión y los límites conocidos constan en [ADR-0014](fundamentos/adr/0014-repositorio-publico-y-controles-github.md).
 
-La política de pull requests, revisión, squash merge y prohibición de force push/borrado sigue siendo la norma del equipo; su enforcement remoto depende de que GitHub lo permita en el plan elegido.
+La política de pull requests, revisión, squash merge y prohibición de force push/borrado está aplicada mediante protección de rama en GitHub.
 
 ## 6. Fase 3: requisitos y trazabilidad
 

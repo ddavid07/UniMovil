@@ -39,3 +39,4 @@ Aceptada | Propuesta | Reemplazada | Rechazada
 - [ADR-0011 — Fuentes y vigencia de datos de transporte](0011-fuentes-y-datos-de-transporte.md)
 - [ADR-0012 — Alcance de plataformas, retención y pruebas](0012-alcance-operacion-y-pruebas.md)
 - [ADR-0013 — CI y cadena de suministro](0013-ci-y-cadena-de-suministro.md)
+- [ADR-0014 — Repositorio público y controles de GitHub](0014-repositorio-publico-y-controles-github.md)

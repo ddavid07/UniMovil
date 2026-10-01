@@ -1,4 +1,3 @@
-# Responsable de arranque: propietario actual del repositorio.
-# Sustituir por responsables del equipo de cinco personas cuando sus usuarios
-# de GitHub queden confirmados, conforme a docs/fundamentos/05-github-y-repositorio.md.
-* @ddavid07
+# Maintainers con acceso de escritura confirmados.
+# Cualquiera de estas personas puede revisar y aprobar cambios en cualquier ruta.
+* @ddavid07 @Naoufal33 @pcespon @pablopr06

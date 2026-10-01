@@ -66,7 +66,7 @@ Las decisiones de producto y arquitectura para iniciar la implementación están
 - No consta un feed UCM/operador autorizado para autobuses en tiempo real. Hasta verificarlo se usarán datos oficiales estáticos/manuales, con fecha/estado visibles; nunca se simulará tiempo real.
 - Las retenciones que requieran aprobación jurídica/institucional se fijarán antes de tratar datos reales. Hasta entonces se minimizan datos, no se conserva historial de ubicación y se usan fixtures ficticios.
 - La titularidad de las cuentas Apple Developer y Google Play Console se acordará antes de crear cuentas de publicación o certificados definitivos.
-- El repositorio es privado en GitHub Free: las protecciones de rama y ciertas funciones de seguridad hospedadas no están disponibles. No se hará público ni se contratará un plan sin aprobación expresa; se usarán controles propios de CI.
+- El repositorio es público y tiene activados secret scanning, push protection, CodeQL, Dependency Review y protección de `main`; véase [ADR-0014](adr/0014-repositorio-publico-y-controles-github.md).
 - CODEOWNERS conserva al propietario actual como responsable temporal hasta confirmar los cinco usuarios y responsables de área.
 
 Estas condiciones están asignadas a las fases que las necesitan y no impiden comenzar el desarrollo con datos ficticios.
