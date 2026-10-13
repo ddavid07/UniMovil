@@ -9,8 +9,11 @@
 * **Centro:** Facultad de Informática, Universidad Complutense de Madrid (UCM)
 * **Curso Académico:** 2026/2027
 * **Autores:** 
-  * Naoufal Kebli (`nkebli@ucm.es`)
-  * Daniel David (`ddcandales@gmail.com`)
+  * Naoufal Kebli 
+  * Daniel David 
+  * Pablo Palacios 
+  * Pedro Cespón 
+  * Charlie Fox
 * **Profesor / Tutor:** D. Gonzalo Méndez
 * **Repositorio oficial:** [github.com/ddavid07/UniMovil](https://github.com/ddavid07/UniMovil)
 
