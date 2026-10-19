@@ -80,24 +80,27 @@ A pesar de esta envergadura, la comunidad universitaria (especialmente estudiant
 ## 2. Metodología de Desarrollo y Proceso Software
 
 ### 2.1. Justificación del modelo ágil e incremental
-Frente a los modelos clásicos en cascada (*Waterfall*), donde los requisitos se congelan al inicio y cualquier cambio tardío resulta letal para el coste y el cronograma, el equipo ha adoptado un **modelo de proceso ágil e incremental fundamentado en Scrum e integrado con Kanban**.
+Frente a los modelos clásicos en cascada (*Waterfall*), donde los requisitos se congelan al inicio y cualquier cambio tardío resulta letal para el coste y el cronograma, el equipo ha adoptado un **modelo de proceso ágil e incremental fundamentado estrictamente en el marco Scrum**.
 
-Esta decisión se apoya en los principios fundamentales de la Ingeniería del Software:
-* **Naturaleza evolutiva del software:** Los requisitos de movilidad y las fuentes de datos del campus son dinámicos.
-* **Entrega continua de valor:** Cada Sprint produce un *Incremento de producto potencialmente desplegable* que puede ser evaluado por los usuarios y profesores.
-* **Transparencia e inspección:** La combinación de revisiones periódicas y un tablero Kanban permite monitorizar el flujo de trabajo y limitar el trabajo en curso (*Work In Progress - WIP*).
+Esta decisión se apoya en los principios fundamentales de la Ingeniería del Software y en el empirismo de Scrum:
+* **Naturaleza evolutiva del software:** Los requisitos de movilidad y las fuentes de datos del campus son dinámicos y difíciles de predecir por completo al inicio.
+* **Entrega continua de valor:** Cada Sprint produce un *Incremento de producto potencialmente desplegable*, utilizable y en condiciones de ser entregado.
+* **Los tres pilares empíricos de Scrum:**
+  * **Transparencia:** Todos los aspectos significativos del proceso y del estado del proyecto son visibles para el equipo y los evaluadores.
+  * **Inspección:** Inspección frecuente del *Incremento* y del progreso hacia el *Sprint Goal* para detectar desviaciones a tiempo.
+  * **Adaptación:** Si se detectan desviaciones indeseadas o cambios de prioridad, el proceso y el *Sprint Backlog* se ajustan de inmediato.
 
 ### 2.2. Roles del equipo Scrum
-* **Product Owner:** Responsable de maximizar el valor del producto, priorizar el *Product Backlog* y velar por el cumplimiento de las necesidades de los usuarios universitarios.
-* **Scrum Master:** Líder al servicio del equipo, encargado de asegurar la adopción de las prácticas ágiles, eliminar impedimentos técnicos y moderar las ceremonias.
-* **Equipo de Desarrollo (Development Team):** Equipo multifuncional y autoorganizado responsable del diseño, codificación, pruebas y aseguramiento de la calidad de los incrementos.
+* **Product Owner:** Responsable de maximizar el valor del producto, gestionar y priorizar los elementos del *Product Backlog* según las necesidades reales de los estudiantes y el campus.
+* **Scrum Master:** Líder al servicio del equipo, responsable de garantizar que Scrum se aplique correctamente, ayudar a mantener el enfoque y eliminar impedimentos que frenen el avance.
+* **Equipo de Desarrollo (Development Team):** Equipo autoorganizado y multifuncional con todas las competencias necesarias para transformar elementos del Backlog en incrementos terminados.
 
 ### 2.3. Eventos y ciclo de los Sprints
-El proyecto se estructura en **Sprints de 2 a 3 semanas de duración fija**:
-1. **Sprint Planning:** Selección de historias de usuario del *Product Backlog* para conformar el *Sprint Backlog*, fijando un *Sprint Goal* concreto.
-2. **Daily Scrum:** Reuniones de sincronización diaria orientadas al flujo de trabajo frente al tablero Kanban.
-3. **Sprint Review:** Demostración del incremento funcional terminado a las partes interesadas.
-4. **Sprint Retrospective:** Inspección interna del equipo sobre personas, procesos y herramientas para aplicar mejoras en el siguiente ciclo.
+El proyecto se ejecuta en **Sprints de duración fija (2 a 3 semanas)**, donde cada nuevo Sprint comienza inmediatamente después de concluir el anterior. Los cuatro eventos formales que estructuran el Sprint son:
+1. **Sprint Planning (Planificación del Sprint):** El equipo define qué puede entregarse en el incremento (*Sprint Goal*) y desglosa el trabajo en el *Sprint Backlog*.
+2. **Daily Scrum (Scrum Diario):** Reunión diaria de 15 minutos exclusiva del Equipo de Desarrollo para evaluar el progreso hacia el *Sprint Goal*, coordinar las próximas 24 horas y detectar bloqueos (*¿Qué hice ayer? ¿Qué haré hoy? ¿Qué impedimentos tengo?*).
+3. **Sprint Review (Revisión del Sprint):** Demostración formal del incremento "Terminado" al Product Owner y partes interesadas, inspeccionando el resultado y actualizando el *Product Backlog*.
+4. **Sprint Retrospective (Retrospectiva del Sprint):** Ocasión para que el equipo Scrum se inspeccione a sí mismo (personas, relaciones, herramientas y procesos) y defina un plan de mejora continua para el siguiente Sprint.
 
 ### 2.4. Definición de Terminado (*Definition of Done - DoD*)
 Una Historia de Usuario se considera estrictamente "Terminada" (*Done*) únicamente si satisface:
