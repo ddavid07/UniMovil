@@ -1,5 +1,5 @@
 import type { Place, PlaceCategory, PlaceSearchParams } from "@unimovil/contracts";
-import { LOCAL_CAMPUS_PLACES } from "../data/mockPlaces.js";
+import { LOCAL_CAMPUS_PLACES } from "../data/mockPlaces";
 
 export const placesService = {
   /**

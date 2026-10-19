@@ -26,8 +26,8 @@ export interface AccessPoint {
   name: string;
   coordinates: GeoCoordinates;
   isAccessible: boolean; // Adaptado para personas con movilidad reducida (PMR)
-  hasRamp?: boolean;
-  hasElevator?: boolean;
+  hasRamp?: boolean | undefined;
+  hasElevator?: boolean | undefined;
 }
 
 /**
@@ -36,14 +36,14 @@ export interface AccessPoint {
 export interface Place {
   id: string;
   name: string;
-  shortName?: string;
+  shortName?: string | undefined;
   category: PlaceCategory;
   description: string;
   coordinates: GeoCoordinates;
-  address?: string;
-  openingHours?: string;
-  contactEmail?: string;
-  websiteUrl?: string;
+  address?: string | undefined;
+  openingHours?: string | undefined;
+  contactEmail?: string | undefined;
+  websiteUrl?: string | undefined;
   accessPoints: AccessPoint[];
   hasAccessibleAccess: boolean;
 }
@@ -54,7 +54,7 @@ export interface Place {
 export interface PlaceSummary {
   id: string;
   name: string;
-  shortName?: string;
+  shortName?: string | undefined;
   category: PlaceCategory;
   coordinates: GeoCoordinates;
   hasAccessibleAccess: boolean;
@@ -64,9 +64,9 @@ export interface PlaceSummary {
  * Parámetros para la búsqueda y filtrado de lugares (HU-012, HU-013).
  */
 export interface PlaceSearchParams {
-  query?: string;
-  category?: PlaceCategory;
-  onlyAccessible?: boolean;
+  query?: string | undefined;
+  category?: PlaceCategory | undefined;
+  onlyAccessible?: boolean | undefined;
 }
 
 /**

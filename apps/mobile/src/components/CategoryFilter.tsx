@@ -3,13 +3,13 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-nati
 import type { PlaceCategory } from "@unimovil/contracts";
 
 interface CategoryFilterProps {
-  selectedCategory?: PlaceCategory;
-  onSelectCategory: (category?: PlaceCategory) => void;
+  selectedCategory?: PlaceCategory | undefined;
+  onSelectCategory: (category?: PlaceCategory | undefined) => void;
   onlyAccessible: boolean;
   onToggleAccessible: () => void;
 }
 
-const CATEGORIES: { key?: PlaceCategory; label: string; icon: string }[] = [
+const CATEGORIES: { key?: PlaceCategory | undefined; label: string; icon: string }[] = [
   { key: undefined, label: "Todos", icon: "📍" },
   { key: "faculty", label: "Facultades", icon: "🏛️" },
   { key: "library", label: "Bibliotecas", icon: "📚" },
