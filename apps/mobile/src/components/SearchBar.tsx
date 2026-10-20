@@ -1,5 +1,11 @@
 import React from "react";
-import { StyleSheet, TextInput, TouchableOpacity, View, Text } from "react-native";
+import {
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+  Text,
+} from "react-native";
 
 interface SearchBarProps {
   value: string;

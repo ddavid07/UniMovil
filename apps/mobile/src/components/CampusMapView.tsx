@@ -69,7 +69,7 @@ export function CampusMapView({ places, onSelectPlace }: CampusMapViewProps) {
       <View style={styles.mapCanvas}>
         {/* Fondo con diseño esquemático del campus */}
         <View style={styles.campusGrid} />
-        
+
         {/* Ejes viales principales del campus */}
         <View style={styles.avenidaComplutense} />
         <Text style={styles.streetLabel}>Av. Complutense</Text>
@@ -105,7 +105,9 @@ export function CampusMapView({ places, onSelectPlace }: CampusMapViewProps) {
               onPress={() => setActivePlace(place)}
               activeOpacity={0.8}
             >
-              <View style={[styles.markerPin, isSelected && styles.markerPinActive]}>
+              <View
+                style={[styles.markerPin, isSelected && styles.markerPinActive]}
+              >
                 <Text style={styles.markerIcon}>{icon}</Text>
               </View>
               <View style={styles.markerLabelContainer}>
@@ -155,7 +157,8 @@ export function CampusMapView({ places, onSelectPlace }: CampusMapViewProps) {
             <View style={styles.calloutTitleBox}>
               <Text style={styles.calloutTitle}>{activePlace.name}</Text>
               <Text style={styles.calloutCategory}>
-                {CATEGORY_ICONS[activePlace.category]} {activePlace.category.toUpperCase()}
+                {CATEGORY_ICONS[activePlace.category]}{" "}
+                {activePlace.category.toUpperCase()}
                 {activePlace.hasAccessibleAccess ? " · ♿ ACCESIBLE PMR" : ""}
               </Text>
             </View>

@@ -1,5 +1,9 @@
 import { Controller, Get, Param, Query } from "@nestjs/common";
-import type { PlaceCategory, PlaceDetailResponse, PlaceListResponse } from "@unimovil/contracts";
+import type {
+  PlaceCategory,
+  PlaceDetailResponse,
+  PlaceListResponse,
+} from "@unimovil/contracts";
 import { PlacesService } from "./places.service.js";
 
 @Controller("places")

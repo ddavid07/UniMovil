@@ -19,11 +19,7 @@ const CATEGORY_NAMES: Record<string, string> = {
 
 export function PlaceCard({ place, onPress }: PlaceCardProps) {
   return (
-    <TouchableOpacity
-      style={styles.card}
-      onPress={onPress}
-      activeOpacity={0.7}
-    >
+    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.7}>
       <View style={styles.header}>
         <View style={styles.titleContainer}>
           <Text style={styles.name}>{place.name}</Text>

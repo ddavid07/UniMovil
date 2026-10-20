@@ -7,6 +7,14 @@ import type {
 } from "@unimovil/contracts";
 import { CAMPUS_PLACES } from "./places.data.js";
 
+function normalizeText(str: string): string {
+  return str
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+}
+
 @Injectable()
 export class PlacesService {
   /**
@@ -24,12 +32,12 @@ export class PlacesService {
     }
 
     if (params?.query?.trim()) {
-      const q = params.query.toLowerCase().trim();
+      const q = normalizeText(params.query);
       places = places.filter(
         (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.shortName?.toLowerCase().includes(q) ||
-          p.description.toLowerCase().includes(q),
+          normalizeText(p.name).includes(q) ||
+          (p.shortName && normalizeText(p.shortName).includes(q)) ||
+          normalizeText(p.description).includes(q),
       );
     }
 
@@ -54,7 +62,9 @@ export class PlacesService {
   findOne(id: string): PlaceDetailResponse {
     const place = CAMPUS_PLACES.find((p) => p.id === id);
     if (!place) {
-      throw new NotFoundException(`Lugar con identificador '${id}' no encontrado.`);
+      throw new NotFoundException(
+        `Lugar con identificador '${id}' no encontrado.`,
+      );
     }
 
     return { place };
@@ -63,7 +73,11 @@ export class PlacesService {
   /**
    * Búsqueda rápida predictiva para el buscador móvil (HU-013).
    */
-  search(query: string, category?: string, onlyAccessible?: boolean): PlaceListResponse {
+  search(
+    query: string,
+    category?: string,
+    onlyAccessible?: boolean,
+  ): PlaceListResponse {
     return this.findAll({
       query,
       category: category as PlaceSearchParams["category"],

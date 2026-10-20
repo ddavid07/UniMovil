@@ -10,13 +10,13 @@ export interface GeoCoordinates {
  * Categorías principales de lugares en el campus de Moncloa.
  */
 export type PlaceCategory =
-  | "faculty"        // Facultades (Informática, Matemáticas, etc.)
-  | "library"        // Bibliotecas
-  | "cafeteria"      // Cafeterías y comedores universitarios
-  | "sports"         // Instalaciones deportivas (Paraninfo, piscina)
+  | "faculty" // Facultades (Informática, Matemáticas, etc.)
+  | "library" // Bibliotecas
+  | "cafeteria" // Cafeterías y comedores universitarios
+  | "sports" // Instalaciones deportivas (Paraninfo, piscina)
   | "administration" // Rectorado, secretarías, gestión
-  | "transport"      // Paradas de autobús EMT, metro Ciudad Universitaria
-  | "service";       // Reprografía, cajeros, atención al estudiante
+  | "transport" // Paradas de autobús EMT, metro Ciudad Universitaria
+  | "service"; // Reprografía, cajeros, atención al estudiante
 
 /**
  * Puntos de acceso y entradas a un edificio o recinto.

@@ -9,7 +9,8 @@ export const LOCAL_CAMPUS_PLACES: Place[] = [
     name: "Facultad de Informática",
     shortName: "FDI",
     category: "faculty",
-    description: "Centro de referencia en ingeniería informática y desarrollo de software de la UCM.",
+    description:
+      "Centro de referencia en ingeniería informática y desarrollo de software de la UCM.",
     coordinates: { latitude: 40.4526, longitude: -3.7335 },
     address: "Calle del Prof. José García Santesmases, 9",
     openingHours: "Lunes a Viernes de 08:00 a 21:30",
@@ -32,7 +33,8 @@ export const LOCAL_CAMPUS_PLACES: Place[] = [
     name: "Facultad de Ciencias Matemáticas",
     shortName: "Matemáticas",
     category: "faculty",
-    description: "Formación e investigación matemática en el corazón de la Plaza de Ciencias.",
+    description:
+      "Formación e investigación matemática en el corazón de la Plaza de Ciencias.",
     coordinates: { latitude: 40.4497, longitude: -3.7259 },
     address: "Plaza de Ciencias, 3",
     openingHours: "Lunes a Viernes de 08:00 a 21:00",
@@ -55,7 +57,8 @@ export const LOCAL_CAMPUS_PLACES: Place[] = [
     name: "Facultad de Ciencias Físicas",
     shortName: "Físicas",
     category: "faculty",
-    description: "Docencia e investigación en física teórica y experimental de la UCM.",
+    description:
+      "Docencia e investigación en física teórica y experimental de la UCM.",
     coordinates: { latitude: 40.4509, longitude: -3.7255 },
     address: "Plaza de Ciencias, 1",
     openingHours: "Lunes a Viernes de 08:00 a 21:00",
@@ -96,8 +99,9 @@ export const LOCAL_CAMPUS_PLACES: Place[] = [
     name: "Facultad de Medicina",
     shortName: "Medicina",
     category: "faculty",
-    description: "Facultad histórica de ciencias de la salud junto a la plaza de Ramón y Cajal.",
-    coordinates: { latitude: 40.4429, longitude: -3.7280 },
+    description:
+      "Facultad histórica de ciencias de la salud junto a la plaza de Ramón y Cajal.",
+    coordinates: { latitude: 40.4429, longitude: -3.728 },
     address: "Plaza de Ramón y Cajal, s/n",
     openingHours: "Lunes a Viernes de 08:00 a 21:00",
     hasAccessibleAccess: true,
@@ -105,7 +109,7 @@ export const LOCAL_CAMPUS_PLACES: Place[] = [
       {
         id: "med-p1",
         name: "Entrada Ramón y Cajal",
-        coordinates: { latitude: 40.4429, longitude: -3.7280 },
+        coordinates: { latitude: 40.4429, longitude: -3.728 },
         isAccessible: true,
         hasRamp: true,
         hasElevator: true,
@@ -117,7 +121,8 @@ export const LOCAL_CAMPUS_PLACES: Place[] = [
     name: "Biblioteca María Zambrano",
     shortName: "Bibl. María Zambrano",
     category: "library",
-    description: "Biblioteca central del campus con salas de trabajo en grupo y lectura.",
+    description:
+      "Biblioteca central del campus con salas de trabajo en grupo y lectura.",
     coordinates: { latitude: 40.4402, longitude: -3.7196 },
     address: "Calle del Prof. Aranguren, s/n",
     openingHours: "Lunes a Domingo de 09:00 a 21:00 (24h en exámenes)",
@@ -138,7 +143,8 @@ export const LOCAL_CAMPUS_PLACES: Place[] = [
     name: "Estación Metro Ciudad Universitaria",
     shortName: "Metro Cdad. Univ.",
     category: "transport",
-    description: "Conexión principal con la Línea 6 y parada de líneas de autobuses EMT G, F, 82, 132.",
+    description:
+      "Conexión principal con la Línea 6 y parada de líneas de autobuses EMT G, F, 82, 132.",
     coordinates: { latitude: 40.4438, longitude: -3.7261 },
     address: "Avenida Complutense, s/n",
     openingHours: "Lunes a Domingo de 06:00 a 01:30",
@@ -158,7 +164,8 @@ export const LOCAL_CAMPUS_PLACES: Place[] = [
     name: "Complejo Deportivo Paraninfo",
     shortName: "Deportes Paraninfo",
     category: "sports",
-    description: "Instalaciones deportivas, piscina universitaria y pistas de atletismo.",
+    description:
+      "Instalaciones deportivas, piscina universitaria y pistas de atletismo.",
     coordinates: { latitude: 40.4447, longitude: -3.7323 },
     address: "Avenida de Juan de Herrera, s/n",
     openingHours: "Lunes a Sábado de 09:00 a 21:00",

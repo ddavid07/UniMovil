@@ -33,7 +33,7 @@ export function PlaceDetailModal({
         <View style={styles.modalContent}>
           {/* Barra superior de arrastre / cerrar */}
           <View style={styles.dragHandle} />
-          
+
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.scrollBody}
@@ -49,7 +49,9 @@ export function PlaceDetailModal({
             {/* Badges de estado */}
             <View style={styles.badgeRow}>
               <View style={styles.badge}>
-                <Text style={styles.badgeText}>{place.category.toUpperCase()}</Text>
+                <Text style={styles.badgeText}>
+                  {place.category.toUpperCase()}
+                </Text>
               </View>
               {place.hasAccessibleAccess && (
                 <View style={[styles.badge, styles.badgeAccessible]}>

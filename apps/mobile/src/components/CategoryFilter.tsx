@@ -1,5 +1,11 @@
 import React from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import type { PlaceCategory } from "@unimovil/contracts";
 
 interface CategoryFilterProps {
@@ -9,7 +15,11 @@ interface CategoryFilterProps {
   onToggleAccessible: () => void;
 }
 
-const CATEGORIES: { key?: PlaceCategory | undefined; label: string; icon: string }[] = [
+const CATEGORIES: {
+  key?: PlaceCategory | undefined;
+  label: string;
+  icon: string;
+}[] = [
   { key: undefined, label: "Todos", icon: "📍" },
   { key: "faculty", label: "Facultades", icon: "🏛️" },
   { key: "library", label: "Bibliotecas", icon: "📚" },
@@ -39,7 +49,9 @@ export function CategoryFilter({
               onPress={() => onSelectCategory(cat.key)}
             >
               <Text style={styles.icon}>{cat.icon}</Text>
-              <Text style={[styles.chipText, isSelected && styles.chipTextActive]}>
+              <Text
+                style={[styles.chipText, isSelected && styles.chipTextActive]}
+              >
                 {cat.label}
               </Text>
             </TouchableOpacity>

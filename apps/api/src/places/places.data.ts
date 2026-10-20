@@ -10,7 +10,8 @@ export const CAMPUS_PLACES: Place[] = [
     name: "Facultad de Informática",
     shortName: "FDI",
     category: "faculty",
-    description: "Facultad de Informática de la UCM. Centro docente e investigador en ingeniería informática.",
+    description:
+      "Facultad de Informática de la UCM. Centro docente e investigador en ingeniería informática.",
     coordinates: {
       latitude: 40.4526,
       longitude: -3.7335,
@@ -32,7 +33,7 @@ export const CAMPUS_PLACES: Place[] = [
       {
         id: "fdi-p2",
         name: "Entrada trasera aparcamiento",
-        coordinates: { latitude: 40.4531, longitude: -3.7340 },
+        coordinates: { latitude: 40.4531, longitude: -3.734 },
         isAccessible: true,
         hasRamp: true,
       },
@@ -43,7 +44,8 @@ export const CAMPUS_PLACES: Place[] = [
     name: "Facultad de Ciencias Matemáticas",
     shortName: "Matemáticas",
     category: "faculty",
-    description: "Facultad de Matemáticas de la UCM. Formación e investigación matemática y estadística.",
+    description:
+      "Facultad de Matemáticas de la UCM. Formación e investigación matemática y estadística.",
     coordinates: {
       latitude: 40.4497,
       longitude: -3.7259,
@@ -116,10 +118,11 @@ export const CAMPUS_PLACES: Place[] = [
     name: "Facultad de Medicina",
     shortName: "Medicina",
     category: "faculty",
-    description: "Facultad de Medicina y Pabellón de Gobierno de Ciencias de la Salud.",
+    description:
+      "Facultad de Medicina y Pabellón de Gobierno de Ciencias de la Salud.",
     coordinates: {
       latitude: 40.4429,
-      longitude: -3.7280,
+      longitude: -3.728,
     },
     address: "Plaza de Ramón y Cajal, s/n, 28040 Madrid",
     openingHours: "Lunes a Viernes de 08:00 a 21:00",
@@ -128,7 +131,7 @@ export const CAMPUS_PLACES: Place[] = [
       {
         id: "med-p1",
         name: "Entrada Ramón y Cajal",
-        coordinates: { latitude: 40.4429, longitude: -3.7280 },
+        coordinates: { latitude: 40.4429, longitude: -3.728 },
         isAccessible: true,
         hasRamp: true,
         hasElevator: true,
@@ -140,7 +143,8 @@ export const CAMPUS_PLACES: Place[] = [
     name: "Biblioteca María Zambrano",
     shortName: "Bibl. María Zambrano",
     category: "library",
-    description: "Biblioteca central y sala de estudio principal del campus de Moncloa.",
+    description:
+      "Biblioteca central y sala de estudio principal del campus de Moncloa.",
     coordinates: {
       latitude: 40.4402,
       longitude: -3.7196,
@@ -164,7 +168,8 @@ export const CAMPUS_PLACES: Place[] = [
     name: "Estación de Metro Ciudad Universitaria",
     shortName: "Metro Cdad. Universitaria",
     category: "transport",
-    description: "Estación de Metro de Madrid (Línea 6, Circular) y cabecera de autobuses de la EMT.",
+    description:
+      "Estación de Metro de Madrid (Línea 6, Circular) y cabecera de autobuses de la EMT.",
     coordinates: {
       latitude: 40.4438,
       longitude: -3.7261,
@@ -187,7 +192,8 @@ export const CAMPUS_PLACES: Place[] = [
     name: "Complejo Deportivo Zona Sur (Paraninfo)",
     shortName: "Deportes Paraninfo",
     category: "sports",
-    description: "Pistas de atletismo, campos deportivos, piscina y actividades deportivas de la UCM.",
+    description:
+      "Pistas de atletismo, campos deportivos, piscina y actividades deportivas de la UCM.",
     coordinates: {
       latitude: 40.4447,
       longitude: -3.7323,

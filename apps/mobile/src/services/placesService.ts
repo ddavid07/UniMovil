@@ -1,5 +1,17 @@
-import type { Place, PlaceCategory, PlaceSearchParams } from "@unimovil/contracts";
+import type {
+  Place,
+  PlaceCategory,
+  PlaceSearchParams,
+} from "@unimovil/contracts";
 import { LOCAL_CAMPUS_PLACES } from "../data/mockPlaces";
+
+function normalizeText(str: string): string {
+  return str
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+}
 
 export const placesService = {
   /**
@@ -17,13 +29,13 @@ export const placesService = {
     }
 
     if (params?.query && params.query.trim().length > 0) {
-      const q = params.query.toLowerCase().trim();
+      const q = normalizeText(params.query);
       results = results.filter(
         (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.shortName?.toLowerCase().includes(q) ||
-          p.description.toLowerCase().includes(q) ||
-          p.address?.toLowerCase().includes(q),
+          normalizeText(p.name).includes(q) ||
+          (p.shortName && normalizeText(p.shortName).includes(q)) ||
+          normalizeText(p.description).includes(q) ||
+          (p.address && normalizeText(p.address).includes(q)),
       );
     }
 

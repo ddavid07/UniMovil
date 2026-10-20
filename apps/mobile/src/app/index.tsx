@@ -22,7 +22,9 @@ type ViewMode = "list" | "map";
 export default function HomeScreen() {
   const [viewMode, setViewMode] = useState<ViewMode>("map");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<PlaceCategory | undefined>(undefined);
+  const [selectedCategory, setSelectedCategory] = useState<
+    PlaceCategory | undefined
+  >(undefined);
   const [onlyAccessible, setOnlyAccessible] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
@@ -49,22 +51,34 @@ export default function HomeScreen() {
             {/* Alternador de Vista (Segmented Control) */}
             <View style={styles.tabContainer}>
               <TouchableOpacity
-                style={[styles.tabButton, viewMode === "map" && styles.tabButtonActive]}
+                style={[
+                  styles.tabButton,
+                  viewMode === "map" && styles.tabButtonActive,
+                ]}
                 onPress={() => setViewMode("map")}
               >
                 <Text
-                  style={[styles.tabText, viewMode === "map" && styles.tabTextActive]}
+                  style={[
+                    styles.tabText,
+                    viewMode === "map" && styles.tabTextActive,
+                  ]}
                 >
                   🗺️ Mapa
                 </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.tabButton, viewMode === "list" && styles.tabButtonActive]}
+                style={[
+                  styles.tabButton,
+                  viewMode === "list" && styles.tabButtonActive,
+                ]}
                 onPress={() => setViewMode("list")}
               >
                 <Text
-                  style={[styles.tabText, viewMode === "list" && styles.tabTextActive]}
+                  style={[
+                    styles.tabText,
+                    viewMode === "list" && styles.tabTextActive,
+                  ]}
                 >
                   📋 Lista ({filteredPlaces.length})
                 </Text>
@@ -116,8 +130,8 @@ export default function HomeScreen() {
                   <Text style={styles.emptyIcon}>🔍</Text>
                   <Text style={styles.emptyTitle}>Sin resultados</Text>
                   <Text style={styles.emptySubtitle}>
-                    No encontramos ningún lugar que coincida con "{searchQuery}".
-                    Prueba a cambiar los filtros o el texto.
+                    No encontramos ningún lugar que coincida con "{searchQuery}
+                    ". Prueba a cambiar los filtros o el texto.
                   </Text>
                 </View>
               }
