@@ -5,6 +5,7 @@
   "license": "Apache-2.0",
   "type": "module",
   "dependencies": {
+    "@unimovil/contracts": "*",
     "expo": "~57.0.26",
     "expo-constants": "~57.0.20",
     "expo-linking": "~57.0.11",

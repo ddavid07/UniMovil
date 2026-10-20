@@ -1,0 +1,183 @@
+import type { Place } from "@unimovil/contracts";
+
+/**
+ * Catálogo local de lugares para la app móvil (soporte offline para HU-086).
+ */
+export const LOCAL_CAMPUS_PLACES: Place[] = [
+  {
+    id: "fdi",
+    name: "Facultad de Informática",
+    shortName: "FDI",
+    category: "faculty",
+    description:
+      "Centro de referencia en ingeniería informática y desarrollo de software de la UCM.",
+    coordinates: { latitude: 40.4526, longitude: -3.7335 },
+    address: "Calle del Prof. José García Santesmases, 9",
+    openingHours: "Lunes a Viernes de 08:00 a 21:30",
+    contactEmail: "secretaria_alumnos@fdi.ucm.es",
+    websiteUrl: "https://informatica.ucm.es",
+    hasAccessibleAccess: true,
+    accessPoints: [
+      {
+        id: "fdi-p1",
+        name: "Entrada principal con rampa adaptada",
+        coordinates: { latitude: 40.4526, longitude: -3.7335 },
+        isAccessible: true,
+        hasRamp: true,
+        hasElevator: true,
+      },
+    ],
+  },
+  {
+    id: "matematicas",
+    name: "Facultad de Ciencias Matemáticas",
+    shortName: "Matemáticas",
+    category: "faculty",
+    description:
+      "Formación e investigación matemática en el corazón de la Plaza de Ciencias.",
+    coordinates: { latitude: 40.4497, longitude: -3.7259 },
+    address: "Plaza de Ciencias, 3",
+    openingHours: "Lunes a Viernes de 08:00 a 21:00",
+    contactEmail: "secre.alumnos@mat.ucm.es",
+    websiteUrl: "https://matematicas.ucm.es",
+    hasAccessibleAccess: true,
+    accessPoints: [
+      {
+        id: "mat-p1",
+        name: "Acceso principal Plaza de Ciencias",
+        coordinates: { latitude: 40.4497, longitude: -3.7259 },
+        isAccessible: true,
+        hasRamp: true,
+        hasElevator: true,
+      },
+    ],
+  },
+  {
+    id: "fisicas",
+    name: "Facultad de Ciencias Físicas",
+    shortName: "Físicas",
+    category: "faculty",
+    description:
+      "Docencia e investigación en física teórica y experimental de la UCM.",
+    coordinates: { latitude: 40.4509, longitude: -3.7255 },
+    address: "Plaza de Ciencias, 1",
+    openingHours: "Lunes a Viernes de 08:00 a 21:00",
+    hasAccessibleAccess: true,
+    accessPoints: [
+      {
+        id: "fis-p1",
+        name: "Entrada principal",
+        coordinates: { latitude: 40.4509, longitude: -3.7255 },
+        isAccessible: true,
+        hasRamp: true,
+        hasElevator: true,
+      },
+    ],
+  },
+  {
+    id: "quimicas",
+    name: "Facultad de Ciencias Químicas",
+    shortName: "Químicas",
+    category: "faculty",
+    description: "Centro neurálgico de química e ingeniería química.",
+    coordinates: { latitude: 40.4503, longitude: -3.7275 },
+    address: "Avenida Complutense, s/n",
+    openingHours: "Lunes a Viernes de 08:00 a 21:00",
+    hasAccessibleAccess: true,
+    accessPoints: [
+      {
+        id: "qui-p1",
+        name: "Entrada Avenida Complutense",
+        coordinates: { latitude: 40.4503, longitude: -3.7275 },
+        isAccessible: true,
+        hasRamp: true,
+      },
+    ],
+  },
+  {
+    id: "medicina",
+    name: "Facultad de Medicina",
+    shortName: "Medicina",
+    category: "faculty",
+    description:
+      "Facultad histórica de ciencias de la salud junto a la plaza de Ramón y Cajal.",
+    coordinates: { latitude: 40.4429, longitude: -3.728 },
+    address: "Plaza de Ramón y Cajal, s/n",
+    openingHours: "Lunes a Viernes de 08:00 a 21:00",
+    hasAccessibleAccess: true,
+    accessPoints: [
+      {
+        id: "med-p1",
+        name: "Entrada Ramón y Cajal",
+        coordinates: { latitude: 40.4429, longitude: -3.728 },
+        isAccessible: true,
+        hasRamp: true,
+        hasElevator: true,
+      },
+    ],
+  },
+  {
+    id: "zambrano",
+    name: "Biblioteca María Zambrano",
+    shortName: "Bibl. María Zambrano",
+    category: "library",
+    description:
+      "Biblioteca central del campus con salas de trabajo en grupo y lectura.",
+    coordinates: { latitude: 40.4402, longitude: -3.7196 },
+    address: "Calle del Prof. Aranguren, s/n",
+    openingHours: "Lunes a Domingo de 09:00 a 21:00 (24h en exámenes)",
+    hasAccessibleAccess: true,
+    accessPoints: [
+      {
+        id: "zam-p1",
+        name: "Rampa adaptada de acceso a recepción",
+        coordinates: { latitude: 40.4402, longitude: -3.7196 },
+        isAccessible: true,
+        hasRamp: true,
+        hasElevator: true,
+      },
+    ],
+  },
+  {
+    id: "metro-ciudad-universitaria",
+    name: "Estación Metro Ciudad Universitaria",
+    shortName: "Metro Cdad. Univ.",
+    category: "transport",
+    description:
+      "Conexión principal con la Línea 6 y parada de líneas de autobuses EMT G, F, 82, 132.",
+    coordinates: { latitude: 40.4438, longitude: -3.7261 },
+    address: "Avenida Complutense, s/n",
+    openingHours: "Lunes a Domingo de 06:00 a 01:30",
+    hasAccessibleAccess: true,
+    accessPoints: [
+      {
+        id: "metro-p1",
+        name: "Ascensor exterior Avenida Complutense",
+        coordinates: { latitude: 40.4438, longitude: -3.7261 },
+        isAccessible: true,
+        hasElevator: true,
+      },
+    ],
+  },
+  {
+    id: "paraninfo",
+    name: "Complejo Deportivo Paraninfo",
+    shortName: "Deportes Paraninfo",
+    category: "sports",
+    description:
+      "Instalaciones deportivas, piscina universitaria y pistas de atletismo.",
+    coordinates: { latitude: 40.4447, longitude: -3.7323 },
+    address: "Avenida de Juan de Herrera, s/n",
+    openingHours: "Lunes a Sábado de 09:00 a 21:00",
+    hasAccessibleAccess: true,
+    accessPoints: [
+      {
+        id: "par-p1",
+        name: "Entrada adaptada Juan de Herrera",
+        coordinates: { latitude: 40.4447, longitude: -3.7323 },
+        isAccessible: true,
+        hasRamp: true,
+      },
+    ],
+  },
+];
