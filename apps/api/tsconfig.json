@@ -18,7 +18,10 @@
     "rootDir": "./src",
     "tsBuildInfoFile": "./dist/api.tsbuildinfo",
     "strictPropertyInitialization": false,
-    "types": ["node"]
+    "types": ["node"],
+    "paths": {
+      "@unimovil/contracts": ["../../packages/contracts/src/index.ts"]
+    }
   },
   "include": ["src/**/*.ts"]
 }
