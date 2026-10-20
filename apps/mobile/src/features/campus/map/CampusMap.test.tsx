@@ -20,6 +20,23 @@ afterEach(() => {
   jest.restoreAllMocks();
 });
 describe("adaptador nativo (eventos simulados en pruebas de componentes)", () => {
+  it("configura cabeceras y filtrado de logs antes de montar el mapa", async () => {
+    const map = jest.requireMock<{ Map: jest.Mock }>(
+      "@maplibre/maplibre-react-native",
+    ).Map;
+    map.mockClear();
+    jest.mocked(TransformRequestManager.addHeader).mockClear();
+    jest.mocked(LogManager.onLog).mockClear();
+    await render(<CampusMap {...props} />);
+    const firstMapRender = map.mock.invocationCallOrder[0]!;
+    expect(
+      jest.mocked(TransformRequestManager.addHeader).mock
+        .invocationCallOrder[0],
+    ).toBeLessThan(firstMapRender);
+    expect(
+      jest.mocked(LogManager.onLog).mock.invocationCallOrder[0],
+    ).toBeLessThan(firstMapRender);
+  });
   it("ofrece zoom accesible y respeta los límites de cámara", async () => {
     const camera = jest.requireMock<{ __camera: { zoomTo: jest.Mock } }>(
       "@maplibre/maplibre-react-native",

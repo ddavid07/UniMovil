@@ -9,7 +9,7 @@ jest.mock("@maplibre/maplibre-react-native", () => {
   const camera = { easeTo: jest.fn(), fitBounds: jest.fn(), zoomTo: jest.fn() };
   return {
     __camera: camera,
-    Map: View,
+    Map: jest.fn((props: object) => React.createElement(View, props)),
     GeoJSONSource: (props: object) =>
       React.createElement(View, { ...props, testID: "map-source" }),
     Layer: View,

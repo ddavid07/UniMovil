@@ -24,6 +24,12 @@ export function CampusMap({
 }: Props) {
   const controller = useMapController(allPlaces, selected, mode, apiKey);
   const [viewport, setViewport] = useState("inicial");
+  if (!controller.resourcesReady)
+    return (
+      <View style={styles.message}>
+        <Text>Cargando mapa…</Text>
+      </View>
+    );
   if (!controller.style)
     return (
       <View style={styles.message}>

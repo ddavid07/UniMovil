@@ -9,6 +9,7 @@ import { campusBounds } from "../domain/places";
 import { mapStyle, type MapMode } from "./map-style";
 
 function useMapResources() {
+  const [ready, setReady] = useState(false);
   useEffect(() => {
     TransformRequestManager.addHeader({
       id: "unimovil-user-agent",
@@ -20,10 +21,12 @@ function useMapResources() {
       console.warn("MapLibre", event.level, event.tag);
       return true;
     });
+    setReady(true);
     return () => {
       TransformRequestManager.removeHeader("unimovil-user-agent");
     };
   }, []);
+  return ready;
 }
 export function useMapController(
   allPlaces: readonly Place[],
@@ -40,7 +43,7 @@ export function useMapController(
     [apiKey, mode, attempt],
   );
   const bounds = useMemo(() => campusBounds(allPlaces), [allPlaces]);
-  useMapResources();
+  const resourcesReady = useMapResources();
   useEffect(() => {
     if (state !== "loading") return;
     const timeout = setTimeout(() => setState("error"), 15_000);
@@ -55,6 +58,7 @@ export function useMapController(
       });
   }, [selected, state]);
   return {
+    resourcesReady,
     camera,
     attempt,
     state,
