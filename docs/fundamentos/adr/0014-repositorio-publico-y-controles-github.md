@@ -40,3 +40,9 @@ El código, el historial y los logs de Actions son visibles públicamente y cual
 ## Fecha
 
 2026-10-01
+
+## Actualización del primer incremento — 2026-10-20
+
+La revisión actual detecta también avisos altos transitivos de `node-forge` y `braces` sin versiones corregidas publicadas. La alineación del SDK no los resuelve. OSV pasa a ser bloqueante sin excepciones nuevas; no se integra el incremento mientras fallen los controles. Las alertas anteriores no se consideran cerradas por esta actualización.
+
+Las suites de producto ya incluyen umbrales de cobertura comprobables, límites de complejidad y tamaño del código y pruebas del renderizador en builds nativos. Se mantiene la revisión obligatoria de PR y la protección existente de main.

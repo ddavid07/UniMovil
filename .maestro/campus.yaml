@@ -1,0 +1,62 @@
+appId: io.github.ddavid07.unimovil
+---
+- launchApp:
+    clearState: true
+- runFlow:
+    when:
+      true: ${MAP_MODE === 'fixture-error'}
+    commands:
+      - extendedWaitUntil:
+          visible: "No se pudo cargar el mapa.*"
+          timeout: 25000
+      - tapOn: "Reintentar mapa"
+- extendedWaitUntil:
+    visible: "Mapa cargado"
+    timeout: 20000
+- assertVisible: 'Ver lugares \(24\)'
+- waitForAnimationToEnd
+- runFlow:
+    when:
+      true: ${MAP_MODE !== 'live'}
+    commands:
+      - copyTextFrom: "Vista del mapa:.*"
+      - evalScript: ${output.previousView = maestro.copiedText}
+      - swipe:
+          start: "75%,50%"
+          end: "25%,50%"
+          duration: 700
+      - assertNotVisible: ${output.previousView}
+- tapOn: "Centrar campus"
+- tapOn: "Buscar lugares"
+- inputText: "odontologia"
+- hideKeyboard
+- assertVisible: 'Ver lugares \(1\)'
+- tapOn: "Sugerencia: Facultad de Odontología, Edificios"
+- assertVisible: "Cerrar ficha"
+- assertVisible: "Facultad de Odontología"
+- tapOn: "Cerrar ficha"
+- waitForAnimationToEnd
+- tapOn:
+    id: "campus-map"
+- assertVisible: "Cerrar ficha"
+- tapOn: "Cerrar ficha"
+- tapOn: "Buscar lugares"
+- eraseText: 100
+- inputText: "medicina"
+- hideKeyboard
+- assertVisible: 'Ver lugares \(2\)'
+- tapOn: "Edificios"
+- assertVisible: 'Ver lugares \(1\)'
+- tapOn: "Buscar lugares"
+- eraseText: 100
+- inputText: "zzzzinexistente"
+- hideKeyboard
+- assertVisible: "No hay coincidencias.*"
+- tapOn: 'Ver lugares \(0\)'
+- tapOn: "Restablecer búsqueda y filtros"
+- tapOn: "Volver al mapa"
+- assertVisible: 'Ver lugares \(24\)'
+- pressKey: Home
+- launchApp
+- assertVisible: 'Ver lugares \(24\)'
+- takeScreenshot: sprint-01-campus
