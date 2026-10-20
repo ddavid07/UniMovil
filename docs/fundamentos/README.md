@@ -1,17 +1,15 @@
 # Fundamentos de UniMovil
 
-Esta carpeta reúne las decisiones generales y los fundamentos técnicos de UniMovil: producto, tecnologías, arquitectura, repositorio, seguridad, calidad y gobierno del proyecto.
+Esta carpeta reúne las decisiones técnicas de UniMovil: tecnologías, arquitectura, repositorio, seguridad, calidad y gobierno del proyecto.
 
 La documentación debe responder a tres preguntas:
 
-1. Qué estamos construyendo.
+1. Qué decisiones técnicas sostienen la implementación.
 2. Con qué principios y tecnologías lo construiremos.
 3. Qué reglas debe seguir el equipo para mantener el proyecto coherente y seguro.
 
 ## Estructura
 
-- [00. Catálogo de funcionalidades](funcionalidades.md)
-- [01. Fundamentos del producto](01-fundamentos-del-producto.md)
 - [02. Stack tecnológico](02-stack-tecnologico.md)
 - [03. Arquitectura](03-arquitectura.md)
 - [04. Mapas, cartografía y rutas](04-mapas-cartografia-y-rutas.md)
@@ -23,9 +21,9 @@ La documentación debe responder a tres preguntas:
 
 ## Relación con el resto de la documentación
 
-- [Funcionalidades](funcionalidades.md): catálogo funcional del producto.
-- [Plan de acción](../plan-de-accion.md): orden completo de implementación y puesta en producción.
-- [Historias de usuario](../historias-de-usuario/README.md): comportamiento esperado desde la perspectiva de los usuarios.
+- [Documentación académica, funcional y de seguimiento](https://github.com/ddavid07/UniMovil-docs): requisitos, catálogo funcional, historias, metodología, backlog, iteraciones, memoria y documentos históricos.
+- [Fundamentos del producto](https://github.com/ddavid07/UniMovil-docs/blob/main/requirements/product-foundations.md): propósito, alcance, roles y principios del producto.
+- [Wiki operativa](https://github.com/ddavid07/UniMovil/wiki): guía rápida y enlaces de uso frecuente.
 - [Licencia](../../LICENSE): Apache License 2.0.
 - [.gitignore](../../.gitignore): archivos excluidos del control de versiones.
 
