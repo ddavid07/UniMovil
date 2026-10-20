@@ -3,10 +3,12 @@ export function Action({
   label,
   onPress,
   selected,
+  text = label,
 }: {
   label: string;
   onPress: () => void;
   selected?: boolean;
+  text?: string;
 }) {
   return (
     <Pressable
@@ -20,9 +22,7 @@ export function Action({
         pressed && styles.pressed,
       ]}
     >
-      <Text style={[styles.text, selected && styles.selectedText]}>
-        {label}
-      </Text>
+      <Text style={[styles.text, selected && styles.selectedText]}>{text}</Text>
     </Pressable>
   );
 }

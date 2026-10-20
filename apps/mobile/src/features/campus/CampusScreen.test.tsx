@@ -4,7 +4,7 @@ import {
   screen,
   waitFor,
 } from "@testing-library/react-native";
-import { Linking, Platform } from "react-native";
+import { Keyboard, Linking, Platform } from "react-native";
 import { parsePlaces } from "@unimovil/contracts";
 import { CampusScreen } from "./CampusScreen";
 import catalog from "./data/catalog.json";
@@ -17,6 +17,20 @@ afterEach(() => {
   delete process.env.EXPO_PUBLIC_MAP_MODE;
 });
 describe("recorrido móvil del campus", () => {
+  it("mantiene la búsqueda y cierra el teclado al enviarla", async () => {
+    const dismiss = jest.spyOn(Keyboard, "dismiss");
+    await render(<CampusScreen />);
+    await screen.findByRole("button", { name: "Ver lugares (24)" });
+    await fireEvent.changeText(
+      screen.getByLabelText("Buscar lugares"),
+      "odontologia",
+    );
+    await fireEvent(screen.getByLabelText("Buscar lugares"), "submitEditing");
+    expect(dismiss).toHaveBeenCalled();
+    expect(
+      screen.getByRole("button", { name: "Ver lugares (1)" }),
+    ).toBeTruthy();
+  });
   it("ofrece sugerencias mientras se escribe y distingue datos ausentes", async () => {
     process.env.EXPO_PUBLIC_MAPTILER_KEY = "public_test_configuration";
     try {

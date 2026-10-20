@@ -5,6 +5,8 @@
 - Node.js `24.21.0` (versión fijada en `.node-version`).
 - npm `12.2.0` (versión fijada en `package.json`).
 - Git.
+- Para Android: JDK 21, Android SDK y un emulador o dispositivo conectado.
+- Para iOS: macOS, Xcode y CocoaPods; CI fija Xcode 26.6.
 
 Comprueba las versiones antes de instalar:
 
@@ -75,7 +77,7 @@ Los lugares proceden de OpenStreetMap y conservan ODbL, fuente y fecha de consul
 
 La CI `Native mobile` compila APK Android y aplicación de simulador iOS con JavaScript integrado, y ejecuta Maestro 2.11.0 verificado mediante SHA-256. Las fixtures usan MapLibre nativo y un fondo local sin teselas externas; se identifican claramente en pantalla. El modo `fixture-error` comprueba un fallo real de carga y su recuperación. No se deben usar estos builds como evidencia de MapTiler real.
 
-El workflow manual permite tres repeticiones sobre el mismo commit y modo `live`, que exige la variable de Actions `MAPTILER_PUBLIC_CLIENT_KEY` almacenada como secreto de configuración y utiliza el proveedor real. Sus artefactos son públicos; esa clave debe ser exclusivamente de cliente y estar restringida. Los tests de fixture requieren `APP_VARIANT=e2e`; el build normal rechaza su activación accidental. Android usa API 36; iOS fija Xcode 26.6 y runtime 26.5. Las ejecuciones normales usan Pixel 6/iPhone 16 y las de recuperación un tamaño Android compacto/iPhone SE de tercera generación; los logs conservan las versiones efectivas.
+El workflow ejecuta tres repeticiones sobre el mismo commit. Si existe `MAPTILER_PUBLIC_CLIENT_KEY` como secreto de configuración de Actions, añade automáticamente flujos `live` con el proveedor real a las pruebas de fixtures, también antes de integrar la PR. El check `Native acceptance` falla si no se han completado los builds/flujos o falta esa configuración. Tras añadirla se pueden volver a ejecutar todos los jobs de la PR. El modo manual `live` exige la misma configuración. Sus artefactos son públicos; esa clave debe ser exclusivamente de cliente y estar restringida. Los tests de fixture requieren `APP_VARIANT=e2e`; el build normal rechaza su activación accidental. Los APK de CI se compilan para el emulador x86_64; iOS se compila para la arquitectura del runner. No son artefactos de publicación en tiendas. Android usa API 36; iOS fija Xcode 26.6 y runtime 26.5. Las ejecuciones normales usan Pixel 6/iPhone 16 y las de recuperación un tamaño Android compacto/iPhone SE de tercera generación; los logs conservan las versiones efectivas.
 
 La aceptación requiere además revisar atribución y posiciones con MapTiler real, tamaños compactos, texto al 200 %, accesibilidad y los presupuestos nativos de arranque, interacción, fotogramas y memoria. Esas comprobaciones no se consideran ejecutadas porque pasen las pruebas de Node o componentes. La estrategia del panel sigue siendo Playwright cuando se implemente su funcionalidad; este incremento no cambia el panel.
 

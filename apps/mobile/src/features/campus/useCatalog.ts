@@ -11,14 +11,19 @@ export function useCatalog(repository: PlacesRepository) {
   useEffect(() => {
     let current = true;
     setCatalog({ status: "loading" });
-    void repository.list().then(
-      (places) => {
-        if (current) setCatalog({ status: "ready", places });
-      },
-      () => {
-        if (current) setCatalog({ status: "error" });
-      },
-    );
+    void Promise.resolve()
+      .then(() => repository.list())
+      .then(
+        (places) => {
+          if (current)
+            setCatalog(
+              places.length ? { status: "ready", places } : { status: "error" },
+            );
+        },
+        () => {
+          if (current) setCatalog({ status: "error" });
+        },
+      );
     return () => {
       current = false;
     };

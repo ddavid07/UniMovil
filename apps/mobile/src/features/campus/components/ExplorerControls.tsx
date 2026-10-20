@@ -1,4 +1,10 @@
-import { ScrollView, StyleSheet, TextInput, View } from "react-native";
+import {
+  Keyboard,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  View,
+} from "react-native";
 import { PLACE_CATEGORIES, type PlaceCategory } from "@unimovil/contracts";
 import { CATEGORY_LABELS, MAX_QUERY_LENGTH } from "../domain/places";
 import { Action } from "./Action";
@@ -26,6 +32,8 @@ export function ExplorerControls({
         maxLength={MAX_QUERY_LENGTH}
         autoCorrect={false}
         returnKeyType="search"
+        submitBehavior="blurAndSubmit"
+        onSubmitEditing={() => Keyboard.dismiss()}
         style={styles.input}
         clearButtonMode="while-editing"
       />

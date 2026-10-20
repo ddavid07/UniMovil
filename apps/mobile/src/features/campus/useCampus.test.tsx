@@ -5,6 +5,20 @@ import catalog from "./data/catalog.json";
 
 const places = parsePlaces(catalog);
 describe("estado de exploración", () => {
+  it("rechaza un catálogo vacío y recupera excepciones síncronas del repositorio", async () => {
+    const list = jest
+      .fn()
+      .mockImplementationOnce(() => {
+        throw new Error("Invalid configuration");
+      })
+      .mockResolvedValueOnce([]);
+    const repository = { list };
+    const { result } = await renderHook(() => useCampus(repository));
+    await waitFor(() => expect(result.current.catalog.status).toBe("error"));
+    await act(() => result.current.retry());
+    await waitFor(() => expect(result.current.catalog.status).toBe("error"));
+    expect(list).toHaveBeenCalledTimes(2);
+  });
   it("carga, busca, filtra, selecciona y restablece sin resucitar selecciones", async () => {
     const { result } = await renderHook(() => useCampus());
     await waitFor(() => expect(result.current.catalog.status).toBe("ready"));

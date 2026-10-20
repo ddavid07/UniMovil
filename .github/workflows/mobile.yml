@@ -9,8 +9,8 @@ on:
       provider:
         description: Fixtures reproducibles o MapTiler real (requiere MAPTILER_PUBLIC_CLIENT_KEY)
         type: choice
-        options: [fixtures, live]
-        default: fixtures
+        options: [automatic, live]
+        default: automatic
       repetitions:
         description: Consecutive runs on the same commit
         type: choice
@@ -22,13 +22,36 @@ concurrency:
   group: native-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
+  configuration:
+    name: Configure native validation
+    timeout-minutes: 5
+    runs-on: ubuntu-24.04
+    outputs:
+      modes: ${{ steps.matrix.outputs.modes }}
+      live: ${{ steps.matrix.outputs.live }}
+    steps:
+      - id: matrix
+        env:
+          KEY_CONFIGURED: ${{ secrets.MAPTILER_PUBLIC_CLIENT_KEY != '' }}
+          LIVE_REQUESTED: ${{ inputs.provider == 'live' }}
+        run: |
+          if [ "$LIVE_REQUESTED" = true ] && [ "$KEY_CONFIGURED" != true ]; then
+            echo '::error::Falta MAPTILER_PUBLIC_CLIENT_KEY para validar MapTiler real.'
+            exit 1
+          fi
+          modes='["fixture","fixture-error"]'
+          if [ "$KEY_CONFIGURED" = true ]; then
+            modes='["fixture","fixture-error","live"]'
+          fi
+          printf 'modes=%s\nlive=%s\n' "$modes" "$KEY_CONFIGURED" >> "$GITHUB_OUTPUT"
   native:
     name: Mobile ${{ matrix.platform }} (${{ matrix.mode }})
+    needs: configuration
     strategy:
       fail-fast: false
       matrix:
         platform: [Android, iOS]
-        mode: ${{ fromJSON(inputs.provider == 'live' && '["live"]' || '["fixture", "fixture-error"]') }}
+        mode: ${{ fromJSON(needs.configuration.outputs.modes) }}
     runs-on: ${{ matrix.platform == 'Android' && 'ubuntu-24.04' || 'macos-26' }}
     timeout-minutes: 60
     env:
@@ -67,10 +90,17 @@ jobs:
         if: matrix.platform == 'Android'
         working-directory: apps/mobile
         run: npx expo prebuild --platform android --no-install
+      - name: Check Android command-line tools before compilation
+        if: matrix.platform == 'Android'
+        run: |
+          source scripts/android-tools.sh
+          sdkmanager --version
+          adb version
+          test -x "$ANDROID_HOME/emulator/emulator"
       - name: Build bundled Android APK
         if: matrix.platform == 'Android'
         working-directory: apps/mobile/android
-        run: ./gradlew assembleRelease --no-daemon
+        run: ./gradlew assembleRelease --no-daemon --build-cache -PreactNativeArchitectures=x86_64
       - name: Allow emulator acceleration
         if: matrix.platform == 'Android'
         run: sudo chmod 666 /dev/kvm
@@ -90,7 +120,7 @@ jobs:
         run: |
           xcodebuild -version
           pod install --project-directory=ios
-          xcodebuild -workspace ios/UniMovil.xcworkspace -scheme UniMovil -configuration Release -sdk iphonesimulator -derivedDataPath ios/build CODE_SIGNING_ALLOWED=NO build
+          xcodebuild -workspace ios/UniMovil.xcworkspace -scheme UniMovil -configuration Release -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath ios/build ARCHS="$(uname -m)" ONLY_ACTIVE_ARCH=YES CODE_SIGNING_ALLOWED=NO build
           ditto -c -k --keepParent ios/build/Build/Products/Release-iphonesimulator/UniMovil.app "$RUNNER_TEMP/UniMovil-ios.app.zip"
       - name: Run iOS acceptance flows
         if: matrix.platform == 'iOS'
@@ -104,5 +134,26 @@ jobs:
           path: |
             test-results/
             apps/mobile/android/app/build/outputs/apk/release/app-release.apk
+            apps/mobile/ios/Podfile.lock
             ${{ runner.temp }}/UniMovil-ios.app.zip
             ${{ runner.temp }}/unimovil-*.log
+
+  acceptance:
+    name: Native acceptance
+    timeout-minutes: 5
+    if: always()
+    needs: [configuration, native]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Require native execution and live provider
+        env:
+          CONFIGURATION_RESULT: ${{ needs.configuration.result }}
+          NATIVE_RESULT: ${{ needs.native.result }}
+          LIVE_CONFIGURED: ${{ needs.configuration.outputs.live }}
+        run: |
+          test "$CONFIGURATION_RESULT" = success
+          test "$NATIVE_RESULT" = success
+          if [ "$LIVE_CONFIGURED" != true ]; then
+            echo '::error::La aceptación requiere configurar MAPTILER_PUBLIC_CLIENT_KEY y ejecutar los flujos con MapTiler real. Las fixtures no completan esa validación.'
+            exit 1
+          fi

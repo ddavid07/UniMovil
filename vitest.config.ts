@@ -3,6 +3,7 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     include: [
+      "apps/mobile/app.config.spec.ts",
       "apps/api/src/**/*.spec.ts",
       "apps/admin/src/**/*.{test,spec}.{ts,tsx}",
       "packages/*/src/**/*.{test,spec}.ts",
@@ -16,6 +17,7 @@ export default defineConfig({
       reportsDirectory: "coverage/domain",
       reporter: ["text", "json-summary", "lcov"],
       include: [
+        "apps/mobile/app.config.ts",
         "apps/api/src/**/*.spec.ts",
         "apps/admin/src/**/*.{test,spec}.{ts,tsx}",
         "packages/contracts/src/parse-places.ts",

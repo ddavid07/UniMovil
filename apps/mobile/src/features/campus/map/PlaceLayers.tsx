@@ -18,6 +18,7 @@ export function PlaceLayers({
   return (
     <GeoJSONSource
       id="campus-places"
+      hitbox={{ top: 24, bottom: 24, left: 24, right: 24 }}
       data={data}
       onPress={(event) => {
         const id: unknown = event.nativeEvent.features[0]?.properties?.id;

@@ -42,10 +42,11 @@ export function CampusMap({
         style={styles.map}
         mapStyle={controller.style}
         attribution
-        logo
+        logo={false}
         onDidFinishLoadingMap={() => controller.setState("ready")}
         onDidFailLoadingMap={() => controller.setState("error")}
         onRegionDidChange={(event) => {
+          controller.recordZoom(event.nativeEvent.zoom);
           if (mode !== "live")
             setViewport(
               [...event.nativeEvent.center, event.nativeEvent.zoom]
@@ -76,6 +77,8 @@ export function CampusMap({
         viewport={viewport}
         onRetry={controller.retry}
         onRecenter={controller.recenter}
+        onZoomIn={() => controller.zoomBy(1)}
+        onZoomOut={() => controller.zoomBy(-1)}
       />
     </View>
   );

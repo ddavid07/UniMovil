@@ -26,10 +26,18 @@ appId: io.github.ddavid07.unimovil
           end: "25%,50%"
           duration: 700
       - assertNotVisible: ${output.previousView}
+      - copyTextFrom: "Vista del mapa:.*"
+      - evalScript: ${output.previousView = maestro.copiedText}
+      - tapOn: "Acercar mapa"
+      - assertNotVisible: ${output.previousView}
+      - copyTextFrom: "Vista del mapa:.*"
+      - evalScript: ${output.previousView = maestro.copiedText}
+      - tapOn: "Alejar mapa"
+      - assertNotVisible: ${output.previousView}
 - tapOn: "Centrar campus"
 - tapOn: "Buscar lugares"
 - inputText: "odontologia"
-- hideKeyboard
+- pressKey: Enter
 - assertVisible: 'Ver lugares \(1\)'
 - tapOn: "Sugerencia: Facultad de Odontología, Edificios"
 - assertVisible: "Cerrar ficha"
@@ -43,14 +51,14 @@ appId: io.github.ddavid07.unimovil
 - tapOn: "Buscar lugares"
 - eraseText: 100
 - inputText: "medicina"
-- hideKeyboard
+- pressKey: Enter
 - assertVisible: 'Ver lugares \(2\)'
 - tapOn: "Edificios"
 - assertVisible: 'Ver lugares \(1\)'
 - tapOn: "Buscar lugares"
 - eraseText: 100
 - inputText: "zzzzinexistente"
-- hideKeyboard
+- pressKey: Enter
 - assertVisible: "No hay coincidencias.*"
 - tapOn: 'Ver lugares \(0\)'
 - tapOn: "Restablecer búsqueda y filtros"

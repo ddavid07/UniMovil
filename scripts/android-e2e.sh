@@ -1,12 +1,19 @@
 #!/usr/bin/env bash
 set -euo pipefail
+# shellcheck source=scripts/android-tools.sh
+source "$(dirname "${BASH_SOURCE[0]}")/android-tools.sh"
 sdkmanager 'system-images;android-36;google_apis;x86_64' > "$RUNNER_TEMP/unimovil-sdk.log"
 printf 'no\n' | avdmanager create avd --name unimovil --package 'system-images;android-36;google_apis;x86_64' --device pixel_6
-"$ANDROID_HOME/emulator/emulator" -avd unimovil -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect > "$RUNNER_TEMP/unimovil-emulator.log" 2>&1 &
+export ANDROID_SERIAL=emulator-5554
+"$ANDROID_HOME/emulator/emulator" -avd unimovil -port 5554 -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect > "$RUNNER_TEMP/unimovil-emulator.log" 2>&1 &
 emulator_pid=$!
 trap 'kill "$emulator_pid" 2>/dev/null || true' EXIT
-adb wait-for-device
+timeout 120 adb wait-for-device
 for _attempt in {1..120}; do
+  if ! kill -0 "$emulator_pid" 2>/dev/null; then
+    tail -60 "$RUNNER_TEMP/unimovil-emulator.log"
+    exit 1
+  fi
   if [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" = 1 ]; then break; fi
   sleep 2
 done
@@ -21,5 +28,5 @@ fi
 adb install apps/mobile/android/app/build/outputs/apk/release/app-release.apk
 mkdir -p test-results
 for iteration in $(seq 1 "${E2E_REPETITIONS:-1}"); do
-  maestro test -e MAP_MODE="$EXPO_PUBLIC_MAP_MODE" --format junit --output "test-results/android-$iteration.xml" --test-output-dir "test-results/android-$iteration" .maestro/campus.yaml
+  maestro --device "$ANDROID_SERIAL" test -e MAP_MODE="$EXPO_PUBLIC_MAP_MODE" --format junit --output "test-results/android-$iteration.xml" --test-output-dir "test-results/android-$iteration" .maestro/campus.yaml
 done

@@ -32,6 +32,7 @@ export function useMapController(
   apiKey?: string,
 ) {
   const camera = useRef<CameraRef>(null);
+  const zoom = useRef(14);
   const [attempt, setAttempt] = useState(0);
   const [state, setState] = useState<"loading" | "ready" | "error">("loading");
   const style = useMemo(
@@ -59,6 +60,13 @@ export function useMapController(
     state,
     style,
     bounds,
+    recordZoom: (value: number) => {
+      zoom.current = value;
+    },
+    zoomBy: (delta: number) => {
+      zoom.current = Math.min(19, Math.max(10, zoom.current + delta));
+      camera.current?.zoomTo(zoom.current, { duration: 250 });
+    },
     setState,
     retry: () => {
       setState("loading");

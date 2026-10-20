@@ -20,6 +20,23 @@ afterEach(() => {
   jest.restoreAllMocks();
 });
 describe("adaptador nativo (eventos simulados en pruebas de componentes)", () => {
+  it("ofrece zoom accesible y respeta los límites de cámara", async () => {
+    const camera = jest.requireMock<{ __camera: { zoomTo: jest.Mock } }>(
+      "@maplibre/maplibre-react-native",
+    ).__camera;
+    camera.zoomTo.mockClear();
+    await render(<CampusMap {...props} />);
+    await fireEvent(screen.getByTestId("campus-map"), "regionDidChange", {
+      nativeEvent: { center: [-3.73, 40.44], zoom: 18.5 },
+    });
+    await fireEvent.press(screen.getByRole("button", { name: "Acercar mapa" }));
+    expect(camera.zoomTo).toHaveBeenLastCalledWith(19, { duration: 250 });
+    for (let step = 0; step < 12; step += 1)
+      await fireEvent.press(
+        screen.getByRole("button", { name: "Alejar mapa" }),
+      );
+    expect(camera.zoomTo).toHaveBeenLastCalledWith(10, { duration: 250 });
+  });
   it("mantiene la lista disponible cuando falta configuración", async () => {
     await render(<CampusMap {...props} mode="live" />);
     expect(screen.getByText(/Falta configurar el proveedor/)).toBeTruthy();
