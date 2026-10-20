@@ -53,7 +53,6 @@ Puede gestionar usuarios, roles, configuración, fuentes de datos y permisos glo
 - La posibilidad de ejecutar una versión web se mantiene abierta gracias a la elección de Expo, pero no se considera una decisión cerrada de producto.
 - El panel de gestión podrá ser web si el equipo confirma que es la opción más adecuada para los gestores.
 
-## 1.6. Documentos funcionales relacionados
+## 1.6. Documentación funcional relacionada
 
-- `docs/fundamentos/funcionalidades.md` contiene el catálogo de funcionalidades.
-- `docs/historias-de-usuario/` contiene las historias de usuario, criterios de aceptación y reglas de negocio.
+El catálogo funcional, las historias de usuario, sus criterios de aceptación y las reglas de producto se mantienen en [UniMovil-docs](https://github.com/ddavid07/UniMovil-docs/), separados de la documentación técnica versionada junto al código.

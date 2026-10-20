@@ -49,7 +49,7 @@ apps/mobile    Aplicación Android e iOS
 apps/api       Backend y API REST
 apps/admin     Panel web de gestión
 packages/      Contratos, configuración y utilidades de pruebas compartidas
-docs/          Documentación funcional y técnica
+docs/          Documentación técnica vinculada al código
 ```
 
 El stack tecnológico está formado por:
@@ -86,16 +86,26 @@ Los proveedores externos se mantienen detrás de una configuración sustituible 
 
 ## Documentación
 
-- [Funcionalidades](docs/fundamentos/funcionalidades.md)
-- [Plan de acción completo](docs/plan-de-accion.md)
-- [Historias de usuario](docs/historias-de-usuario/README.md)
-- [Fundamentos del proyecto](docs/fundamentos/README.md)
-- [Decisiones técnicas](docs/fundamentos/adr/README.md)
-- [Contribuir y preparar el entorno local](CONTRIBUTING.md)
+- Documentación técnica: este repositorio, indexada en [docs/fundamentos/README.md](docs/fundamentos/README.md).
+- Documentación académica y de proyecto: [UniMovil-docs](https://github.com/ddavid07/UniMovil-docs).
+- Wiki operativa: [Wiki de UniMovil](https://github.com/ddavid07/UniMovil/wiki).
+
+La documentación académica, funcional y de seguimiento —incluidos requisitos, historias de usuario, backlog, iteraciones y memoria— vive en UniMovil-docs. La Wiki ofrece orientación rápida; las decisiones técnicas y la arquitectura permanecen versionadas junto al código.
+
+Consulta [Contribuir a UniMovil](CONTRIBUTING.md) para instalar el monorepo y ejecutar las aplicaciones y comprobaciones locales.
 
 ## Desarrollo
 
-Consulta [Contribuir a UniMovil](CONTRIBUTING.md) para instalar el monorepo y ejecutar las aplicaciones y comprobaciones locales. El equipo trabaja con ramas cortas, pull requests, revisiones y CI. La rama `main` está protegida y requiere revisión y comprobaciones automatizadas. Los cambios deben mantener la documentación y seguir Conventional Commits.
+Instala las dependencias y arranca cada aplicación en una terminal independiente:
+
+```sh
+npm ci
+npm run dev:mobile
+npm run dev:api
+npm run dev:admin
+```
+
+Consulta [Contribuir a UniMovil](CONTRIBUTING.md) para los requisitos de Node.js/npm, configuración local y comprobaciones. El equipo trabaja con ramas cortas, pull requests, revisiones y CI. La rama `main` está protegida y requiere revisión y comprobaciones automatizadas. Los cambios deben mantener la documentación y seguir Conventional Commits.
 
 ## Licencia
 

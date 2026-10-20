@@ -10,7 +10,6 @@ La documentación debe responder a tres preguntas:
 
 ## Estructura
 
-- [00. Catálogo de funcionalidades](funcionalidades.md)
 - [01. Fundamentos del producto](01-fundamentos-del-producto.md)
 - [02. Stack tecnológico](02-stack-tecnologico.md)
 - [03. Arquitectura](03-arquitectura.md)
@@ -23,9 +22,8 @@ La documentación debe responder a tres preguntas:
 
 ## Relación con el resto de la documentación
 
-- [Funcionalidades](funcionalidades.md): catálogo funcional del producto.
-- [Plan de acción](../plan-de-accion.md): orden completo de implementación y puesta en producción.
-- [Historias de usuario](../historias-de-usuario/README.md): comportamiento esperado desde la perspectiva de los usuarios.
+- [Documentación académica, funcional y de seguimiento](https://github.com/ddavid07/UniMovil-docs): requisitos, catálogo funcional, historias, metodología, backlog, iteraciones, memoria y documentos históricos.
+- [Wiki operativa](https://github.com/ddavid07/UniMovil/wiki): guía rápida y enlaces de uso frecuente.
 - [Licencia](../../LICENSE): Apache License 2.0.
 - [.gitignore](../../.gitignore): archivos excluidos del control de versiones.
 
