@@ -96,6 +96,7 @@ jobs:
           source scripts/android-tools.sh
           sdkmanager --version
           adb version
+          sdkmanager 'emulator' > "$RUNNER_TEMP/unimovil-emulator-install.log"
           test -x "$ANDROID_HOME/emulator/emulator"
       - name: Build bundled Android APK
         if: matrix.platform == 'Android'

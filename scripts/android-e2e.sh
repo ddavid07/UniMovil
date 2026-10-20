@@ -5,7 +5,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/android-tools.sh"
 sdkmanager 'system-images;android-36;google_apis;x86_64' > "$RUNNER_TEMP/unimovil-sdk.log"
 printf 'no\n' | avdmanager create avd --name unimovil --package 'system-images;android-36;google_apis;x86_64' --device pixel_6
 export ANDROID_SERIAL=emulator-5554
-"$ANDROID_HOME/emulator/emulator" -avd unimovil -port 5554 -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect > "$RUNNER_TEMP/unimovil-emulator.log" 2>&1 &
+"$ANDROID_HOME/emulator/emulator" -avd unimovil -port 5554 -no-window -no-audio -no-boot-anim -gpu swiftshader > "$RUNNER_TEMP/unimovil-emulator.log" 2>&1 &
 emulator_pid=$!
 trap 'kill "$emulator_pid" 2>/dev/null || true' EXIT
 timeout 120 adb wait-for-device
