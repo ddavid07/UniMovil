@@ -45,8 +45,63 @@ export default tseslint.config(
     languageOptions: {
       globals: {
         module: "readonly",
+        require: "readonly",
+        __dirname: "readonly",
       },
     },
+  },
+  {
+    files: [
+      "apps/mobile/src/features/campus/**/*.{ts,tsx}",
+      "packages/contracts/src/*.ts",
+    ],
+    ignores: ["**/*.test.tsx", "**/*.spec.ts", "**/*.perf.ts"],
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    rules: {
+      complexity: ["error", 10],
+      "max-depth": ["error", 3],
+      "max-lines": [
+        "error",
+        { max: 300, skipBlankLines: true, skipComments: true },
+      ],
+      "max-lines-per-function": [
+        "error",
+        { max: 80, skipBlankLines: true, skipComments: true },
+      ],
+      "@typescript-eslint/no-floating-promises": "error",
+      "@typescript-eslint/no-misused-promises": "error",
+      "@typescript-eslint/consistent-type-imports": "error",
+    },
+  },
+  {
+    files: [
+      "apps/mobile/src/features/campus/domain/*.ts",
+      "packages/contracts/src/*.ts",
+    ],
+    ignores: ["**/*.spec.ts", "**/*.perf.ts"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: ["react", "react-native", "@maplibre/maplibre-react-native"],
+          patterns: [
+            "**/apps/**",
+            "../data/**",
+            "../map/**",
+            "../components/**",
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ["apps/mobile/metro.config.cjs"],
+    rules: { "@typescript-eslint/no-require-imports": "off" },
   },
   prettier,
 );
