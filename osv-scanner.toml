@@ -1,0 +1,7 @@
+[[IgnoredVulns]]
+id = "GHSA-vcc3-ghjq-m6fr"
+reason = "Transitive npm advisory accepted for now while evaluating an Expo-compatible dependency update."
+
+[[IgnoredVulns]]
+id = "GHSA-w5hq-g745-h8pq"
+reason = "Transitive npm advisory accepted for now while evaluating an Expo-compatible dependency update."
