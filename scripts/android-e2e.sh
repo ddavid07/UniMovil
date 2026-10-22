@@ -2,8 +2,15 @@
 set -euo pipefail
 # shellcheck source=scripts/android-tools.sh
 source "$(dirname "${BASH_SOURCE[0]}")/android-tools.sh"
+export ANDROID_AVD_HOME="$RUNNER_TEMP/android-avd"
+mkdir -p "$ANDROID_AVD_HOME"
 sdkmanager 'system-images;android-36;google_apis;x86_64' > "$RUNNER_TEMP/unimovil-sdk.log"
-printf 'no\n' | avdmanager create avd --name unimovil --package 'system-images;android-36;google_apis;x86_64' --device pixel_6
+printf 'no\n' | avdmanager create avd --name unimovil --package 'system-images;android-36;google_apis;x86_64' --device pixel_6 > "$RUNNER_TEMP/unimovil-avd.log" 2>&1
+if ! "$ANDROID_HOME/emulator/emulator" -list-avds | grep -Fxq unimovil; then
+  cat "$RUNNER_TEMP/unimovil-avd.log" >&2
+  printf '%s\n' 'The Android emulator could not find the created AVD.' >&2
+  exit 1
+fi
 export ANDROID_SERIAL=emulator-5554
 "$ANDROID_HOME/emulator/emulator" -avd unimovil -port 5554 -no-window -no-audio -no-boot-anim -gpu swiftshader > "$RUNNER_TEMP/unimovil-emulator.log" 2>&1 &
 emulator_pid=$!

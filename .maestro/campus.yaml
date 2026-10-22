@@ -22,8 +22,8 @@ appId: io.github.ddavid07.unimovil
       - copyTextFrom: "Vista del mapa:.*"
       - evalScript: ${output.previousView = maestro.copiedText}
       - swipe:
-          start: "75%,50%"
-          end: "25%,50%"
+          start: "6%,55%"
+          end: "6%,35%"
           duration: 700
       - assertNotVisible: ${output.previousView}
       - copyTextFrom: "Vista del mapa:.*"
