@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+export MAESTRO_DRIVER_STARTUP_TIMEOUT="${MAESTRO_DRIVER_STARTUP_TIMEOUT:-240000}"
 runtime_id=$(xcrun simctl list runtimes --json | python3 -c 'import json,sys; rs=[r for r in json.load(sys.stdin)["runtimes"] if r.get("isAvailable") and r["identifier"].startswith("com.apple.CoreSimulator.SimRuntime.iOS-26") and r["version"].startswith("26.5")]; assert rs, "iOS 26.5 runtime unavailable"; print(sorted(rs,key=lambda r:tuple(map(int,r["version"].split("."))))[-1]["identifier"])')
 device_type=com.apple.CoreSimulator.SimDeviceType.iPhone-16
 if [ "$EXPO_PUBLIC_MAP_MODE" = fixture-error ]; then
