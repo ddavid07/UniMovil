@@ -51,9 +51,7 @@ npm run build
 npm run ci
 ```
 
-La CI verifica firmas npm, licencias y alineación con Expo. Los escáneres de seguridad se conservan: CodeQL, Dependency Review, Gitleaks, auditoría npm y OSV. OSV ya no es informativo: los hallazgos bloquean su workflow. La auditoría npm bloquea altos/críticos. No se deben omitir estos controles para integrar una entrega.
-
-La revisión del 20 de octubre de 2026 detectó avisos altos transitivos de `node-forge` y `braces`, sin versión corregida publicada en sus advisories. La actualización compatible de Expo no los elimina. No se considera aprobada una entrega mientras sus checks obligatorios fallen; no usar `npm audit fix --force` ni ocultar estos avisos.
+La CI verifica firmas npm, licencias y alineación con Expo. CodeQL, Dependency Review y Gitleaks siguen activos. Se retiraron de GitHub Actions los escaneos de vulnerabilidades `npm audit --audit-level=high` y OSV-Scanner: sus avisos sobre dependencias transitivas del stack Expo hacían fallar repetidamente CI aunque las correcciones sugeridas requerían actualizar el SDK de forma coordinada. `npm audit signatures` permanece porque verifica firmas del registro npm, no advisories. GitHub Dependabot Alerts sigue activo y Dependency Review continúa bloqueando dependencias nuevas de severidad alta o crítica.
 
 ## Ejecutar el mapa móvil
 

@@ -10,10 +10,7 @@ const context: ConfigContext = {
 afterEach(() => vi.unstubAllEnvs());
 describe("configuración nativa", () => {
   it("rechaza tokens con formato de credencial de servicio", () => {
-    vi.stubEnv(
-      "EXPO_PUBLIC_MAPTILER_KEY",
-      "eyJhbGciOiJub25lIn0.eyJyb2xlIjoic2VydmljZSJ9.signature",
-    );
+    vi.stubEnv("EXPO_PUBLIC_MAPTILER_KEY", `key_${"a".repeat(64)}`);
     expect(() => configure(context)).toThrow("tokens de servicio");
   });
   it("rechaza claves públicas vacías o con espacios", () => {
