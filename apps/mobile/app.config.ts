@@ -6,12 +6,14 @@ export default function configure({ config }: ConfigContext): ExpoConfig {
   // MapTiler service tokens, whose documented format must never be bundled.
   const looksLikeServiceToken =
     clientKey !== undefined && /^[^_\s]+_[0-9a-fA-F]{64}$/.test(clientKey);
+  const missingProductionKey =
+    clientKey !== undefined && clientKey.length === 0 && !testing;
   if (
-    clientKey !== undefined &&
-    (clientKey.length === 0 ||
-      clientKey.trim() !== clientKey ||
-      /\s/.test(clientKey) ||
-      looksLikeServiceToken)
+    missingProductionKey ||
+    (clientKey !== undefined &&
+      (clientKey.trim() !== clientKey ||
+        /\s/.test(clientKey) ||
+        looksLikeServiceToken))
   )
     throw new Error(
       "La clave pública de MapTiler es inválida. No uses tokens de servicio.",

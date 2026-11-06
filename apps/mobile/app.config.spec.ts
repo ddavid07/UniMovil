@@ -13,11 +13,16 @@ describe("configuración nativa", () => {
     vi.stubEnv("EXPO_PUBLIC_MAPTILER_KEY", `key_${"a".repeat(64)}`);
     expect(() => configure(context)).toThrow("tokens de servicio");
   });
-  it("rechaza claves públicas vacías o con espacios", () => {
+  it("rechaza claves públicas vacías o con espacios en builds normales", () => {
     for (const key of ["", " public_key", "public key"]) {
       vi.stubEnv("EXPO_PUBLIC_MAPTILER_KEY", key);
       expect(() => configure(context)).toThrow("clave pública");
     }
+  });
+  it("permite la clave vacía en builds E2E basados en fixtures", () => {
+    vi.stubEnv("EXPO_PUBLIC_MAPTILER_KEY", "");
+    vi.stubEnv("APP_VARIANT", "e2e");
+    expect(configure(context).extra?.testBuild).toBe(true);
   });
   it("admite la configuración pública de cliente", () => {
     vi.stubEnv("EXPO_PUBLIC_MAPTILER_KEY", "public.client-example/123");
