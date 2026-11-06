@@ -9,12 +9,21 @@ const context: ConfigContext = {
 };
 afterEach(() => vi.unstubAllEnvs());
 describe("configuración nativa", () => {
-  it("rechaza claves malformadas antes de incorporarlas al bundle", () => {
-    vi.stubEnv("EXPO_PUBLIC_MAPTILER_KEY", "not.a.public-key");
-    expect(() => configure(context)).toThrow("formato inválido");
+  it("rechaza tokens con formato de credencial de servicio", () => {
+    vi.stubEnv(
+      "EXPO_PUBLIC_MAPTILER_KEY",
+      "eyJhbGciOiJub25lIn0.eyJyb2xlIjoic2VydmljZSJ9.signature",
+    );
+    expect(() => configure(context)).toThrow("tokens de servicio");
+  });
+  it("rechaza claves públicas vacías o con espacios", () => {
+    for (const key of ["", " public_key", "public key"]) {
+      vi.stubEnv("EXPO_PUBLIC_MAPTILER_KEY", key);
+      expect(() => configure(context)).toThrow("clave pública");
+    }
   });
   it("admite la configuración pública de cliente", () => {
-    vi.stubEnv("EXPO_PUBLIC_MAPTILER_KEY", "public_client_example");
+    vi.stubEnv("EXPO_PUBLIC_MAPTILER_KEY", "public.client-example/123");
     expect(configure(context).name).toBe("UniMovil");
   });
   it("no activa fixtures ni permisos de ubicación por defecto", () => {
