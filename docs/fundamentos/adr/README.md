@@ -40,3 +40,4 @@ Aceptada | Propuesta | Reemplazada | Rechazada
 - [ADR-0012 — Alcance de plataformas, retención y pruebas](0012-alcance-operacion-y-pruebas.md)
 - [ADR-0013 — CI y cadena de suministro](0013-ci-y-cadena-de-suministro.md)
 - [ADR-0014 — Repositorio público y controles de GitHub](0014-repositorio-publico-y-controles-github.md)
+- [ADR-0015 — Escaneos de vulnerabilidades en CI](0015-retirada-escaneos-vulnerabilidades-ci.md)

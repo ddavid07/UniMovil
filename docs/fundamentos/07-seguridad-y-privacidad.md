@@ -58,7 +58,7 @@ Los secretos se gestionarán mediante variables de entorno locales y secretos pr
 - Dependency Review.
 - CodeQL.
 - Secret scanning.
-- OSV-Scanner.
+- Alertas de Dependabot y Dependency Review en pull requests.
 - Revisión de licencias.
 - Acciones de GitHub fijadas por SHA.
 - Lockfile versionado.
@@ -82,4 +82,4 @@ Antes de una publicación real se revisarán privacidad, base legal, tratamiento
 
 ## 7.10. Límites operativos actuales
 
-El repositorio público tiene habilitados Dependabot alerts/security updates, secret scanning y push protection. CodeQL, Dependency Review, OSV-Scanner y Gitleaks se ejecutan en GitHub Actions; `main` requiere pull request, aprobación y checks obligatorios. Dos avisos moderados transitivos de Expo siguen abiertos porque las propuestas automáticas rompen la compatibilidad del SDK; no se ocultan ni se aplican downgrades forzados. Véase [ADR-0014](adr/0014-repositorio-publico-y-controles-github.md).
+El repositorio público tiene habilitados Dependabot alerts/security updates, secret scanning y push protection. CodeQL, Dependency Review y Gitleaks se ejecutan en GitHub Actions; `npm audit --audit-level=high` y OSV-Scanner se retiraron de CI mediante [ADR-0015](adr/0015-retirada-escaneos-vulnerabilidades-ci.md). `npm audit signatures` permanece como comprobación de firmas del registro npm. Las alertas de Dependabot continúan visibles para gestionar las vulnerabilidades pendientes; retirar los dos jobs no las cierra ni las descarta. Véanse [ADR-0014](adr/0014-repositorio-publico-y-controles-github.md) y [ADR-0015](adr/0015-retirada-escaneos-vulnerabilidades-ci.md).

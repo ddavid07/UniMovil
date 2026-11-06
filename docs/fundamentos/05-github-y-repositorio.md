@@ -107,10 +107,10 @@ Están activados en el repositorio público:
 - Push protection.
 - Dependency Review en pull requests.
 - CodeQL para TypeScript y JavaScript.
-- OSV-Scanner o herramienta equivalente.
+- Escaneos de secretos y dependencias según los workflows actualmente habilitados.
 - Protección de rama `main` con PR obligatorio, aprobación, checks y sin force push ni borrado.
 
-El repositorio es público para utilizar las prestaciones gratuitas de seguridad y gobernanza de GitHub. Secret scanning y push protection están habilitados; CodeQL analiza TypeScript/JavaScript y Dependency Review bloquea dependencias nuevas de severidad alta o crítica. OpenSSF Scorecard se ejecuta de forma periódica. Véanse [ADR-0014](adr/0014-repositorio-publico-y-controles-github.md) y [SECURITY.md](../../SECURITY.md).
+El repositorio es público para utilizar las prestaciones gratuitas de seguridad y gobernanza de GitHub. Secret scanning y push protection están habilitados; CodeQL analiza TypeScript/JavaScript y Dependency Review bloquea dependencias nuevas de severidad alta o crítica. OpenSSF Scorecard se ejecuta de forma periódica. Los escaneos de vulnerabilidades `npm audit` y OSV-Scanner en Actions se retiraron; las alertas de Dependabot siguen activas. Véanse [ADR-0014](adr/0014-repositorio-publico-y-controles-github.md), [ADR-0015](adr/0015-retirada-escaneos-vulnerabilidades-ci.md) y [SECURITY.md](../../SECURITY.md).
 
 ## 5.10. Workflows previstos
 
