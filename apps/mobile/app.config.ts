@@ -3,9 +3,9 @@ export default function configure({ config }: ConfigContext): ExpoConfig {
   const testing = process.env.APP_VARIANT === "e2e";
   const clientKey = process.env.EXPO_PUBLIC_MAPTILER_KEY;
   // Public API keys are opaque provider values; only reject whitespace and
-  // MapTiler service tokens, whose documented format must never be bundled.
+  // known service-token prefixes, which must never be bundled.
   const looksLikeServiceToken =
-    clientKey !== undefined && /^[^_\s]+_[0-9a-fA-F]{64}$/.test(clientKey);
+    clientKey !== undefined && /^sk_[0-9a-fA-F]{64}$/.test(clientKey);
   const missingProductionKey =
     clientKey !== undefined && clientKey.length === 0 && !testing;
   if (
