@@ -20,9 +20,11 @@ const ACCESSIBILITY = {
 export function PlaceSheet({
   place,
   onClose,
+  onPlanRoute,
 }: {
   place: Place | null;
   onClose: () => void;
+  onPlanRoute?: ((place: Place) => void) | undefined;
 }) {
   const [linkError, setLinkError] = useState(false);
   if (!place) return null;
@@ -54,6 +56,15 @@ export function PlaceSheet({
               Los datos pueden cambiar. No se ha realizado una inspección de
               campo.
             </Text>
+            {onPlanRoute && (
+              <Action
+                label="Cómo llegar a este lugar"
+                onPress={() => {
+                  onClose();
+                  onPlanRoute(place);
+                }}
+              />
+            )}
             <Action
               label="Consultar fuente en OpenStreetMap"
               onPress={() => {

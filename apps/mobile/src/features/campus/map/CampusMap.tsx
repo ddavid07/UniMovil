@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Camera, Map } from "@maplibre/maplibre-react-native";
-import type { Place } from "@unimovil/contracts";
+import type { Place, RouteResponse } from "@unimovil/contracts";
 import { type MapMode } from "./map-style";
 import { useMapController } from "./useMapController";
 import { MapStatus } from "./MapStatus";
 import { PlaceLayers } from "./PlaceLayers";
+import { RouteLayer } from "./RouteLayer";
 interface Props {
   places: readonly Place[];
   allPlaces: readonly Place[];
@@ -13,6 +14,7 @@ interface Props {
   onSelect: (id: string) => void;
   mode: MapMode;
   apiKey?: string;
+  route?: RouteResponse | null;
 }
 export function CampusMap({
   places,
@@ -21,6 +23,7 @@ export function CampusMap({
   onSelect,
   mode,
   apiKey,
+  route,
 }: Props) {
   const controller = useMapController(allPlaces, selected, mode, apiKey);
   const [viewport, setViewport] = useState("inicial");
@@ -76,6 +79,7 @@ export function CampusMap({
           selected={selected}
           onSelect={onSelect}
         />
+        <RouteLayer route={route ?? null} />
       </Map>
       <MapStatus
         state={controller.state}
