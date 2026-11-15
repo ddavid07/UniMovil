@@ -13,6 +13,7 @@ export default defineConfig({
       "apps/mobile/src/features/routing/__tests__/*.spec.ts",
       "apps/mobile/src/features/transit/__tests__/*.spec.ts",
       "apps/mobile/src/features/transit/map/*.spec.ts",
+      "apps/mobile/src/features/offline/**/*.spec.ts",
     ],
     passWithNoTests: false,
     coverage: {
@@ -32,6 +33,7 @@ export default defineConfig({
         "apps/mobile/src/features/routing/domain/routing-errors.ts",
         "apps/mobile/src/features/transit/domain/transit.ts",
         "apps/mobile/src/features/transit/map/geojson.ts",
+        "apps/mobile/src/features/offline/domain/offline-cache.ts",
       ],
       thresholds: {
         lines: 90,

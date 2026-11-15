@@ -86,7 +86,12 @@ function RouteStepList({ route }: { route: RouteResponse }) {
         contentContainerStyle={styles.stepsContent}
       >
         {route.segments.map((segment, index) => (
-          <View key={segment.id} style={styles.stepItem}>
+          <View
+            key={segment.id}
+            style={styles.stepItem}
+            accessibilityRole="text"
+            accessibilityLabel={`Paso ${index + 1}: ${segment.instruction}. Distancia: ${formatDistance(segment.distanceMeters)}${segment.hasRamp ? ", tramo con rampa accesible" : ""}${segment.hasStairs ? ", tramo con escaleras" : ""}`}
+          >
             <View style={styles.stepBullet}>
               <Text style={styles.bulletNumber}>{index + 1}</Text>
             </View>

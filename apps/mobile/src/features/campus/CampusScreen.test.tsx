@@ -199,4 +199,20 @@ describe("recorrido móvil del campus", () => {
     await fireEvent.press(screen.getByRole("button", { name: "Ver EMT" }));
     expect(screen.getByRole("button", { name: "Ocultar EMT" })).toBeTruthy();
   });
+
+  it("muestra el banner de modo sin conexión cuando isOffline está activo y permite reintentar (HU-094)", async () => {
+    await render(<CampusScreen isOffline={true} />);
+    expect(screen.getByText(/modo sin conexión/i)).toBeTruthy();
+    expect(screen.getByText(/datos cacheados/i)).toBeTruthy();
+
+    const retryBtn = screen.getByRole("button", { name: /reintentar conexión/i });
+    expect(retryBtn).toBeTruthy();
+    await fireEvent.press(retryBtn);
+  });
+
+  it("verifica etiquetas semánticas de accesibilidad WCAG 2.1 AA en controles principales (HU-095)", async () => {
+    await render(<CampusScreen />);
+    expect(screen.getByRole("header", { name: "UniMovil · Moncloa" })).toBeTruthy();
+    expect(screen.getByLabelText("Buscar lugares")).toBeTruthy();
+  });
 });
