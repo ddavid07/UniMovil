@@ -74,9 +74,10 @@ describe("RouteSheet Component (HU-023 - TDD Tema 3)", () => {
     await render(<RouteSheet route={mockRouteStandard} onClose={onClose} />);
 
     expect(screen.getByText("Itinerario peatonal")).toBeTruthy();
-    expect(screen.getByText("5 min")).toBeTruthy();
-    expect(screen.getByText("350 m")).toBeTruthy();
+    expect(screen.getAllByText("5 min").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText("350 m").length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText("Ruta con escaleras")).toBeTruthy();
+    expect(screen.getByText("Comparativa multimodal")).toBeTruthy();
     expect(screen.getByText("Avanza por Paseo de Ruperto Chapí")).toBeTruthy();
     expect(screen.getByText("Sube por la escalinata hacia la entrada")).toBeTruthy();
   });
@@ -85,7 +86,7 @@ describe("RouteSheet Component (HU-023 - TDD Tema 3)", () => {
     await render(<RouteSheet route={mockRoutePmr} onClose={jest.fn()} />);
 
     expect(screen.getByText("Ruta accesible PMR")).toBeTruthy();
-    expect(screen.getByText("6 min")).toBeTruthy();
+    expect(screen.getAllByText("6 min").length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText("420 m").length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText("Toma el sendero adaptado y rampa suave")).toBeTruthy();
   });

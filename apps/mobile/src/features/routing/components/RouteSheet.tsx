@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import {
   Modal,
   ScrollView,
@@ -8,115 +9,145 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import type { RouteResponse } from "@unimovil/contracts";
-import {
-  formatDistance,
-  formatDuration,
-} from "../domain/routing";
+import { formatDistance, formatDuration } from "../domain/routing";
+import { calculateMultimodalAlternatives } from "../../transit/domain/transit";
+import { MultimodalComparisonCard } from "../../transit/components/MultimodalComparisonCard";
 
 interface Props {
   readonly route: RouteResponse | null;
   readonly onClose: () => void;
 }
 
-export function RouteSheet({ route, onClose }: Props) {
-  if (!route) {
-    return null;
-  }
+function RouteHeader({ onClose }: { onClose: () => void }) {
+  return (
+    <View style={styles.header}>
+      <View>
+        <Text accessibilityRole="header" style={styles.title}>
+          Itinerario peatonal
+        </Text>
+        <Text style={styles.subtitle}>Moncloa · Campus Complutense</Text>
+      </View>
+      <TouchableOpacity
+        accessibilityRole="button"
+        accessibilityLabel="Cerrar ruta"
+        style={styles.closeBtn}
+        onPress={onClose}
+      >
+        <Text style={styles.closeBtnText}>Cerrar ruta</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
 
+function RouteMetricsRow({ route }: { route: RouteResponse }) {
   const durationStr = formatDuration(route.estimatedDurationMinutes);
   const distanceStr = formatDistance(route.totalDistanceMeters);
 
   return (
-    <Modal
-      transparent
-      visible
-      animationType="slide"
-      onRequestClose={onClose}
-    >
+    <View style={styles.metricsRow}>
+      <View style={styles.metricCard}>
+        <Text style={styles.metricValue}>{durationStr}</Text>
+        <Text style={styles.metricLabel}>Tiempo a pie</Text>
+      </View>
+
+      <View style={styles.metricCard}>
+        <Text style={styles.metricValue}>{distanceStr}</Text>
+        <Text style={styles.metricLabel}>Distancia total</Text>
+      </View>
+
+      <View
+        style={[
+          styles.metricCard,
+          route.accessible ? styles.pmrCardGreen : styles.pmrCardGray,
+        ]}
+      >
+        <Text
+          style={[
+            styles.metricValueSmall,
+            route.accessible ? styles.pmrTextGreen : styles.pmrTextGray,
+          ]}
+        >
+          {route.accessible ? "Ruta accesible PMR" : "Ruta con escaleras"}
+        </Text>
+        <Text style={styles.metricLabel}>
+          {route.accessible ? "Sin barreras" : "Con desniveles"}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+function RouteStepList({ route }: { route: RouteResponse }) {
+  return (
+    <View style={styles.stepsContainer}>
+      <Text style={styles.stepsHeader}>Indicaciones paso a paso</Text>
+      <ScrollView
+        style={styles.stepsList}
+        contentContainerStyle={styles.stepsContent}
+      >
+        {route.segments.map((segment, index) => (
+          <View key={segment.id} style={styles.stepItem}>
+            <View style={styles.stepBullet}>
+              <Text style={styles.bulletNumber}>{index + 1}</Text>
+            </View>
+            <View style={styles.stepDetails}>
+              <Text style={styles.stepInstruction}>{segment.instruction}</Text>
+              <View style={styles.stepMetaRow}>
+                <Text style={styles.stepDistance}>
+                  {formatDistance(segment.distanceMeters)}
+                </Text>
+                {segment.hasRamp && (
+                  <View style={styles.badgeRamp}>
+                    <Text style={styles.badgeTextGreen}>Rampa adaptada</Text>
+                  </View>
+                )}
+                {segment.hasStairs && (
+                  <View style={styles.badgeStairs}>
+                    <Text style={styles.badgeTextRed}>Escaleras</Text>
+                  </View>
+                )}
+              </View>
+            </View>
+          </View>
+        ))}
+      </ScrollView>
+    </View>
+  );
+}
+
+export function RouteSheet({ route, onClose }: Props) {
+  const multimodalAlternatives = useMemo(() => {
+    if (!route) return [];
+    return calculateMultimodalAlternatives(
+      route.origin,
+      route.destination,
+      route,
+      { accessibleOnly: route.accessible },
+    );
+  }, [route]);
+
+  if (!route) {
+    return null;
+  }
+
+  return (
+    <Modal transparent visible animationType="slide" onRequestClose={onClose}>
       <View style={styles.overlay}>
         <SafeAreaView edges={["bottom"]} style={styles.sheet}>
-          {/* Cabecera */}
-          <View style={styles.header}>
-            <View>
-              <Text accessibilityRole="header" style={styles.title}>
-                Itinerario peatonal
-              </Text>
-              <Text style={styles.subtitle}>
-                Moncloa · Campus Complutense
-              </Text>
-            </View>
-            <TouchableOpacity
-              accessibilityRole="button"
-              accessibilityLabel="Cerrar ruta"
-              style={styles.closeBtn}
-              onPress={onClose}
-            >
-              <Text style={styles.closeBtnText}>Cerrar ruta</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Tarjetas de Métricas */}
-          <View style={styles.metricsRow}>
-            <View style={styles.metricCard}>
-              <Text style={styles.metricValue}>{durationStr}</Text>
-              <Text style={styles.metricLabel}>Tiempo a pie</Text>
-            </View>
-
-            <View style={styles.metricCard}>
-              <Text style={styles.metricValue}>{distanceStr}</Text>
-              <Text style={styles.metricLabel}>Distancia total</Text>
-            </View>
-
-            <View
-              style={[
-                styles.metricCard,
-                route.accessible ? styles.pmrCardGreen : styles.pmrCardGray,
-              ]}
-            >
-              <Text
-                style={[
-                  styles.metricValueSmall,
-                  route.accessible ? styles.pmrTextGreen : styles.pmrTextGray,
-                ]}
-              >
-                {route.accessible ? "Ruta accesible PMR" : "Ruta con escaleras"}
-              </Text>
-              <Text style={styles.metricLabel}>
-                {route.accessible ? "Sin barreras" : "Con desniveles"}
-              </Text>
-            </View>
-          </View>
-
-          {/* Lista de Pasos */}
-          <Text style={styles.stepsHeader}>Indicaciones paso a paso</Text>
-          <ScrollView style={styles.stepsList} contentContainerStyle={styles.stepsContent}>
-            {route.segments.map((segment, index) => (
-              <View key={segment.id} style={styles.stepItem}>
-                <View style={styles.stepBullet}>
-                  <Text style={styles.bulletNumber}>{index + 1}</Text>
-                </View>
-                <View style={styles.stepDetails}>
-                  <Text style={styles.stepInstruction}>
-                    {segment.instruction}
-                  </Text>
-                  <View style={styles.stepMetaRow}>
-                    <Text style={styles.stepDistance}>
-                      {formatDistance(segment.distanceMeters)}
-                    </Text>
-                    {segment.hasRamp && (
-                      <View style={styles.badgeRamp}>
-                        <Text style={styles.badgeTextGreen}>Rampa adaptada</Text>
-                      </View>
-                    )}
-                    {segment.hasStairs && (
-                      <View style={styles.badgeStairs}>
-                        <Text style={styles.badgeTextRed}>Escaleras</Text>
-                      </View>
-                    )}
-                  </View>
-                </View>
+          <RouteHeader onClose={onClose} />
+          <RouteMetricsRow route={route} />
+          <ScrollView
+            style={styles.scrollBody}
+            contentContainerStyle={styles.scrollBodyContent}
+          >
+            {multimodalAlternatives.length > 0 && (
+              <View style={styles.multimodalWrapper}>
+                <MultimodalComparisonCard
+                  alternatives={multimodalAlternatives}
+                />
               </View>
-            ))}
+            )}
+            <RouteStepList route={route} />
           </ScrollView>
         </SafeAreaView>
       </View>
@@ -134,7 +165,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    maxHeight: "75%",
+    maxHeight: "85%",
     paddingHorizontal: 16,
     paddingTop: 16,
     shadowColor: "#000",
@@ -176,6 +207,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 8,
     marginTop: 12,
+    marginBottom: 8,
   },
   metricCard: {
     flex: 1,
@@ -215,15 +247,27 @@ const styles = StyleSheet.create({
   pmrTextGray: {
     color: "#64748b",
   },
+  scrollBody: {
+    maxHeight: 460,
+  },
+  scrollBodyContent: {
+    paddingBottom: 20,
+    gap: 12,
+  },
+  multimodalWrapper: {
+    marginTop: 6,
+  },
+  stepsContainer: {
+    gap: 6,
+  },
   stepsHeader: {
     fontSize: 14,
     fontWeight: "700",
     color: "#334155",
-    marginTop: 16,
-    marginBottom: 8,
+    marginTop: 8,
   },
   stepsList: {
-    maxHeight: 260,
+    maxHeight: 240,
   },
   stepsContent: {
     paddingBottom: 16,

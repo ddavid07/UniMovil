@@ -15,6 +15,8 @@ module.exports = {
     "src/features/campus/map/use*.ts",
     "src/features/routing/**/*.tsx",
     "src/features/routing/use*.ts",
+    "src/features/transit/**/*.tsx",
+    "src/features/transit/use*.ts",
   ],
   coverageDirectory: "../../coverage/mobile",
   coverageReporters: ["text", "json-summary", "lcov"],

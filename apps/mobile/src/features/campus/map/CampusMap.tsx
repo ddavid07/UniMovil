@@ -1,39 +1,54 @@
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Camera, Map } from "@maplibre/maplibre-react-native";
-import type { Place, RouteResponse } from "@unimovil/contracts";
+import type {
+  Place,
+  RouteResponse,
+  TransitLine,
+  TransitStop,
+} from "@unimovil/contracts";
 import { type MapMode } from "./map-style";
 import { useMapController } from "./useMapController";
 import { MapStatus } from "./MapStatus";
 import { PlaceLayers } from "./PlaceLayers";
 import { RouteLayer } from "./RouteLayer";
+import { TransitLineLayer } from "../../transit/map/TransitLineLayer";
+import { TransitStopLayer } from "../../transit/map/TransitStopLayer";
+import {
+  CAMPUS_TRANSIT_LINES,
+  CAMPUS_TRANSIT_STOPS,
+} from "../../transit/data/transit-data";
+
 interface Props {
   places: readonly Place[];
   allPlaces: readonly Place[];
   selected: Place | null;
   onSelect: (id: string) => void;
   mode: MapMode;
-  apiKey?: string;
-  route?: RouteResponse | null;
+  apiKey?: string | undefined;
+  route?: RouteResponse | null | undefined;
+  showTransit?: boolean | undefined;
+  transitLines?: readonly TransitLine[] | undefined;
+  transitStops?: readonly TransitStop[] | undefined;
+  selectedTransitStop?: TransitStop | null | undefined;
+  onSelectTransitStop?: ((stop: TransitStop) => void) | undefined;
 }
-export function CampusMap({
-  places,
-  allPlaces,
-  selected,
-  onSelect,
-  mode,
-  apiKey,
-  route,
-}: Props) {
-  const controller = useMapController(allPlaces, selected, mode, apiKey);
-  const [viewport, setViewport] = useState("inicial");
-  if (!controller.resourcesReady)
+
+function MapStateMessage({
+  resourcesReady,
+  hasStyle,
+}: {
+  resourcesReady: boolean;
+  hasStyle: boolean;
+}) {
+  if (!resourcesReady) {
     return (
       <View style={styles.message}>
         <Text>Cargando mapa…</Text>
       </View>
     );
-  if (!controller.style)
+  }
+  if (!hasStyle) {
     return (
       <View style={styles.message}>
         <Text>
@@ -42,6 +57,82 @@ export function CampusMap({
         </Text>
       </View>
     );
+  }
+  return null;
+}
+
+function MapLayers({
+  places,
+  selected,
+  onSelect,
+  showLabels,
+  showTransit,
+  transitLines,
+  transitStops,
+  selectedTransitStop,
+  onSelectTransitStop,
+  route,
+}: {
+  places: readonly Place[];
+  selected: Place | null;
+  onSelect: (id: string) => void;
+  showLabels: boolean;
+  showTransit: boolean;
+  transitLines?: readonly TransitLine[] | undefined;
+  transitStops?: readonly TransitStop[] | undefined;
+  selectedTransitStop?: TransitStop | null | undefined;
+  onSelectTransitStop?: ((stop: TransitStop) => void) | undefined;
+  route?: RouteResponse | null | undefined;
+}) {
+  return (
+    <>
+      <PlaceLayers
+        showLabels={showLabels}
+        places={places}
+        selected={selected}
+        onSelect={onSelect}
+      />
+      <TransitLineLayer
+        lines={transitLines ?? CAMPUS_TRANSIT_LINES}
+        visible={showTransit}
+      />
+      <TransitStopLayer
+        stops={transitStops ?? CAMPUS_TRANSIT_STOPS}
+        selectedStop={selectedTransitStop}
+        onSelectStop={onSelectTransitStop ?? (() => {})}
+        visible={showTransit}
+      />
+      <RouteLayer route={route ?? null} />
+    </>
+  );
+}
+
+export function CampusMap({
+  places,
+  allPlaces,
+  selected,
+  onSelect,
+  mode,
+  apiKey,
+  route,
+  showTransit = false,
+  transitLines,
+  transitStops,
+  selectedTransitStop,
+  onSelectTransitStop,
+}: Props) {
+  const controller = useMapController(allPlaces, selected, mode, apiKey);
+  const [viewport, setViewport] = useState("inicial");
+
+  if (!controller.resourcesReady || !controller.style) {
+    return (
+      <MapStateMessage
+        resourcesReady={controller.resourcesReady}
+        hasStyle={Boolean(controller.style)}
+      />
+    );
+  }
+
   return (
     <View style={styles.container}>
       <Map
@@ -73,13 +164,18 @@ export function CampusMap({
           minZoom={10}
           maxZoom={19}
         />
-        <PlaceLayers
-          showLabels={mode === "live"}
+        <MapLayers
           places={places}
           selected={selected}
           onSelect={onSelect}
+          showLabels={mode === "live"}
+          showTransit={showTransit}
+          transitLines={transitLines}
+          transitStops={transitStops}
+          selectedTransitStop={selectedTransitStop}
+          onSelectTransitStop={onSelectTransitStop}
+          route={route}
         />
-        <RouteLayer route={route ?? null} />
       </Map>
       <MapStatus
         state={controller.state}
@@ -93,6 +189,7 @@ export function CampusMap({
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: { flex: 1, minHeight: 180 },
   map: { flex: 1 },

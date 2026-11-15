@@ -17,27 +17,48 @@ import { CampusMap } from "./map/CampusMap";
 import { mapMode } from "./map/map-style";
 import { useCampus } from "./useCampus";
 import type { PlacesRepository } from "./data/repository";
-import type { Place } from "@unimovil/contracts";
+import type { Place, TransitStop } from "@unimovil/contracts";
 import { useRouting } from "../routing/useRouting";
 import { RouteSelector } from "../routing/components/RouteSelector";
 import { RouteSheet } from "../routing/components/RouteSheet";
 import type { RoutingRepository } from "../routing/data/repository";
+import { TransitStopSheet } from "../transit/components/TransitStopSheet";
 
 interface Props {
   repository?: PlacesRepository;
   routingRepository?: RoutingRepository;
 }
 
+function createStopPlace(stop: TransitStop): Place {
+  return {
+    id: stop.id,
+    name: stop.name,
+    category: "transport",
+    coordinates: stop.coordinates,
+    aliases: [stop.code],
+    accessibility: stop.wheelchairAccessible ? "yes" : "unknown",
+    source: {
+      url: "https://www.emtmadrid.es",
+      checkedAt: "2026-11-15",
+      license: "ODbL-1.0",
+    },
+  };
+}
+
 function CampusActions({
   count,
   isRoutingOpen,
+  showTransit,
   onOpenList,
   onToggleRouting,
+  onToggleTransit,
 }: {
   count: number;
   isRoutingOpen: boolean;
+  showTransit: boolean;
   onOpenList: () => void;
   onToggleRouting: () => void;
+  onToggleTransit: () => void;
 }) {
   return (
     <View style={styles.actionRow}>
@@ -53,6 +74,13 @@ function CampusActions({
         onPress={() => {
           Keyboard.dismiss();
           onToggleRouting();
+        }}
+      />
+      <Action
+        label={showTransit ? "Ocultar EMT" : "Ver EMT"}
+        onPress={() => {
+          Keyboard.dismiss();
+          onToggleTransit();
         }}
       />
     </View>
@@ -113,18 +141,64 @@ function CampusCatalogStatus({
   return null;
 }
 
+function CampusMapExplorer({
+  campus,
+  routing,
+  select,
+  showTransit,
+  selectedTransitStop,
+  onSelectTransitStop,
+}: {
+  campus: ReturnType<typeof useCampus>;
+  routing: ReturnType<typeof useRouting>;
+  select: (id: string) => void;
+  showTransit: boolean;
+  selectedTransitStop: TransitStop | null;
+  onSelectTransitStop: (stop: TransitStop) => void;
+}) {
+  return (
+    <>
+      {campus.visible.length === 0 && (
+        <Text accessibilityLiveRegion="polite">
+          No hay coincidencias. Cambia la búsqueda o restablece los filtros.
+        </Text>
+      )}
+      <CampusMap
+        allPlaces={campus.places}
+        places={campus.visible}
+        selected={campus.selected}
+        onSelect={select}
+        route={routing.route}
+        showTransit={showTransit}
+        selectedTransitStop={selectedTransitStop}
+        onSelectTransitStop={onSelectTransitStop}
+        mode={mapMode(process.env.EXPO_PUBLIC_MAP_MODE)}
+        {...(process.env.EXPO_PUBLIC_MAPTILER_KEY
+          ? { apiKey: process.env.EXPO_PUBLIC_MAPTILER_KEY }
+          : {})}
+      />
+    </>
+  );
+}
+
 function CampusModals({
   campus,
   routing,
   listOpen,
+  selectedTransitStop,
   onCloseList,
   onSelect,
+  onCloseTransitStop,
+  onPlanRouteToStop,
 }: {
   campus: ReturnType<typeof useCampus>;
   routing: ReturnType<typeof useRouting>;
   listOpen: boolean;
+  selectedTransitStop: TransitStop | null;
   onCloseList: () => void;
   onSelect: (id: string) => void;
+  onCloseTransitStop: () => void;
+  onPlanRouteToStop: (stop: TransitStop) => void;
 }) {
   return (
     <>
@@ -136,6 +210,11 @@ function CampusModals({
         onPlanRoute={(place) => routing.openRouting(place)}
       />
       <RouteSheet route={routing.route} onClose={routing.clearRoute} />
+      <TransitStopSheet
+        stop={selectedTransitStop}
+        onClose={onCloseTransitStop}
+        onPlanRouteToStop={onPlanRouteToStop}
+      />
     </>
   );
 }
@@ -144,11 +223,16 @@ export function CampusScreen({ repository, routingRepository }: Props) {
   const campus = useCampus(repository);
   const routing = useRouting(routingRepository);
   const [listOpen, setListOpen] = useState(false);
+  const [showTransit, setShowTransit] = useState(true);
+  const [selectedTransitStop, setSelectedTransitStop] =
+    useState<TransitStop | null>(null);
+
   function select(id: string) {
     Keyboard.dismiss();
     setListOpen(false);
     campus.select(id);
   }
+
   return (
     <SafeAreaView style={styles.safe}>
       <KeyboardAvoidingView
@@ -177,6 +261,7 @@ export function CampusScreen({ repository, routingRepository }: Props) {
             <CampusActions
               count={campus.visible.length}
               isRoutingOpen={routing.isRoutingOpen}
+              showTransit={showTransit}
               onOpenList={() => setListOpen(true)}
               onToggleRouting={() => {
                 if (routing.isRoutingOpen) {
@@ -185,24 +270,16 @@ export function CampusScreen({ repository, routingRepository }: Props) {
                   routing.openRouting();
                 }
               }}
+              onToggleTransit={() => setShowTransit((prev) => !prev)}
             />
             <CampusRoutePanel places={campus.places} routing={routing} />
-            {campus.visible.length === 0 && (
-              <Text accessibilityLiveRegion="polite">
-                No hay coincidencias. Cambia la búsqueda o restablece los
-                filtros.
-              </Text>
-            )}
-            <CampusMap
-              allPlaces={campus.places}
-              places={campus.visible}
-              selected={campus.selected}
-              onSelect={select}
-              route={routing.route}
-              mode={mapMode(process.env.EXPO_PUBLIC_MAP_MODE)}
-              {...(process.env.EXPO_PUBLIC_MAPTILER_KEY
-                ? { apiKey: process.env.EXPO_PUBLIC_MAPTILER_KEY }
-                : {})}
+            <CampusMapExplorer
+              campus={campus}
+              routing={routing}
+              select={select}
+              showTransit={showTransit}
+              selectedTransitStop={selectedTransitStop}
+              onSelectTransitStop={(stop) => setSelectedTransitStop(stop)}
             />
           </>
         )}
@@ -213,13 +290,17 @@ export function CampusScreen({ repository, routingRepository }: Props) {
           campus={campus}
           routing={routing}
           listOpen={listOpen}
+          selectedTransitStop={selectedTransitStop}
           onCloseList={() => setListOpen(false)}
           onSelect={select}
+          onCloseTransitStop={() => setSelectedTransitStop(null)}
+          onPlanRouteToStop={(stop) => routing.openRouting(createStopPlace(stop))}
         />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
+
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#f5f6f8" },
   screen: { flex: 1, padding: 12, gap: 8 },
