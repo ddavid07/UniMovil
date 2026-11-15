@@ -55,6 +55,7 @@ export function RouteSelector({
         <TouchableOpacity
           accessibilityRole="button"
           accessibilityLabel="Cerrar selector de ruta"
+          accessibilityHint="Cierra el panel de planificación de rutas"
           onPress={onClose}
           style={styles.closeBtn}
         >
@@ -87,6 +88,7 @@ export function RouteSelector({
         <TouchableOpacity
           accessibilityRole="button"
           accessibilityLabel="Intercambiar origen y destino"
+          accessibilityHint="Invierte los puntos de partida y llegada seleccionados"
           style={styles.swapBtn}
           onPress={onSwap}
         >
@@ -146,6 +148,7 @@ export function RouteSelector({
       <TouchableOpacity
         accessibilityRole="button"
         accessibilityLabel="Calcular ruta"
+        accessibilityHint="Calcula el itinerario peatonal óptimo entre el origen y destino"
         accessibilityState={{ disabled: loading }}
         disabled={loading}
         style={[styles.calcBtn, loading && styles.calcBtnDisabled]}
