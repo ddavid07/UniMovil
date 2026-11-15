@@ -156,4 +156,35 @@ describe("recorrido móvil del campus", () => {
       await screen.findByRole("button", { name: "Ver lugares (24)" }),
     ).toBeTruthy();
   });
+  it("permite abrir el planificador de rutas, seleccionar destino desde una ficha y calcular ruta", async () => {
+    await render(<CampusScreen />);
+    await screen.findByRole("button", { name: "Ver lugares (24)" });
+
+    // 1. Abrir selector de ruta mediante botón en pantalla
+    await fireEvent.press(
+      screen.getByRole("button", { name: "Planificar ruta" }),
+    );
+    expect(screen.getByText("Planificar ruta peatonal")).toBeTruthy();
+
+    // 2. Cerrar selector de ruta
+    await fireEvent.press(
+      screen.getByRole("button", { name: "Cerrar ruta" }),
+    );
+    expect(screen.queryByText("Planificar ruta peatonal")).toBeNull();
+
+    // 3. Abrir un lugar desde la lista y pulsar "Cómo llegar a este lugar"
+    await fireEvent.press(
+      screen.getByRole("button", { name: "Ver lugares (24)" }),
+    );
+    await fireEvent.press(
+      screen.getByRole("button", { name: /^Aparcamiento Moncloa/ }),
+    );
+    await fireEvent.press(
+      screen.getByRole("button", { name: "Cómo llegar a este lugar" }),
+    );
+
+    // 4. Se abre el selector con el lugar preseleccionado como destino
+    expect(screen.getByText("Planificar ruta peatonal")).toBeTruthy();
+    expect(screen.getByText("Aparcamiento Moncloa")).toBeTruthy();
+  });
 });
