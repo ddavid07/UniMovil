@@ -187,4 +187,16 @@ describe("recorrido móvil del campus", () => {
     expect(screen.getByText("Planificar ruta peatonal")).toBeTruthy();
     expect(screen.getByText("Aparcamiento Moncloa")).toBeTruthy();
   });
+
+  it("permite conmutar la visibilidad de la capa de transporte EMT", async () => {
+    await render(<CampusScreen />);
+    const toggleBtn = await screen.findByRole("button", { name: "Ocultar EMT" });
+    expect(toggleBtn).toBeTruthy();
+
+    await fireEvent.press(toggleBtn);
+    expect(screen.getByRole("button", { name: "Ver EMT" })).toBeTruthy();
+
+    await fireEvent.press(screen.getByRole("button", { name: "Ver EMT" }));
+    expect(screen.getByRole("button", { name: "Ocultar EMT" })).toBeTruthy();
+  });
 });

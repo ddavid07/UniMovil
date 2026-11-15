@@ -1,0 +1,129 @@
+import type { TransitLine, TransitStop } from "@unimovil/contracts";
+
+export const CAMPUS_TRANSIT_STOPS: readonly TransitStop[] = [
+  {
+    id: "emt-stop-1688",
+    name: "Metro Ciudad Universitaria",
+    code: "1688",
+    coordinates: { latitude: 40.44328, longitude: -3.72725 },
+    lines: ["G", "F", "82", "132", "U"],
+    wheelchairAccessible: true,
+    nextArrivals: [
+      { line: "G", destination: "Paraninfo", estimateMinutes: 3 },
+      { line: "F", destination: "Filosofía B", estimateMinutes: 6 },
+    ],
+  },
+  {
+    id: "emt-stop-1690",
+    name: "Avenida Complutense - Ciencias de la Información",
+    code: "1690",
+    coordinates: { latitude: 40.44538, longitude: -3.72763 },
+    lines: ["G", "F", "82", "132"],
+    wheelchairAccessible: true,
+    nextArrivals: [
+      { line: "G", destination: "Paraninfo", estimateMinutes: 4 },
+      { line: "F", destination: "Filosofía B", estimateMinutes: 8 },
+    ],
+  },
+  {
+    id: "emt-stop-1692",
+    name: "Avenida Complutense - Jardín Botánico",
+    code: "1692",
+    coordinates: { latitude: 40.44767, longitude: -3.72802 },
+    lines: ["G", "F", "82", "132"],
+    wheelchairAccessible: true,
+    nextArrivals: [
+      { line: "G", destination: "Paraninfo", estimateMinutes: 2 },
+      { line: "F", destination: "Filosofía B", estimateMinutes: 5 },
+    ],
+  },
+  {
+    id: "emt-stop-1694",
+    name: "Paraninfo - Filosofía",
+    code: "1694",
+    coordinates: { latitude: 40.4502, longitude: -3.731 },
+    lines: ["G", "F", "82"],
+    wheelchairAccessible: true,
+    nextArrivals: [
+      { line: "G", destination: "Moncloa", estimateMinutes: 5 },
+      { line: "F", destination: "Cuatro Caminos", estimateMinutes: 9 },
+    ],
+  },
+  {
+    id: "emt-stop-1696",
+    name: "Paraninfo - Derecho",
+    code: "1696",
+    coordinates: { latitude: 40.4509, longitude: -3.7318 },
+    lines: ["G", "F"],
+    wheelchairAccessible: true,
+    nextArrivals: [
+      { line: "G", destination: "Moncloa", estimateMinutes: 6 },
+    ],
+  },
+  {
+    id: "emt-stop-1698",
+    name: "Paraninfo - Informática y Telecomunicaciones",
+    code: "1698",
+    coordinates: { latitude: 40.452, longitude: -3.7335 },
+    lines: ["G", "F"],
+    wheelchairAccessible: true,
+    nextArrivals: [
+      { line: "G", destination: "Moncloa", estimateMinutes: 1 },
+      { line: "F", destination: "Cuatro Caminos", estimateMinutes: 7 },
+    ],
+  },
+  {
+    id: "emt-stop-3276",
+    name: "Gregorio del Amo - Farmacia",
+    code: "3276",
+    coordinates: { latitude: 40.44572, longitude: -3.72184 },
+    lines: ["F", "132"],
+    wheelchairAccessible: false,
+    nextArrivals: [
+      { line: "F", destination: "Paraninfo", estimateMinutes: 4 },
+    ],
+  },
+];
+
+export const CAMPUS_TRANSIT_LINES: readonly TransitLine[] = [
+  {
+    id: "emt-line-G",
+    name: "Línea G",
+    code: "G",
+    operator: "EMT Madrid",
+    color: "#005aa9",
+    textColor: "#ffffff",
+    origin: "Moncloa",
+    destination: "Ciudad Universitaria (Paraninfo)",
+    frequency: "Cada 4-7 min en días lectivos",
+    stops: CAMPUS_TRANSIT_STOPS.filter((stop) => stop.lines.includes("G")),
+    polyline: [
+      { latitude: 40.44328, longitude: -3.72725 },
+      { latitude: 40.44538, longitude: -3.72763 },
+      { latitude: 40.44767, longitude: -3.72802 },
+      { latitude: 40.4502, longitude: -3.731 },
+      { latitude: 40.4509, longitude: -3.7318 },
+      { latitude: 40.452, longitude: -3.7335 },
+    ],
+  },
+  {
+    id: "emt-line-F",
+    name: "Línea F",
+    code: "F",
+    operator: "EMT Madrid",
+    color: "#d97706",
+    textColor: "#ffffff",
+    origin: "Cuatro Caminos",
+    destination: "Ciudad Universitaria (Paraninfo)",
+    frequency: "Cada 6-9 min en días lectivos",
+    stops: CAMPUS_TRANSIT_STOPS.filter((stop) => stop.lines.includes("F")),
+    polyline: [
+      { latitude: 40.44572, longitude: -3.72184 },
+      { latitude: 40.44328, longitude: -3.72725 },
+      { latitude: 40.44538, longitude: -3.72763 },
+      { latitude: 40.44767, longitude: -3.72802 },
+      { latitude: 40.4502, longitude: -3.731 },
+      { latitude: 40.452, longitude: -3.7335 },
+    ],
+  },
+];
