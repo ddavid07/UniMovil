@@ -10,6 +10,7 @@ export default defineConfig({
       "apps/mobile/src/features/campus/domain/*.spec.ts",
       "apps/mobile/src/features/campus/data/*.spec.ts",
       "apps/mobile/src/features/campus/map/*.spec.ts",
+      "apps/mobile/src/features/routing/__tests__/*.spec.ts",
     ],
     passWithNoTests: false,
     coverage: {
@@ -18,13 +19,15 @@ export default defineConfig({
       reporter: ["text", "json-summary", "lcov"],
       include: [
         "apps/mobile/app.config.ts",
-        "apps/api/src/**/*.spec.ts",
-        "apps/admin/src/**/*.{test,spec}.{ts,tsx}",
         "packages/contracts/src/parse-places.ts",
+        "packages/contracts/src/routes.ts",
         "apps/mobile/src/features/campus/domain/places.ts",
         "apps/mobile/src/features/campus/data/repository.ts",
         "apps/mobile/src/features/campus/map/geojson.ts",
         "apps/mobile/src/features/campus/map/map-style.ts",
+        "apps/api/src/routes/routes.service.ts",
+        "apps/mobile/src/features/routing/domain/routing.ts",
+        "apps/mobile/src/features/routing/domain/routing-errors.ts",
       ],
       thresholds: {
         lines: 90,
@@ -33,6 +36,10 @@ export default defineConfig({
         branches: 85,
         "packages/contracts/src/parse-places.ts": { branches: 100 },
         "apps/mobile/src/features/campus/domain/places.ts": { branches: 100 },
+        "apps/mobile/src/features/routing/domain/routing.ts": { branches: 85 },
+        "apps/mobile/src/features/routing/domain/routing-errors.ts": {
+          branches: 85,
+        },
       },
     },
   },
