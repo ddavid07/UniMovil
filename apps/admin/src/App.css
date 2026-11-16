@@ -376,7 +376,8 @@
 }
 
 .table-wrapper-scrollable {
-  max-height: 480px;
+  min-height: 520px;
+  max-height: 700px;
   overflow-y: auto;
   position: relative;
   scrollbar-width: thin;
