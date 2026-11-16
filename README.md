@@ -60,14 +60,14 @@ El stack tecnológico está formado por:
 - API REST documentada con OpenAPI.
 - npm Workspaces para el monorepo.
 - ESLint, Prettier, TypeScript estricto y pruebas automatizadas.
-- GitHub Actions, Dependabot, auditoría npm, verificación de firmas, OSV-Scanner, Gitleaks y reglas de seguridad ESLint.
+- GitHub Actions, Dependabot, verificación de firmas npm, Gitleaks y reglas de seguridad ESLint.
 
 La aplicación móvil se comunica con el backend mediante HTTPS. La API aplica autenticación, autorización, validación y reglas de negocio; la aplicación no accede directamente a la base de datos.
 
 ## Mapas y rutas
 
 - MapLibre React Native renderiza los mapas.
-- MapTiler Cloud Free proporciona los mapas base iniciales.
+- OpenStreetMap proporciona las teselas raster iniciales sin clave de API.
 - openrouteservice calcula las rutas.
 - OpenStreetMap aporta datos geográficos respetando su atribución y políticas de uso.
 - Los edificios, servicios, paradas y recursos específicos del campus se mantienen en la base de datos de UniMovil.
@@ -96,14 +96,18 @@ Consulta [Contribuir a UniMovil](CONTRIBUTING.md) para instalar el monorepo y ej
 
 ## Desarrollo
 
-Instala las dependencias y arranca cada aplicación en una terminal independiente:
+La aplicación móvil incorpora la exploración del campus mediante un catálogo local de solo lectura. MapLibre necesita un build nativo y conexión para mostrar las teselas de OpenStreetMap; consulta CONTRIBUTING para atribución y política de uso. La lista del catálogo continúa disponible sin conexión. La API de lugares y la administración del catálogo pertenecen a incrementos posteriores.
+
+Instala las dependencias, configura el cliente de mapas y crea el build de desarrollo:
 
 ```sh
 npm ci
-npm run dev:mobile
-npm run dev:api
-npm run dev:admin
+npm run build:packages
+npm run android --workspace=@unimovil/mobile
+# iOS requiere macOS y Xcode: npm run ios --workspace=@unimovil/mobile
 ```
+
+`npm run dev:mobile` arranca Metro después de instalar el build nativo. API y panel se pueden ejecutar en terminales independientes con `npm run dev:api` y `npm run dev:admin`.
 
 Consulta [Contribuir a UniMovil](CONTRIBUTING.md) para los requisitos de Node.js/npm, configuración local y comprobaciones. El equipo trabaja con ramas cortas, pull requests, revisiones y CI. La rama `main` está protegida y requiere revisión y comprobaciones automatizadas. Los cambios deben mantener la documentación y seguir Conventional Commits.
 
