@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { AuditEntry } from "@unimovil/contracts";
 import {
   filterAuditEntries,
   filterIncidents,
@@ -7,7 +8,6 @@ import {
   updatePlaceStatus,
 } from "./admin-service.ts";
 import {
-  INITIAL_AUDIT_LOGS,
   INITIAL_INCIDENTS,
   INITIAL_MANAGED_PLACES,
 } from "../data/initial-data.ts";
@@ -211,19 +211,50 @@ describe("Admin Service Domain Logic (UCM Tema 3 - Black-Box & White-Box)", () =
   });
 
   describe("filterAuditEntries (HU-097)", () => {
+    const TEST_AUDIT_LOGS: readonly AuditEntry[] = [
+      {
+        id: "test-001",
+        resource: "place",
+        resourceId: "osm-way-1",
+        action: "STATUS_CHANGE",
+        author: "@charliefox06",
+        timestamp: "2026-11-16T10:00:00.000Z",
+        summary: "Cambio lugar",
+      },
+      {
+        id: "test-002",
+        resource: "incident",
+        resourceId: "inc-1",
+        action: "STATUS_CHANGE",
+        author: "@charliefox06",
+        timestamp: "2026-11-16T11:00:00.000Z",
+        summary: "Cambio incidencia",
+      },
+      {
+        id: "test-003",
+        resource: "place",
+        resourceId: "osm-way-2",
+        action: "STATUS_CHANGE",
+        author: "@admin.campus",
+        timestamp: "2026-11-16T12:00:00.000Z",
+        summary: "Cambio accesibilidad",
+      },
+    ];
+
     it("filters audit entries by resource type", () => {
-      const result = filterAuditEntries(INITIAL_AUDIT_LOGS, "place");
-      expect(result.length).toBe(1);
-      expect(result[0]?.resource).toBe("place");
+      const result = filterAuditEntries(TEST_AUDIT_LOGS, "place");
+      expect(result.length).toBe(2);
+      expect(result.every((r) => r.resource === "place")).toBe(true);
     });
 
     it("filters audit entries by author query", () => {
-      const result = filterAuditEntries(INITIAL_AUDIT_LOGS, "all", "charlie");
-      expect(result.length).toBe(INITIAL_AUDIT_LOGS.length);
+      const result = filterAuditEntries(TEST_AUDIT_LOGS, "all", "charlie");
+      expect(result.length).toBe(2);
+      expect(result.every((r) => r.author.includes("charlie"))).toBe(true);
     });
 
     it("returns empty when author does not match", () => {
-      const result = filterAuditEntries(INITIAL_AUDIT_LOGS, "all", "unknown_user");
+      const result = filterAuditEntries(TEST_AUDIT_LOGS, "all", "unknown_user");
       expect(result).toEqual([]);
     });
   });
