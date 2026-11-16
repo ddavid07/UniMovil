@@ -14,7 +14,9 @@ interface IncidentsViewProps {
   readonly onUpdateStatus: (
     incidentId: string,
     newStatus: IncidentStatus,
-    resolutionNote?: string | undefined
+    resolutionNote?: string | undefined,
+    newPriority?: IncidentPriority | undefined,
+    assignedTo?: string | undefined
   ) => void;
 }
 
@@ -26,6 +28,8 @@ export const IncidentsView: FC<IncidentsViewProps> = ({ incidents, onUpdateStatu
 
   const [editingIncident, setEditingIncident] = useState<Incident | null>(null);
   const [selectedNextStatus, setSelectedNextStatus] = useState<IncidentStatus>("en_proceso");
+  const [selectedPriority, setSelectedPriority] = useState<IncidentPriority>("media");
+  const [assignedTo, setAssignedTo] = useState("");
   const [resolutionNote, setResolutionNote] = useState("");
   const [transitionError, setTransitionError] = useState<string | null>(null);
 
@@ -43,6 +47,8 @@ export const IncidentsView: FC<IncidentsViewProps> = ({ incidents, onUpdateStatu
   const handleOpenEdit = (incident: Incident) => {
     setEditingIncident(incident);
     setTransitionError(null);
+    setSelectedPriority(incident.priority);
+    setAssignedTo(incident.assignedTo ?? "");
     setResolutionNote(incident.resolutionNote ?? "");
 
     // Choose first valid next transition
@@ -55,6 +61,7 @@ export const IncidentsView: FC<IncidentsViewProps> = ({ incidents, onUpdateStatu
   const handleCloseEdit = () => {
     setEditingIncident(null);
     setResolutionNote("");
+    setAssignedTo("");
     setTransitionError(null);
   };
 
@@ -66,7 +73,13 @@ export const IncidentsView: FC<IncidentsViewProps> = ({ incidents, onUpdateStatu
       return;
     }
 
-    onUpdateStatus(editingIncident.id, selectedNextStatus, resolutionNote.trim() || undefined);
+    onUpdateStatus(
+      editingIncident.id,
+      selectedNextStatus,
+      resolutionNote.trim() || undefined,
+      selectedPriority,
+      assignedTo.trim() || undefined
+    );
     handleCloseEdit();
   };
 
@@ -193,6 +206,11 @@ export const IncidentsView: FC<IncidentsViewProps> = ({ incidents, onUpdateStatu
                       <span className="incident-id">{inc.id}</span>
                       <strong className="incident-title">{inc.title}</strong>
                       <span className="incident-desc">{inc.description}</span>
+                      {inc.assignedTo && (
+                        <div className="incident-assigned-badge">
+                          <span>🛠️ Asignado:</span> <strong>{inc.assignedTo}</strong>
+                        </div>
+                      )}
                       {inc.resolutionNote && (
                         <div className="resolution-note-badge">
                           <strong>Nota:</strong> {inc.resolutionNote}
@@ -283,6 +301,36 @@ export const IncidentsView: FC<IncidentsViewProps> = ({ incidents, onUpdateStatu
                   );
                 })}
               </select>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="inc-modal-priority-select" className="form-label">
+                Prioridad Operativa:
+              </label>
+              <select
+                id="inc-modal-priority-select"
+                className="form-control"
+                value={selectedPriority}
+                onChange={(e) => setSelectedPriority(e.target.value as IncidentPriority)}
+              >
+                <option value="baja">Baja</option>
+                <option value="media">Media</option>
+                <option value="alta">Alta</option>
+                <option value="urgente">Urgente</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="inc-modal-assigned" className="form-label">
+                Responsable o Unidad Asignada:
+              </label>
+              <input
+                id="inc-modal-assigned"
+                className="form-control"
+                placeholder="Ej. Mantenimiento UCM, Conserjería, EMT Madrid..."
+                value={assignedTo}
+                onChange={(e) => setAssignedTo(e.target.value)}
+              />
             </div>
 
             <div className="form-group">

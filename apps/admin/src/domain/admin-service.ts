@@ -139,7 +139,9 @@ export function updateIncidentStatus(
   incidentId: string,
   newStatus: IncidentStatus,
   author: string,
-  resolutionNote?: string | undefined
+  resolutionNote?: string | undefined,
+  newPriority?: IncidentPriority | undefined,
+  assignedTo?: string | undefined
 ): { readonly updatedIncidents: readonly Incident[]; readonly auditEntry: AuditEntry } {
   const targetIndex = incidents.findIndex((inc) => inc.id === incidentId);
   const current = incidents.at(targetIndex);
@@ -151,9 +153,14 @@ export function updateIncidentStatus(
     throw new Error(`Invalid transition from "${current.status}" to "${newStatus}"`);
   }
 
+  const updatedPriority = newPriority ?? current.priority;
+  const updatedAssignedTo = assignedTo !== undefined ? (assignedTo.trim() || undefined) : current.assignedTo;
+
   const updated: Incident = {
     ...current,
     status: newStatus,
+    priority: updatedPriority,
+    assignedTo: updatedAssignedTo,
     updatedAt: new Date().toISOString(),
     resolutionNote: resolutionNote ? resolutionNote.trim() : current.resolutionNote,
   };
@@ -173,6 +180,9 @@ export function updateIncidentStatus(
     details: {
       previousStatus: current.status,
       newStatus,
+      previousPriority: current.priority,
+      newPriority: updatedPriority,
+      assignedTo: updatedAssignedTo,
       resolutionNote: resolutionNote?.trim(),
     },
   });

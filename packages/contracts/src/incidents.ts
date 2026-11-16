@@ -44,6 +44,7 @@ export interface Incident {
   readonly createdAt: string;
   readonly updatedAt: string;
   readonly resolutionNote?: string | undefined;
+  readonly assignedTo?: string | undefined;
 }
 
 const TRANSITIONS = new Map<IncidentStatus, readonly IncidentStatus[]>([
@@ -131,6 +132,10 @@ export function parseIncident(raw: unknown): Incident {
   const updatedAt = requireIsoDate(record.updatedAt, "updatedAt");
   const coordinates = parseCoordinates(record.coordinates);
   const resolutionNote = typeof record.resolutionNote === "string" ? record.resolutionNote.trim() : undefined;
+  const assignedTo =
+    typeof record.assignedTo === "string" && record.assignedTo.trim().length > 0
+      ? record.assignedTo.trim()
+      : undefined;
 
   return {
     id,
@@ -145,5 +150,6 @@ export function parseIncident(raw: unknown): Incident {
     createdAt,
     updatedAt,
     resolutionNote,
+    assignedTo,
   };
 }

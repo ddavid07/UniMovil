@@ -1,5 +1,5 @@
 import { useState, type FC } from "react";
-import type { AuditEntry, Incident, ManagedPlace, PlaceOperationalStatus, IncidentStatus } from "./types.ts";
+import type { AuditEntry, Incident, ManagedPlace, PlaceOperationalStatus, IncidentStatus, IncidentPriority } from "./types.ts";
 import {
   INITIAL_AUDIT_LOGS,
   INITIAL_INCIDENTS,
@@ -48,14 +48,18 @@ export const App: FC = () => {
   const handleUpdateIncidentStatus = (
     incidentId: string,
     newStatus: IncidentStatus,
-    resolutionNote?: string | undefined
+    resolutionNote?: string | undefined,
+    newPriority?: IncidentPriority | undefined,
+    assignedTo?: string | undefined
   ) => {
     const { updatedIncidents, auditEntry } = updateIncidentStatus(
       incidents,
       incidentId,
       newStatus,
       "@admin.campus",
-      resolutionNote
+      resolutionNote,
+      newPriority,
+      assignedTo
     );
     setIncidents(updatedIncidents);
     setAuditLogs([auditEntry, ...auditLogs]);

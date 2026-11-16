@@ -164,6 +164,20 @@ export const INITIAL_INCIDENTS: readonly Incident[] = [
     updatedAt: "2026-11-16T10:00:00.000Z",
     resolutionNote: "Luminaria LED sustituida por la unidad de mantenimiento eléctrico.",
   },
+  {
+    id: "inc-2026-005",
+    title: "Corte de carril bus en parada EMT 1688 (Línea G)",
+    description: "Obras de reasfaltado urgente frente a Metro Ciudad Universitaria. Desvío provisional señalizado hacia Paraninfo.",
+    category: "transporte",
+    priority: "alta",
+    status: "recibida",
+    locationName: "Parada EMT 1688 - Metro Ciudad Universitaria",
+    coordinates: { latitude: 40.44525, longitude: -3.72578 },
+    reportedBy: "estudiante.fdi@ucm.es",
+    createdAt: "2026-11-16T15:00:00.000Z",
+    updatedAt: "2026-11-16T15:00:00.000Z",
+    assignedTo: "EMT Madrid / Obras Campus",
+  },
 ];
 
 export const INITIAL_AUDIT_LOGS: readonly AuditEntry[] = [

@@ -52,13 +52,17 @@ describe("Incident Contracts (HU-050 / HU-054 / HU-055)", () => {
       resolutionNote: undefined,
     };
 
-    it("parses valid incident correctly", () => {
-      const parsed = parseIncident(validRaw);
+    it("parses valid incident correctly with optional assignedTo", () => {
+      const parsed = parseIncident({
+        ...validRaw,
+        assignedTo: "Mantenimiento UCM",
+      });
       expect(parsed.id).toBe("inc-2026-001");
       expect(parsed.category).toBe("rampa");
       expect(parsed.priority).toBe("alta");
       expect(parsed.status).toBe("recibida");
       expect(parsed.coordinates?.latitude).toBe(40.4523);
+      expect(parsed.assignedTo).toBe("Mantenimiento UCM");
     });
 
     it("rejects non-object", () => {

@@ -168,6 +168,25 @@ describe("Admin Service Domain Logic (UCM Tema 3 - Black-Box & White-Box)", () =
       expect(auditEntry.author).toBe("@charliefox06");
     });
 
+    it("allows reclassifying priority and assigning a technician or department (HU-054)", () => {
+      const { updatedIncidents, auditEntry } = updateIncidentStatus(
+        INITIAL_INCIDENTS,
+        "inc-2026-002",
+        "en_revision",
+        "@admin.campus",
+        "Asignada orden de trabajo urgente a Obras Campus",
+        "urgente",
+        "Mantenimiento UCM"
+      );
+
+      const target = updatedIncidents.find((i) => i.id === "inc-2026-002");
+      expect(target?.priority).toBe("urgente");
+      expect(target?.assignedTo).toBe("Mantenimiento UCM");
+      expect(auditEntry.details?.previousPriority).toBe("alta");
+      expect(auditEntry.details?.newPriority).toBe("urgente");
+      expect(auditEntry.details?.assignedTo).toBe("Mantenimiento UCM");
+    });
+
     it("throws an error when attempting an invalid status transition", () => {
       expect(() =>
         updateIncidentStatus(

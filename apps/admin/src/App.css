@@ -537,6 +537,18 @@
   color: #c9e8d4;
 }
 
+.incident-assigned-badge {
+  font-size: 0.75rem;
+  background-color: rgba(56, 189, 248, 0.08);
+  border-left: 2px solid #38bdf8;
+  padding: 0.18rem 0.45rem;
+  border-radius: 3px;
+  color: #bae6fd;
+  width: fit-content;
+  display: inline-flex;
+  gap: 0.35rem;
+}
+
 .location-name {
   font-weight: 500;
 }
