@@ -2,6 +2,7 @@ import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Camera, Map } from "@maplibre/maplibre-react-native";
 import type {
+  Incident,
   Place,
   RouteResponse,
   TransitLine,
@@ -18,6 +19,10 @@ import {
   CAMPUS_TRANSIT_LINES,
   CAMPUS_TRANSIT_STOPS,
 } from "../../transit/data/transit-data";
+import { IncidentLayer } from "../../incidents/map/IncidentLayer";
+import {
+  MONCLOA_CAMPUS_SEED_INCIDENTS,
+} from "../../incidents/domain/incidents";
 
 interface Props {
   places: readonly Place[];
@@ -32,6 +37,8 @@ interface Props {
   transitStops?: readonly TransitStop[] | undefined;
   selectedTransitStop?: TransitStop | null | undefined;
   onSelectTransitStop?: ((stop: TransitStop) => void) | undefined;
+  showIncidents?: boolean | undefined;
+  incidents?: readonly Incident[] | undefined;
 }
 
 function MapStateMessage({
@@ -72,6 +79,8 @@ function MapLayers({
   selectedTransitStop,
   onSelectTransitStop,
   route,
+  showIncidents,
+  incidents,
 }: {
   places: readonly Place[];
   selected: Place | null;
@@ -83,6 +92,8 @@ function MapLayers({
   selectedTransitStop?: TransitStop | null | undefined;
   onSelectTransitStop?: ((stop: TransitStop) => void) | undefined;
   route?: RouteResponse | null | undefined;
+  showIncidents?: boolean | undefined;
+  incidents?: readonly Incident[] | undefined;
 }) {
   return (
     <>
@@ -103,7 +114,59 @@ function MapLayers({
         visible={showTransit}
       />
       <RouteLayer route={route ?? null} />
+      <IncidentLayer
+        incidents={incidents ?? MONCLOA_CAMPUS_SEED_INCIDENTS}
+        visible={showIncidents ?? true}
+      />
     </>
+  );
+}
+
+function CampusMapCanvas({
+  controller,
+  style,
+  mode,
+  setViewport,
+  layersProps,
+}: {
+  controller: ReturnType<typeof useMapController>;
+  style: NonNullable<ReturnType<typeof useMapController>["style"]>;
+  mode: MapMode;
+  setViewport: (vp: string) => void;
+  layersProps: Parameters<typeof MapLayers>[0];
+}) {
+  return (
+    <Map
+      key={controller.attempt}
+      testID="campus-map"
+      accessibilityLabel="Mapa del campus de Moncloa"
+      style={styles.map}
+      mapStyle={style}
+      attribution
+      logo={false}
+      onDidFinishLoadingMap={() => controller.setState("ready")}
+      onDidFailLoadingMap={() => controller.setState("error")}
+      onRegionDidChange={(event) => {
+        controller.recordZoom(event.nativeEvent.zoom);
+        if (mode !== "live")
+          setViewport(
+            [...event.nativeEvent.center, event.nativeEvent.zoom]
+              .map((value) => value.toFixed(5))
+              .join(","),
+          );
+      }}
+    >
+      <Camera
+        ref={controller.camera}
+        initialViewState={{
+          bounds: controller.bounds,
+          padding: { top: 24, bottom: 40, left: 24, right: 24 },
+        }}
+        minZoom={10}
+        maxZoom={19}
+      />
+      <MapLayers {...layersProps} />
+    </Map>
   );
 }
 
@@ -120,6 +183,8 @@ export function CampusMap({
   transitStops,
   selectedTransitStop,
   onSelectTransitStop,
+  showIncidents = false,
+  incidents,
 }: Props) {
   const controller = useMapController(allPlaces, selected, mode, apiKey);
   const [viewport, setViewport] = useState("inicial");
@@ -135,48 +200,26 @@ export function CampusMap({
 
   return (
     <View style={styles.container}>
-      <Map
-        key={controller.attempt}
-        testID="campus-map"
-        accessibilityLabel="Mapa del campus de Moncloa"
-        style={styles.map}
-        mapStyle={controller.style}
-        attribution
-        logo={false}
-        onDidFinishLoadingMap={() => controller.setState("ready")}
-        onDidFailLoadingMap={() => controller.setState("error")}
-        onRegionDidChange={(event) => {
-          controller.recordZoom(event.nativeEvent.zoom);
-          if (mode !== "live")
-            setViewport(
-              [...event.nativeEvent.center, event.nativeEvent.zoom]
-                .map((value) => value.toFixed(5))
-                .join(","),
-            );
+      <CampusMapCanvas
+        controller={controller}
+        style={controller.style}
+        mode={mode}
+        setViewport={setViewport}
+        layersProps={{
+          places,
+          selected,
+          onSelect,
+          showLabels: mode === "live",
+          showTransit,
+          transitLines,
+          transitStops,
+          selectedTransitStop,
+          onSelectTransitStop,
+          route,
+          showIncidents,
+          incidents,
         }}
-      >
-        <Camera
-          ref={controller.camera}
-          initialViewState={{
-            bounds: controller.bounds,
-            padding: { top: 24, bottom: 40, left: 24, right: 24 },
-          }}
-          minZoom={10}
-          maxZoom={19}
-        />
-        <MapLayers
-          places={places}
-          selected={selected}
-          onSelect={onSelect}
-          showLabels={mode === "live"}
-          showTransit={showTransit}
-          transitLines={transitLines}
-          transitStops={transitStops}
-          selectedTransitStop={selectedTransitStop}
-          onSelectTransitStop={onSelectTransitStop}
-          route={route}
-        />
-      </Map>
+      />
       <MapStatus
         state={controller.state}
         mode={mode}

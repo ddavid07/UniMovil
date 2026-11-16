@@ -13,27 +13,36 @@ interface Props {
   readonly routing: ReturnType<typeof useRouting>;
   readonly select: (id: string) => void;
   readonly showTransit: boolean;
+  readonly showIncidents: boolean;
   readonly selectedTransitStop: TransitStop | null;
   readonly onSelectTransitStop: (stop: TransitStop) => void;
   readonly onOpenList: () => void;
   readonly onToggleRouting: () => void;
   readonly onToggleTransit: () => void;
+  readonly onToggleIncidents: () => void;
+  readonly onReportIncident: () => void;
 }
 
 function CampusActions({
   count,
   isRoutingOpen,
   showTransit,
+  showIncidents,
   onOpenList,
   onToggleRouting,
   onToggleTransit,
+  onToggleIncidents,
+  onReportIncident,
 }: {
   readonly count: number;
   readonly isRoutingOpen: boolean;
   readonly showTransit: boolean;
+  readonly showIncidents: boolean;
   readonly onOpenList: () => void;
   readonly onToggleRouting: () => void;
   readonly onToggleTransit: () => void;
+  readonly onToggleIncidents: () => void;
+  readonly onReportIncident: () => void;
 }) {
   return (
     <View style={styles.actionRow}>
@@ -58,6 +67,20 @@ function CampusActions({
           onToggleTransit();
         }}
       />
+      <Action
+        label={showIncidents ? "Ocultar incidencias" : "Ver incidencias"}
+        onPress={() => {
+          Keyboard.dismiss();
+          onToggleIncidents();
+        }}
+      />
+      <Action
+        label="⚠ Reportar incidencia"
+        onPress={() => {
+          Keyboard.dismiss();
+          onReportIncident();
+        }}
+      />
     </View>
   );
 }
@@ -67,6 +90,7 @@ function CampusMapExplorer({
   routing,
   select,
   showTransit,
+  showIncidents,
   selectedTransitStop,
   onSelectTransitStop,
 }: {
@@ -74,6 +98,7 @@ function CampusMapExplorer({
   readonly routing: ReturnType<typeof useRouting>;
   readonly select: (id: string) => void;
   readonly showTransit: boolean;
+  readonly showIncidents: boolean;
   readonly selectedTransitStop: TransitStop | null;
   readonly onSelectTransitStop: (stop: TransitStop) => void;
 }) {
@@ -91,6 +116,7 @@ function CampusMapExplorer({
         onSelect={select}
         route={routing.route}
         showTransit={showTransit}
+        showIncidents={showIncidents}
         selectedTransitStop={selectedTransitStop}
         onSelectTransitStop={onSelectTransitStop}
         mode={mapMode(process.env.EXPO_PUBLIC_MAP_MODE)}
@@ -107,11 +133,14 @@ export function CampusInteractiveSection({
   routing,
   select,
   showTransit,
+  showIncidents,
   selectedTransitStop,
   onSelectTransitStop,
   onOpenList,
   onToggleRouting,
   onToggleTransit,
+  onToggleIncidents,
+  onReportIncident,
 }: Props) {
   if (campus.catalog.status !== "ready") return null;
 
@@ -124,9 +153,12 @@ export function CampusInteractiveSection({
         count={campus.visible.length}
         isRoutingOpen={routing.isRoutingOpen}
         showTransit={showTransit}
+        showIncidents={showIncidents}
         onOpenList={onOpenList}
         onToggleRouting={onToggleRouting}
         onToggleTransit={onToggleTransit}
+        onToggleIncidents={onToggleIncidents}
+        onReportIncident={onReportIncident}
       />
       {routing.isRoutingOpen && (
         <RouteSelector
@@ -151,6 +183,7 @@ export function CampusInteractiveSection({
         routing={routing}
         select={select}
         showTransit={showTransit}
+        showIncidents={showIncidents}
         selectedTransitStop={selectedTransitStop}
         onSelectTransitStop={onSelectTransitStop}
       />

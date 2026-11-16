@@ -219,4 +219,38 @@ describe("recorrido móvil del campus", () => {
     ).toBeTruthy();
     expect(screen.getByLabelText("Buscar lugares")).toBeTruthy();
   });
+
+  it("permite conmutar la visibilidad de la capa de incidencias de obras (HU-053)", async () => {
+    await render(<CampusScreen />);
+    const toggleBtn = await screen.findByRole("button", {
+      name: "Ocultar incidencias",
+    });
+    expect(toggleBtn).toBeTruthy();
+
+    await fireEvent.press(toggleBtn);
+    expect(
+      screen.getByRole("button", { name: "Ver incidencias" }),
+    ).toBeTruthy();
+
+    await fireEvent.press(
+      screen.getByRole("button", { name: "Ver incidencias" }),
+    );
+    expect(
+      screen.getByRole("button", { name: "Ocultar incidencias" }),
+    ).toBeTruthy();
+  });
+
+  it("permite abrir y cerrar el formulario de reporte de incidencias (HU-050)", async () => {
+    await render(<CampusScreen />);
+    const reportBtn = await screen.findByRole("button", {
+      name: "⚠ Reportar incidencia",
+    });
+    expect(reportBtn).toBeTruthy();
+
+    await fireEvent.press(reportBtn);
+    expect(screen.getByText("Reportar incidencia")).toBeTruthy();
+
+    await fireEvent.press(screen.getByLabelText("Cerrar formulario"));
+    expect(screen.queryByText("Reportar incidencia")).toBeNull();
+  });
 });

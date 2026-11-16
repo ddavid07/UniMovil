@@ -15,11 +15,12 @@ import { CampusModals } from "./components/CampusModals";
 import { CampusInteractiveSection } from "./components/CampusInteractiveSection";
 import { useCampus } from "./useCampus";
 import type { PlacesRepository } from "./data/repository";
-import type { Place, TransitStop } from "@unimovil/contracts";
+import type { Incident, Place, TransitStop } from "@unimovil/contracts";
 import { useRouting } from "../routing/useRouting";
 import type { RoutingRepository } from "../routing/data/repository";
 import { NetworkBanner } from "../offline/components/NetworkBanner";
 import { useNetworkStatus } from "../offline/useNetworkStatus";
+import { ReportIncidentScreen } from "../incidents/components/ReportIncidentScreen";
 
 interface Props {
   readonly repository?: PlacesRepository;
@@ -69,6 +70,39 @@ function CampusCatalogStatus({
   return null;
 }
 
+function CampusHeader({
+  network,
+  campus,
+}: {
+  readonly network: ReturnType<typeof useNetworkStatus>;
+  readonly campus: ReturnType<typeof useCampus>;
+}) {
+  return (
+    <>
+      <Text accessibilityRole="header" style={styles.title}>
+        UniMovil · Moncloa
+      </Text>
+      <NetworkBanner
+        isOffline={network.isOffline}
+        onRetry={() => {
+          void network.retryConnection();
+        }}
+      />
+      <ExplorerControls
+        query={campus.query}
+        categories={campus.categories}
+        onQuery={campus.setQuery}
+        onToggle={campus.toggleCategory}
+        onReset={campus.reset}
+      />
+      <CampusCatalogStatus
+        status={campus.catalog.status}
+        onRetry={campus.retry}
+      />
+    </>
+  );
+}
+
 export function CampusScreen({
   repository,
   routingRepository,
@@ -79,8 +113,11 @@ export function CampusScreen({
   const network = useNetworkStatus(isOffline);
   const [listOpen, setListOpen] = useState(false);
   const [showTransit, setShowTransit] = useState(true);
+  const [showIncidents, setShowIncidents] = useState(true);
+  const [reportOpen, setReportOpen] = useState(false);
   const [selectedTransitStop, setSelectedTransitStop] =
     useState<TransitStop | null>(null);
+  const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
 
   function select(id: string) {
     Keyboard.dismiss();
@@ -94,31 +131,13 @@ export function CampusScreen({
         style={styles.screen}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <Text accessibilityRole="header" style={styles.title}>
-          UniMovil · Moncloa
-        </Text>
-        <NetworkBanner
-          isOffline={network.isOffline}
-          onRetry={() => {
-            void network.retryConnection();
-          }}
-        />
-        <ExplorerControls
-          query={campus.query}
-          categories={campus.categories}
-          onQuery={campus.setQuery}
-          onToggle={campus.toggleCategory}
-          onReset={campus.reset}
-        />
-        <CampusCatalogStatus
-          status={campus.catalog.status}
-          onRetry={campus.retry}
-        />
+        <CampusHeader network={network} campus={campus} />
         <CampusInteractiveSection
           campus={campus}
           routing={routing}
           select={select}
           showTransit={showTransit}
+          showIncidents={showIncidents}
           selectedTransitStop={selectedTransitStop}
           onSelectTransitStop={(stop) => setSelectedTransitStop(stop)}
           onOpenList={() => setListOpen(true)}
@@ -130,6 +149,8 @@ export function CampusScreen({
             }
           }}
           onToggleTransit={() => setShowTransit((prev) => !prev)}
+          onToggleIncidents={() => setShowIncidents((prev) => !prev)}
+          onReportIncident={() => setReportOpen(true)}
         />
         <Text style={styles.attribution}>
           Datos de lugares © colaboradores de OpenStreetMap · ODbL
@@ -139,13 +160,21 @@ export function CampusScreen({
           routing={routing}
           listOpen={listOpen}
           selectedTransitStop={selectedTransitStop}
+          selectedIncident={selectedIncident}
           onCloseList={() => setListOpen(false)}
           onSelect={select}
           onCloseTransitStop={() => setSelectedTransitStop(null)}
+          onCloseIncident={() => setSelectedIncident(null)}
           onPlanRouteToStop={(stop) =>
             routing.openRouting(createStopPlace(stop))
           }
         />
+        {reportOpen && (
+          <ReportIncidentScreen
+            onSubmit={() => setReportOpen(false)}
+            onClose={() => setReportOpen(false)}
+          />
+        )}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
