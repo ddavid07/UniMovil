@@ -11,14 +11,18 @@ describe("Pruebas de Integración Basadas en Hilos (Thread-Based Integration Tes
   it("Hilo Principal: Formulario Móvil -> Validación de Contrato -> Almacén Temporal -> Capa Cartográfica", () => {
     // 1. Inicialización de la cadena de integración orientada a objetos
     const store = new IncidentStore(MONCLOA_CAMPUS_SEED_INCIDENTS);
-    let lastRenderedGeoJSON: GeoJSON.FeatureCollection | null = null;
+    let lastRenderedGeoJSON: GeoJSON.FeatureCollection<GeoJSON.Point> | null =
+      null;
 
     // Conexión del hilo: la capa cartográfica se suscribe al almacén
     const unsubscribe = store.subscribe((currentIncidents) => {
       lastRenderedGeoJSON = incidentsToGeoJSON(currentIncidents);
     });
 
-    const initialFeaturesCount = lastRenderedGeoJSON?.features.length ?? 0;
+    const initialFeaturesCount = lastRenderedGeoJSON
+      ? (lastRenderedGeoJSON as GeoJSON.FeatureCollection<GeoJSON.Point>)
+          .features.length
+      : 0;
     expect(initialFeaturesCount).toBe(MONCLOA_CAMPUS_SEED_INCIDENTS.length);
 
     // 2. Ejecución del hilo (Paso 1: Entrada móvil con datos de usuario)
@@ -40,7 +44,9 @@ describe("Pruebas de Integración Basadas en Hilos (Thread-Based Integration Tes
 
     // (Paso 4: Refresco automático y reactivo de la capa cartográfica)
     expect(lastRenderedGeoJSON).not.toBeNull();
-    const updatedFeatures = lastRenderedGeoJSON!.features;
+    const updatedFeatures = (
+      lastRenderedGeoJSON as unknown as GeoJSON.FeatureCollection<GeoJSON.Point>
+    ).features;
     expect(updatedFeatures.length).toBe(initialFeaturesCount + 1);
 
     const createdFeature = updatedFeatures.find(
@@ -49,7 +55,8 @@ describe("Pruebas de Integración Basadas en Hilos (Thread-Based Integration Tes
     );
     expect(createdFeature).toBeDefined();
     expect(createdFeature?.geometry.type).toBe("Point");
-    expect(createdFeature?.geometry.coordinates).toEqual([
+    const pointGeom = createdFeature?.geometry as GeoJSON.Point;
+    expect(pointGeom.coordinates).toEqual([
       validLocation.longitude,
       validLocation.latitude,
     ]);
