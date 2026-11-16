@@ -4,6 +4,7 @@
   "references": [
     { "path": "./apps/api" },
     { "path": "./apps/admin" },
-    { "path": "./packages/contracts" }
+    { "path": "./packages/contracts" },
+    { "path": "./packages/testing" }
   ]
 }

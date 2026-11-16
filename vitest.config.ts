@@ -15,6 +15,8 @@ export default defineConfig({
       "apps/mobile/src/features/transit/map/*.spec.ts",
       "apps/mobile/src/features/incidents/__tests__/*.spec.ts",
       "apps/mobile/src/features/offline/**/*.spec.ts",
+      "apps/mobile/__tests__/system/**/*.spec.ts",
+      "apps/api/test/**/*.spec.ts",
     ],
     passWithNoTests: false,
     coverage: {
@@ -22,6 +24,7 @@ export default defineConfig({
       reportsDirectory: "coverage/domain",
       reporter: ["text", "json-summary", "lcov"],
       include: [
+        "packages/testing/src/traceability.ts",
         "apps/mobile/app.config.ts",
         "packages/contracts/src/parse-places.ts",
         "packages/contracts/src/routes.ts",

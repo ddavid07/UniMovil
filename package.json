@@ -29,7 +29,7 @@
     "test": "vitest run --coverage && npm run test:coverage --workspace=@unimovil/mobile && node scripts/check-coverage.mjs",
     "build": "npm run build --workspace=@unimovil/api && npm run build --workspace=@unimovil/admin && npm run build --workspace=@unimovil/mobile",
     "ci": "npm run format:check && npm run lint && npm run typecheck && npm run catalog:check && npm test && npm run test:performance && npm run build",
-    "build:packages": "npm run build --workspace=@unimovil/contracts",
+    "build:packages": "npm run build --workspace=@unimovil/contracts && npm run build --workspace=@unimovil/testing",
     "pretypecheck": "npm run build:packages",
     "pretest": "npm run build:packages",
     "prebuild": "npm run build:packages",
