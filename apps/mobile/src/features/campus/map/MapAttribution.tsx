@@ -1,11 +1,5 @@
 import { useState } from "react";
-import {
-  Linking,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Linking, Pressable, StyleSheet, Text, View } from "react-native";
 
 export function MapAttribution() {
   const [error, setError] = useState(false);

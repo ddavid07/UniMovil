@@ -15,7 +15,7 @@ function useMapResources() {
       id: "unimovil-user-agent",
       name: "User-Agent",
       value: "UniMovil/0.1",
-    match: /^https:\/\/tile\.openstreetmap\.org\//,
+      match: /^https:\/\/tile\.openstreetmap\.org\//,
     });
     LogManager.onLog((event) => {
       console.warn("MapLibre", event.level, event.tag);
@@ -37,10 +37,7 @@ export function useMapController(
   const zoom = useRef(14);
   const [attempt, setAttempt] = useState(0);
   const [state, setState] = useState<"loading" | "ready" | "error">("loading");
-  const style = useMemo(
-    () => mapStyle(mode, attempt),
-    [mode, attempt],
-  );
+  const style = useMemo(() => mapStyle(mode, attempt), [mode, attempt]);
   const bounds = useMemo(() => campusBounds(allPlaces), [allPlaces]);
   const resourcesReady = useMapResources();
   useEffect(() => {

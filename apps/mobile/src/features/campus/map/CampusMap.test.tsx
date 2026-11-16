@@ -113,9 +113,7 @@ describe("adaptador nativo (eventos simulados en pruebas de componentes)", () =>
   });
   it("registra errores nativos sin copiar mensajes que puedan contener claves", async () => {
     const warn = jest.spyOn(console, "warn").mockImplementation(() => {});
-    await render(
-      <CampusMap {...props} mode="live" />,
-    );
+    await render(<CampusMap {...props} mode="live" />);
     await fireEvent(screen.getByTestId("campus-map"), "regionDidChange", {
       nativeEvent: { center: [-3.73, 40.44], zoom: 14 },
     });

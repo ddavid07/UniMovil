@@ -34,10 +34,7 @@ describe("recorrido móvil del campus", () => {
   it("ofrece sugerencias mientras se escribe y distingue datos ausentes", async () => {
     await render(<CampusScreen />);
     await screen.findByRole("button", { name: "Ver lugares (24)" });
-    await fireEvent.changeText(
-      screen.getByLabelText("Buscar lugares"),
-      "1690",
-    );
+    await fireEvent.changeText(screen.getByLabelText("Buscar lugares"), "1690");
     await fireEvent.press(screen.getByRole("button", { name: /^Sugerencia:/ }));
     expect(screen.getByText("Sin descripción publicada.")).toBeTruthy();
     await fireEvent.press(screen.getByRole("button", { name: "Cerrar ficha" }));
