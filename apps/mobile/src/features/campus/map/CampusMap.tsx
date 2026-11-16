@@ -69,7 +69,7 @@ export function CampusMap({
           maxZoom={19}
         />
         <PlaceLayers
-          showLabels={mode === "live"}
+          showLabels={false}
           places={places}
           selected={selected}
           onSelect={onSelect}
