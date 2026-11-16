@@ -51,7 +51,7 @@ npm run build
 npm run ci
 ```
 
-La CI verifica firmas npm, licencias y alineación con Expo. CodeQL, Dependency Review y Gitleaks siguen activos. Se retiraron de GitHub Actions los escaneos de vulnerabilidades `npm audit --audit-level=high` y OSV-Scanner: sus avisos sobre dependencias transitivas del stack Expo hacían fallar repetidamente CI aunque las correcciones sugeridas requerían actualizar el SDK de forma coordinada. `npm audit signatures` permanece porque verifica firmas del registro npm, no advisories. GitHub Dependabot Alerts sigue activo y Dependency Review continúa bloqueando dependencias nuevas de severidad alta o crítica.
+La CI verifica firmas npm, licencias y alineación con Expo. CodeQL, Dependency Review y Gitleaks siguen activos. `npm audit signatures` comprueba las firmas del registro npm. GitHub Dependabot Alerts sigue activo y Dependency Review continúa bloqueando dependencias nuevas de severidad alta o crítica.
 
 ## Ejecutar el mapa móvil
 

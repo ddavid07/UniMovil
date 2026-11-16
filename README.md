@@ -60,7 +60,7 @@ El stack tecnológico está formado por:
 - API REST documentada con OpenAPI.
 - npm Workspaces para el monorepo.
 - ESLint, Prettier, TypeScript estricto y pruebas automatizadas.
-- GitHub Actions, Dependabot, auditoría npm, verificación de firmas, OSV-Scanner, Gitleaks y reglas de seguridad ESLint.
+- GitHub Actions, Dependabot, verificación de firmas npm, Gitleaks y reglas de seguridad ESLint.
 
 La aplicación móvil se comunica con el backend mediante HTTPS. La API aplica autenticación, autorización, validación y reglas de negocio; la aplicación no accede directamente a la base de datos.
 
