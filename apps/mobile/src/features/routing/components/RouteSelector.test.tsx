@@ -10,7 +10,11 @@ const mockPlaces: readonly Place[] = [
     coordinates: { latitude: 40.4442, longitude: -3.7262 },
     aliases: [],
     accessibility: "yes",
-    source: { url: "https://osm.org", checkedAt: "2026-10-01", license: "ODbL-1.0" },
+    source: {
+      url: "https://osm.org",
+      checkedAt: "2026-10-01",
+      license: "ODbL-1.0",
+    },
   },
   {
     id: "fac-medicina",
@@ -19,7 +23,11 @@ const mockPlaces: readonly Place[] = [
     coordinates: { latitude: 40.4455, longitude: -3.7275 },
     aliases: [],
     accessibility: "limited",
-    source: { url: "https://osm.org", checkedAt: "2026-10-01", license: "ODbL-1.0" },
+    source: {
+      url: "https://osm.org",
+      checkedAt: "2026-10-01",
+      license: "ODbL-1.0",
+    },
   },
   {
     id: "fac-derecho",
@@ -28,7 +36,11 @@ const mockPlaces: readonly Place[] = [
     coordinates: { latitude: 40.4502, longitude: -3.731 },
     aliases: [],
     accessibility: "yes",
-    source: { url: "https://osm.org", checkedAt: "2026-10-01", license: "ODbL-1.0" },
+    source: {
+      url: "https://osm.org",
+      checkedAt: "2026-10-01",
+      license: "ODbL-1.0",
+    },
   },
 ];
 
@@ -138,7 +150,9 @@ describe("RouteSelector Component (HU-020 - TDD Tema 3)", () => {
       />,
     );
 
-    await fireEvent.press(screen.getByRole("button", { name: "Calcular ruta" }));
+    await fireEvent.press(
+      screen.getByRole("button", { name: "Calcular ruta" }),
+    );
     expect(onCalculate).toHaveBeenCalledTimes(1);
   });
 
@@ -227,7 +241,9 @@ describe("RouteSelector Component (HU-020 - TDD Tema 3)", () => {
     await fireEvent.press(
       screen.getByRole("button", { name: "Seleccionar destino" }),
     );
-    expect(screen.getAllByText("Seleccionar destino").length).toBeGreaterThanOrEqual(1);
+    expect(
+      screen.getAllByText("Seleccionar destino").length,
+    ).toBeGreaterThanOrEqual(1);
 
     await fireEvent.press(
       screen.getByRole("button", { name: "Facultad de Medicina" }),

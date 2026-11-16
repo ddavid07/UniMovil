@@ -73,7 +73,11 @@ function computeBusAlternative(
   const originNearest = findNearestStop(origin, stops);
   const destNearest = findNearestStop(destination, stops);
 
-  if (!originNearest || !destNearest || originNearest.stop.id === destNearest.stop.id) {
+  if (
+    !originNearest ||
+    !destNearest ||
+    originNearest.stop.id === destNearest.stop.id
+  ) {
     return {
       mode: "bus",
       label: "Autobús EMT",
@@ -82,21 +86,30 @@ function computeBusAlternative(
       accessible: true,
       transfers: 0,
       available: false,
-      unavailableReason: "No hay paradas de autobús conectadas para este trayecto",
+      unavailableReason:
+        "No hay paradas de autobús conectadas para este trayecto",
     };
   }
 
-  const commonLine = lines.find(
-    (l) =>
-      l.stops.some((s) => s.id === originNearest.stop.id) &&
-      l.stops.some((s) => s.id === destNearest.stop.id),
-  ) ?? lines[0];
+  const commonLine =
+    lines.find(
+      (l) =>
+        l.stops.some((s) => s.id === originNearest.stop.id) &&
+        l.stops.some((s) => s.id === destNearest.stop.id),
+    ) ?? lines[0];
 
-  const walkToStopMins = Math.max(1, Math.round(originNearest.distanceMeters / 75));
-  const walkFromStopMins = Math.max(1, Math.round(destNearest.distanceMeters / 75));
+  const walkToStopMins = Math.max(
+    1,
+    Math.round(originNearest.distanceMeters / 75),
+  );
+  const walkFromStopMins = Math.max(
+    1,
+    Math.round(destNearest.distanceMeters / 75),
+  );
   const waitMins = 3;
   const transitMins = 4;
-  const totalDuration = walkToStopMins + waitMins + transitMins + walkFromStopMins;
+  const totalDuration =
+    walkToStopMins + waitMins + transitMins + walkFromStopMins;
 
   const accessible =
     originNearest.stop.wheelchairAccessible &&

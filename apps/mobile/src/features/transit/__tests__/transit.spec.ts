@@ -144,7 +144,9 @@ describe("Transit Domain (Sprint 3 Multimodal)", () => {
 
     const bus = alternatives.find((a) => a.mode === "bus");
     expect(bus?.available).toBe(false);
-    expect(bus?.unavailableReason).toContain("No hay paradas de autobús conectadas");
+    expect(bus?.unavailableReason).toContain(
+      "No hay paradas de autobús conectadas",
+    );
   });
 
   it("marks bus as unavailable when accessibleOnly is true and stop is not accessible", () => {

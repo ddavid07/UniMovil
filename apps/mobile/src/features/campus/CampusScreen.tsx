@@ -142,7 +142,9 @@ export function CampusScreen({
           onCloseList={() => setListOpen(false)}
           onSelect={select}
           onCloseTransitStop={() => setSelectedTransitStop(null)}
-          onPlanRouteToStop={(stop) => routing.openRouting(createStopPlace(stop))}
+          onPlanRouteToStop={(stop) =>
+            routing.openRouting(createStopPlace(stop))
+          }
         />
       </KeyboardAvoidingView>
     </SafeAreaView>

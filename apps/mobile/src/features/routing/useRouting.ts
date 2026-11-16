@@ -4,10 +4,7 @@ import {
   localRoutingRepository,
   type RoutingRepository,
 } from "./data/repository";
-import {
-  classifyError,
-  type UIErrorMessage,
-} from "./domain/routing-errors";
+import { classifyError, type UIErrorMessage } from "./domain/routing-errors";
 
 export interface RoutingState {
   readonly origin: Place | null;

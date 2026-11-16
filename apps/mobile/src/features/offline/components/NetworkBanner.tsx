@@ -24,7 +24,8 @@ export function NetworkBanner({ isOffline, onRetry }: Props) {
         <View style={styles.textContainer}>
           <Text style={styles.title}>Modo sin conexión</Text>
           <Text style={styles.subtitle}>
-            Mostrando catálogo y datos cacheados. Las consultas en tiempo real se reanudarán al reconectar.
+            Mostrando catálogo y datos cacheados. Las consultas en tiempo real
+            se reanudarán al reconectar.
           </Text>
         </View>
       </View>
@@ -34,7 +35,10 @@ export function NetworkBanner({ isOffline, onRetry }: Props) {
           accessibilityLabel="Reintentar conexión con el servidor"
           accessibilityHint="Pulsa para comprobar si la conexión a internet se ha restablecido"
           onPress={onRetry}
-          style={({ pressed }) => [styles.retryButton, pressed && styles.pressed]}
+          style={({ pressed }) => [
+            styles.retryButton,
+            pressed && styles.pressed,
+          ]}
         >
           <Text style={styles.retryText}>Reintentar conexión</Text>
         </Pressable>

@@ -62,7 +62,9 @@ describe("MultimodalComparisonCard (HU-022 - Sprint 3)", () => {
     );
 
     expect(screen.getByText("Desglose del trayecto EMT:")).toBeTruthy();
-    expect(screen.getByText(/2 min a pie hasta Metro Ciudad Universitaria/)).toBeTruthy();
+    expect(
+      screen.getByText(/2 min a pie hasta Metro Ciudad Universitaria/),
+    ).toBeTruthy();
     expect(screen.getByText(/4 min en Autobús EMT Línea G/)).toBeTruthy();
   });
 

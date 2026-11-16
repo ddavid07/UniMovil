@@ -10,7 +10,11 @@ describe("OfflineCache (HU-094)", () => {
     coordinates: { latitude: 40.4529, longitude: -3.7335 },
     accessibility: "yes",
     aliases: ["FDI"],
-    source: { url: "https://osm.org", checkedAt: "2026-10-01", license: "ODbL-1.0" },
+    source: {
+      url: "https://osm.org",
+      checkedAt: "2026-10-01",
+      license: "ODbL-1.0",
+    },
   };
 
   const dummyPlace2: Place = {
@@ -20,7 +24,11 @@ describe("OfflineCache (HU-094)", () => {
     coordinates: { latitude: 40.4439, longitude: -3.7268 },
     accessibility: "yes",
     aliases: ["Medicina"],
-    source: { url: "https://osm.org", checkedAt: "2026-10-01", license: "ODbL-1.0" },
+    source: {
+      url: "https://osm.org",
+      checkedAt: "2026-10-01",
+      license: "ODbL-1.0",
+    },
   };
 
   const dummyRoute: RouteResponse = {
@@ -35,7 +43,8 @@ describe("OfflineCache (HU-094)", () => {
         id: "seg-1",
         sourceNodeId: "node-1",
         targetNodeId: "node-2",
-        instruction: "Camina hacia el sur por Calle del Profesor José García Santesmases",
+        instruction:
+          "Camina hacia el sur por Calle del Profesor José García Santesmases",
         distanceMeters: 400,
         durationSeconds: 300,
         isAccessible: true,
@@ -44,10 +53,7 @@ describe("OfflineCache (HU-094)", () => {
         pathCoordinates: [dummyPlace1.coordinates, dummyPlace2.coordinates],
       },
     ],
-    polyline: [
-      dummyPlace1.coordinates,
-      dummyPlace2.coordinates,
-    ],
+    polyline: [dummyPlace1.coordinates, dummyPlace2.coordinates],
   };
 
   it("inicializa el caché vacío", () => {
@@ -79,7 +85,11 @@ describe("OfflineCache (HU-094)", () => {
       coordinates: { latitude: 40.444, longitude: -3.728 },
       accessibility: "yes",
       aliases: [],
-      source: { url: "https://osm.org", checkedAt: "2026-10-01", license: "ODbL-1.0" },
+      source: {
+        url: "https://osm.org",
+        checkedAt: "2026-10-01",
+        license: "ODbL-1.0",
+      },
     };
     cache.saveRecentPlace(dummyPlace3);
 
@@ -116,7 +126,9 @@ describe("OfflineCache (HU-094)", () => {
 
     expect(restored.getRecentPlaces()).toHaveLength(1);
     expect(restored.getRecentPlaces()[0]?.id).toBe("fdi");
-    expect(restored.findCachedRoute("fdi", "medicina", true)?.id).toBe("route-fdi-med");
+    expect(restored.findCachedRoute("fdi", "medicina", true)?.id).toBe(
+      "route-fdi-med",
+    );
   });
 
   it("restaura un caché vacío de forma segura si el JSON está corrupto o es inválido", () => {

@@ -23,7 +23,9 @@ describe("TransitStopSheet (HU-027 - Sprint 3)", () => {
     expect(screen.getByText("Metro Ciudad Universitaria")).toBeTruthy();
     expect(screen.getByText("Parada 1688")).toBeTruthy();
     expect(screen.getByText("EMT Madrid")).toBeTruthy();
-    expect(screen.getByText("Parada adaptada para movilidad reducida (PMR)")).toBeTruthy();
+    expect(
+      screen.getByText("Parada adaptada para movilidad reducida (PMR)"),
+    ).toBeTruthy();
     expect(screen.getAllByText("G").length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText("F").length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText("en 3 min")).toBeTruthy();
@@ -65,13 +67,17 @@ describe("TransitStopSheet (HU-027 - Sprint 3)", () => {
       nextArrivals: [],
     };
 
-    await render(<TransitStopSheet stop={inaccessibleStop} onClose={jest.fn()} />);
+    await render(
+      <TransitStopSheet stop={inaccessibleStop} onClose={jest.fn()} />,
+    );
 
     expect(
       screen.getByText("Parada sin adaptación de accesibilidad"),
     ).toBeTruthy();
     expect(
-      screen.getByText("No hay estimaciones en tiempo real disponibles en este momento."),
+      screen.getByText(
+        "No hay estimaciones en tiempo real disponibles en este momento.",
+      ),
     ).toBeTruthy();
   });
 });

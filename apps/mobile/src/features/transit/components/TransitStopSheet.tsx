@@ -44,10 +44,15 @@ function NextArrivalsList({ stop }: { stop: TransitStop }) {
     <View style={styles.arrivalsContainer}>
       <Text style={styles.sectionSubtitle}>Próximas llegadas estimadas:</Text>
       {stop.nextArrivals.map((arrival) => (
-        <View key={`${arrival.line}-${arrival.destination}`} style={styles.arrivalRow}>
+        <View
+          key={`${arrival.line}-${arrival.destination}`}
+          style={styles.arrivalRow}
+        >
           <View style={styles.arrivalLineCol}>
             <LineBadge line={arrival.line} />
-            <Text style={styles.arrivalDestText}>hacia {arrival.destination}</Text>
+            <Text style={styles.arrivalDestText}>
+              hacia {arrival.destination}
+            </Text>
           </View>
           <Text style={styles.arrivalEstimateText}>
             {arrival.estimateMinutes === 0
@@ -66,12 +71,7 @@ export function TransitStopSheet({ stop, onClose, onPlanRouteToStop }: Props) {
   }
 
   return (
-    <Modal
-      transparent
-      visible
-      animationType="slide"
-      onRequestClose={onClose}
-    >
+    <Modal transparent visible animationType="slide" onRequestClose={onClose}>
       <View style={styles.overlay}>
         <SafeAreaView edges={["bottom"]} style={styles.sheet}>
           {/* Cabecera */}
@@ -124,7 +124,9 @@ export function TransitStopSheet({ stop, onClose, onPlanRouteToStop }: Props) {
 
             {/* Líneas que pasan */}
             <View style={styles.linesSection}>
-              <Text style={styles.sectionSubtitle}>Líneas que prestan servicio:</Text>
+              <Text style={styles.sectionSubtitle}>
+                Líneas que prestan servicio:
+              </Text>
               <View style={styles.linesRow}>
                 {stop.lines.map((line) => (
                   <LineBadge key={line} line={line} />

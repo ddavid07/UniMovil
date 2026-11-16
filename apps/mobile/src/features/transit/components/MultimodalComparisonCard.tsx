@@ -1,10 +1,5 @@
 import { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import type { MultimodalAlternative, TransportMode } from "@unimovil/contracts";
 
 interface Props {
@@ -19,11 +14,7 @@ function ModeIcon({ mode }: { mode: TransportMode }) {
   return <Text style={styles.tabIcon}>🚲</Text>;
 }
 
-function AlternativeDetails({
-  selected,
-}: {
-  selected: MultimodalAlternative;
-}) {
+function AlternativeDetails({ selected }: { selected: MultimodalAlternative }) {
   if (!selected.available) {
     return (
       <View style={styles.unavailableBox}>
@@ -60,20 +51,26 @@ function AlternativeDetails({
         </View>
       </View>
 
-      {selected.mode === "bus" && selected.originStop && selected.destinationStop && (
-        <View style={styles.transitBreakdown}>
-          <Text style={styles.breakdownHeader}>Desglose del trayecto EMT:</Text>
-          <Text style={styles.breakdownStep}>
-            🚶 {selected.walkingToStopMinutes ?? 2} min a pie hasta {selected.originStop}
-          </Text>
-          <Text style={styles.breakdownStep}>
-            🚌 {selected.transitRideMinutes ?? 4} min en {selected.label}
-          </Text>
-          <Text style={styles.breakdownStep}>
-            🚶 {selected.walkingFromStopMinutes ?? 1} min a pie hasta el destino
-          </Text>
-        </View>
-      )}
+      {selected.mode === "bus" &&
+        selected.originStop &&
+        selected.destinationStop && (
+          <View style={styles.transitBreakdown}>
+            <Text style={styles.breakdownHeader}>
+              Desglose del trayecto EMT:
+            </Text>
+            <Text style={styles.breakdownStep}>
+              🚶 {selected.walkingToStopMinutes ?? 2} min a pie hasta{" "}
+              {selected.originStop}
+            </Text>
+            <Text style={styles.breakdownStep}>
+              🚌 {selected.transitRideMinutes ?? 4} min en {selected.label}
+            </Text>
+            <Text style={styles.breakdownStep}>
+              🚶 {selected.walkingFromStopMinutes ?? 1} min a pie hasta el
+              destino
+            </Text>
+          </View>
+        )}
     </View>
   );
 }

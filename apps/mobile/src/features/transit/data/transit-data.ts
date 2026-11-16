@@ -56,9 +56,7 @@ export const CAMPUS_TRANSIT_STOPS: readonly TransitStop[] = [
     coordinates: { latitude: 40.4509, longitude: -3.7318 },
     lines: ["G", "F"],
     wheelchairAccessible: true,
-    nextArrivals: [
-      { line: "G", destination: "Moncloa", estimateMinutes: 6 },
-    ],
+    nextArrivals: [{ line: "G", destination: "Moncloa", estimateMinutes: 6 }],
   },
   {
     id: "emt-stop-1698",
@@ -79,9 +77,7 @@ export const CAMPUS_TRANSIT_STOPS: readonly TransitStop[] = [
     coordinates: { latitude: 40.44572, longitude: -3.72184 },
     lines: ["F", "132"],
     wheelchairAccessible: false,
-    nextArrivals: [
-      { line: "F", destination: "Paraninfo", estimateMinutes: 4 },
-    ],
+    nextArrivals: [{ line: "F", destination: "Paraninfo", estimateMinutes: 4 }],
   },
 ];
 

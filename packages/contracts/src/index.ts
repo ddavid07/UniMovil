@@ -5,3 +5,4 @@ export * from "./places.js";
 export * from "./parse-places.js";
 export * from "./routes.js";
 export * from "./transit.js";
+export * from "./incidents.js";

@@ -10,7 +10,11 @@ const placeA: Place = {
   coordinates: { latitude: 40.4442, longitude: -3.7262 },
   aliases: [],
   accessibility: "yes",
-  source: { url: "https://osm.org", checkedAt: "2026-10-01", license: "ODbL-1.0" },
+  source: {
+    url: "https://osm.org",
+    checkedAt: "2026-10-01",
+    license: "ODbL-1.0",
+  },
 };
 
 const placeB: Place = {
@@ -20,7 +24,11 @@ const placeB: Place = {
   coordinates: { latitude: 40.4455, longitude: -3.7275 },
   aliases: [],
   accessibility: "limited",
-  source: { url: "https://osm.org", checkedAt: "2026-10-01", license: "ODbL-1.0" },
+  source: {
+    url: "https://osm.org",
+    checkedAt: "2026-10-01",
+    license: "ODbL-1.0",
+  },
 };
 
 const mockRoute: RouteResponse = {

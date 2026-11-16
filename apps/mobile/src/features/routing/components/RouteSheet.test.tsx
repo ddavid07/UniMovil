@@ -65,7 +65,9 @@ const mockRoutePmr: RouteResponse = {
 
 describe("RouteSheet Component (HU-023 - TDD Tema 3)", () => {
   it("no renderiza nada si no hay ruta activa", async () => {
-    const { toJSON } = await render(<RouteSheet route={null} onClose={jest.fn()} />);
+    const { toJSON } = await render(
+      <RouteSheet route={null} onClose={jest.fn()} />,
+    );
     expect(toJSON()).toBeNull();
   });
 
@@ -79,7 +81,9 @@ describe("RouteSheet Component (HU-023 - TDD Tema 3)", () => {
     expect(screen.getByText("Ruta con escaleras")).toBeTruthy();
     expect(screen.getByText("Comparativa multimodal")).toBeTruthy();
     expect(screen.getByText("Avanza por Paseo de Ruperto Chapí")).toBeTruthy();
-    expect(screen.getByText("Sube por la escalinata hacia la entrada")).toBeTruthy();
+    expect(
+      screen.getByText("Sube por la escalinata hacia la entrada"),
+    ).toBeTruthy();
   });
 
   it("muestra distintivo de accesibilidad PMR y badge de rampa", async () => {
@@ -88,7 +92,9 @@ describe("RouteSheet Component (HU-023 - TDD Tema 3)", () => {
     expect(screen.getByText("Ruta accesible PMR")).toBeTruthy();
     expect(screen.getAllByText("6 min").length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText("420 m").length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText("Toma el sendero adaptado y rampa suave")).toBeTruthy();
+    expect(
+      screen.getByText("Toma el sendero adaptado y rampa suave"),
+    ).toBeTruthy();
   });
 
   it("invoca onClose al pulsar 'Cerrar ruta'", async () => {

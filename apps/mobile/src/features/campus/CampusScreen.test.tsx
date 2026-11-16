@@ -167,9 +167,7 @@ describe("recorrido móvil del campus", () => {
     expect(screen.getByText("Planificar ruta peatonal")).toBeTruthy();
 
     // 2. Cerrar selector de ruta
-    await fireEvent.press(
-      screen.getByRole("button", { name: "Cerrar ruta" }),
-    );
+    await fireEvent.press(screen.getByRole("button", { name: "Cerrar ruta" }));
     expect(screen.queryByText("Planificar ruta peatonal")).toBeNull();
 
     // 3. Abrir un lugar desde la lista y pulsar "Cómo llegar a este lugar"
@@ -190,7 +188,9 @@ describe("recorrido móvil del campus", () => {
 
   it("permite conmutar la visibilidad de la capa de transporte EMT", async () => {
     await render(<CampusScreen />);
-    const toggleBtn = await screen.findByRole("button", { name: "Ocultar EMT" });
+    const toggleBtn = await screen.findByRole("button", {
+      name: "Ocultar EMT",
+    });
     expect(toggleBtn).toBeTruthy();
 
     await fireEvent.press(toggleBtn);
@@ -205,14 +205,18 @@ describe("recorrido móvil del campus", () => {
     expect(screen.getByText(/modo sin conexión/i)).toBeTruthy();
     expect(screen.getByText(/datos cacheados/i)).toBeTruthy();
 
-    const retryBtn = screen.getByRole("button", { name: /reintentar conexión/i });
+    const retryBtn = screen.getByRole("button", {
+      name: /reintentar conexión/i,
+    });
     expect(retryBtn).toBeTruthy();
     await fireEvent.press(retryBtn);
   });
 
   it("verifica etiquetas semánticas de accesibilidad WCAG 2.1 AA en controles principales (HU-095)", async () => {
     await render(<CampusScreen />);
-    expect(screen.getByRole("header", { name: "UniMovil · Moncloa" })).toBeTruthy();
+    expect(
+      screen.getByRole("header", { name: "UniMovil · Moncloa" }),
+    ).toBeTruthy();
     expect(screen.getByLabelText("Buscar lugares")).toBeTruthy();
   });
 });

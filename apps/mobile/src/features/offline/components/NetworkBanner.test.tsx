@@ -12,7 +12,9 @@ describe("NetworkBanner Component (HU-094 & HU-095)", () => {
 
     expect(screen.getByText(/modo sin conexión/i)).toBeTruthy();
     expect(screen.getByText(/datos cacheados/i)).toBeTruthy();
-    expect(screen.getByRole("button", { name: /reintentar conexión/i })).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: /reintentar conexión/i }),
+    ).toBeTruthy();
   });
 
   it("llama a onRetry al pulsar el botón de reintentar", async () => {
@@ -26,7 +28,9 @@ describe("NetworkBanner Component (HU-094 & HU-095)", () => {
       />,
     );
 
-    const retryBtn = screen.getByRole("button", { name: /reintentar conexión/i });
+    const retryBtn = screen.getByRole("button", {
+      name: /reintentar conexión/i,
+    });
     fireEvent.press(retryBtn);
 
     expect(retried).toBe(true);

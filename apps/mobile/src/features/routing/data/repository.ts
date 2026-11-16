@@ -29,7 +29,8 @@ function haversineDistanceMeters(a: Coordinates, b: Coordinates): number {
   const chord =
     sinDeltaLat * sinDeltaLat +
     Math.cos(lat1) * Math.cos(lat2) * sinDeltaLon * sinDeltaLon;
-  const angularDistance = 2 * Math.atan2(Math.sqrt(chord), Math.sqrt(1 - chord));
+  const angularDistance =
+    2 * Math.atan2(Math.sqrt(chord), Math.sqrt(1 - chord));
 
   return earthRadiusMeters * angularDistance;
 }
@@ -97,13 +98,21 @@ export const localRoutingRepository: RoutingRepository = {
 
       // Generar punto intermedio para crear un camino peatonal realista
       const midPoint: Coordinates = {
-        latitude: (origin.latitude + destination.latitude) / 2 + (accessibleOnly ? 0.0003 : 0.0001),
-        longitude: (origin.longitude + destination.longitude) / 2 - (accessibleOnly ? 0.0002 : 0.0001),
+        latitude:
+          (origin.latitude + destination.latitude) / 2 +
+          (accessibleOnly ? 0.0003 : 0.0001),
+        longitude:
+          (origin.longitude + destination.longitude) / 2 -
+          (accessibleOnly ? 0.0002 : 0.0001),
       };
 
       const polyline: Coordinates[] = [origin, midPoint, destination];
-      const segmentDistance1 = Math.round(haversineDistanceMeters(origin, midPoint));
-      const segmentDistance2 = Math.round(haversineDistanceMeters(midPoint, destination));
+      const segmentDistance1 = Math.round(
+        haversineDistanceMeters(origin, midPoint),
+      );
+      const segmentDistance2 = Math.round(
+        haversineDistanceMeters(midPoint, destination),
+      );
       const totalDistance = segmentDistance1 + segmentDistance2;
       const durationMinutes = Math.max(1, Math.round(totalDistance / 75)); // ~4.5 km/h
 

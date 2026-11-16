@@ -42,9 +42,9 @@ export function RouteSelector({
   onCalculate,
   onClose,
 }: Props) {
-  const [pickerTarget, setPickerTarget] = useState<"origin" | "destination" | null>(
-    null,
-  );
+  const [pickerTarget, setPickerTarget] = useState<
+    "origin" | "destination" | null
+  >(null);
 
   return (
     <View style={styles.card}>
@@ -102,18 +102,14 @@ export function RouteSelector({
         <TouchableOpacity
           accessibilityRole="button"
           accessibilityLabel={
-            destination
-              ? `Destino: ${destination.name}`
-              : "Seleccionar destino"
+            destination ? `Destino: ${destination.name}` : "Seleccionar destino"
           }
           style={styles.selectorBtn}
           onPress={() => setPickerTarget("destination")}
         >
           <Text
             numberOfLines={1}
-            style={
-              destination ? styles.selectedText : styles.placeholderText
-            }
+            style={destination ? styles.selectedText : styles.placeholderText}
           >
             {destination?.name ?? "Seleccionar destino"}
           </Text>
