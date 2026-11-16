@@ -19,23 +19,27 @@ describe("adaptador cartográfico", () => {
     expect(mapMode("fixture")).toBe("fixture");
     expect(mapMode("fixture-error")).toBe("fixture-error");
   });
-  it.each([undefined, "", "short", "x?key=malicious", "a".repeat(129)])(
-    "rechaza claves malformadas",
-    (key) => expect(mapStyle(key, "live", 0)).toBeNull(),
-  );
-  it("restringe el proveedor a HTTPS MapTiler", () =>
-    expect(mapStyle("public_test_123", "live", 0)).toBe(
-      "https://api.maptiler.com/maps/streets-v4/style.json?key=public_test_123",
-    ));
+  it("usa teselas raster públicas de OpenStreetMap sin clave", () => {
+    expect(mapStyle("live", 0)).toMatchObject({
+      sources: {
+        osm: {
+          type: "raster",
+          tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
+          attribution: "© OpenStreetMap contributors",
+        },
+      },
+      layers: [{ id: "osm", type: "raster", source: "osm" }],
+    });
+  });
   it("mantiene el mapa de pruebas sin red y permite recuperar el fallo inicial", () => {
-    expect(mapStyle(undefined, "fixture", 0)).toMatchObject({
+    expect(mapStyle("fixture", 0)).toMatchObject({
       version: 8,
       sources: {},
     });
-    expect(mapStyle(undefined, "fixture-error", 0)).toBe(
+    expect(mapStyle("fixture-error", 0)).toBe(
       "https://127.0.0.1:1/unavailable-style.json",
     );
-    expect(mapStyle(undefined, "fixture-error", 1)).toMatchObject({
+    expect(mapStyle("fixture-error", 1)).toMatchObject({
       version: 8,
     });
   });

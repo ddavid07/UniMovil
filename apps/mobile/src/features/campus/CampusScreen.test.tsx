@@ -32,24 +32,15 @@ describe("recorrido móvil del campus", () => {
     ).toBeTruthy();
   });
   it("ofrece sugerencias mientras se escribe y distingue datos ausentes", async () => {
-    process.env.EXPO_PUBLIC_MAPTILER_KEY = "public_test_configuration";
-    try {
-      await render(<CampusScreen />);
-      await screen.findByRole("button", { name: "Ver lugares (24)" });
-      await fireEvent.changeText(
-        screen.getByLabelText("Buscar lugares"),
-        "1690",
-      );
-      await fireEvent.press(
-        screen.getByRole("button", { name: /^Sugerencia:/ }),
-      );
-      expect(screen.getByText("Sin descripción publicada.")).toBeTruthy();
-      await fireEvent.press(
-        screen.getByRole("button", { name: "Cerrar ficha" }),
-      );
-    } finally {
-      delete process.env.EXPO_PUBLIC_MAPTILER_KEY;
-    }
+    await render(<CampusScreen />);
+    await screen.findByRole("button", { name: "Ver lugares (24)" });
+    await fireEvent.changeText(
+      screen.getByLabelText("Buscar lugares"),
+      "1690",
+    );
+    await fireEvent.press(screen.getByRole("button", { name: /^Sugerencia:/ }));
+    expect(screen.getByText("Sin descripción publicada.")).toBeTruthy();
+    await fireEvent.press(screen.getByRole("button", { name: "Cerrar ficha" }));
   });
   it("consulta un lugar desde la búsqueda, conserva criterios al cerrar y recupera una consulta vacía", async () => {
     await render(<CampusScreen />);

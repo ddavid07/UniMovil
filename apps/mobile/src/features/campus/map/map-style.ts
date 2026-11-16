@@ -5,7 +5,6 @@ export function mapMode(value: string | undefined): MapMode {
   return "live";
 }
 export function mapStyle(
-  key: string | undefined,
   mode: MapMode,
   attempt: number,
 ): MapProps["mapStyle"] | null {
@@ -24,6 +23,18 @@ export function mapStyle(
         },
       ],
     };
-  if (!key || !/^[a-zA-Z0-9_-]{10,128}$/.test(key)) return null;
-  return `https://api.maptiler.com/maps/streets-v4/style.json?key=${encodeURIComponent(key)}`;
+  return {
+    version: 8,
+    name: "OpenStreetMap raster",
+    sources: {
+      osm: {
+        type: "raster",
+        tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
+        tileSize: 256,
+        maxzoom: 19,
+        attribution: "© OpenStreetMap contributors",
+      },
+    },
+    layers: [{ id: "osm", type: "raster", source: "osm" }],
+  };
 }

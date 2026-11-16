@@ -80,9 +80,6 @@ export function CampusScreen({ repository }: Props) {
               selected={campus.selected}
               onSelect={select}
               mode={mapMode(process.env.EXPO_PUBLIC_MAP_MODE)}
-              {...(process.env.EXPO_PUBLIC_MAPTILER_KEY
-                ? { apiKey: process.env.EXPO_PUBLIC_MAPTILER_KEY }
-                : {})}
             />
           </>
         )}

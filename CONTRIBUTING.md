@@ -58,14 +58,13 @@ La CI verifica firmas npm, licencias y alineación con Expo. CodeQL, Dependency 
 MapLibre requiere una compilación nativa; Expo Go no contiene este módulo. Desde la raíz:
 
 ```sh
-cp apps/mobile/.env.example apps/mobile/.env.local
 npm run build:packages
 npm run android --workspace=@unimovil/mobile
 # En macOS con Xcode:
 npm run ios --workspace=@unimovil/mobile
 ```
 
-Configura `EXPO_PUBLIC_MAPTILER_KEY` en el archivo local con una clave pública de cliente dedicada. Restringe su User-Agent a `UniMovil/0.1` en MapTiler, revisa cuotas y no uses tokens de servicio. La clave estará presente en el bundle; no es un secreto de backend. La API no es necesaria para este catálogo local. Después de instalar el build de desarrollo, `npm run dev:mobile` arranca Metro para iterar. Las modificaciones de plugins o dependencias nativas requieren reconstruir la aplicación.
+El mapa solicita teselas estándar de OpenStreetMap sin clave y envía el identificador `UniMovil/0.1`. La aplicación muestra atribución enlazada y no descarga ni precarga teselas para uso offline. El servicio público es best-effort y de capacidad limitada; consulta la política de uso antes de publicar o aumentar el tráfico. La lista de lugares usa el catálogo local y la API no es necesaria. Después de instalar el build de desarrollo, `npm run dev:mobile` arranca Metro para iterar. Las modificaciones de plugins o dependencias nativas requieren reconstruir la aplicación.
 
 Los lugares proceden de OpenStreetMap y conservan ODbL, fuente y fecha de consulta por registro. No son una inspección de campo ni una garantía de apertura o accesibilidad. Los puntos centrales de edificios no representan entradas. El catálogo no contiene datos personales y se valida con `npm run catalog:check` después de construir los contratos.
 
@@ -73,11 +72,11 @@ Los lugares proceden de OpenStreetMap y conservan ODbL, fuente y fecha de consul
 
 `npm test` ejecuta suites reales de dominio y componentes: exige 90 % de líneas, sentencias y funciones y 85 % de ramas; 100 % de ramas en validador y lógica de exploración, y por archivo al menos 80 % de líneas y 70 % de ramas. `npm run test:performance` mide búsqueda y filtrado de 1.000 registros sintéticos en Node y guarda las muestras en `test-results/`; no demuestra rendimiento nativo.
 
-La CI `Native mobile` compila APK Android y aplicación de simulador iOS con JavaScript integrado, y ejecuta Maestro 2.11.0 verificado mediante SHA-256. Las fixtures usan MapLibre nativo y un fondo local sin teselas externas; se identifican claramente en pantalla. El modo `fixture-error` comprueba un fallo real de carga y su recuperación. No se deben usar estos builds como evidencia de MapTiler real.
+La CI `Native mobile` compila APK Android y aplicación de simulador iOS con JavaScript integrado, y ejecuta Maestro 2.11.0 verificado mediante SHA-256. Las fixtures usan MapLibre nativo y un fondo local sin teselas externas; se identifican claramente en pantalla. El modo `fixture-error` comprueba un fallo real de carga y su recuperación. Estos builds no validan conectividad con el servicio de teselas de OpenStreetMap.
 
-El workflow ejecuta tres repeticiones sobre el mismo commit. Si existe `MAPTILER_PUBLIC_CLIENT_KEY` como secreto de configuración de Actions, añade automáticamente flujos `live` con el proveedor real a las pruebas de fixtures, también antes de integrar la PR. El check `Native acceptance` falla si no se han completado los builds/flujos o falta esa configuración. Tras añadirla se pueden volver a ejecutar todos los jobs de la PR. El modo manual `live` exige la misma configuración. Sus artefactos son públicos; esa clave debe ser exclusivamente de cliente y estar restringida. Los tests de fixture requieren `APP_VARIANT=e2e`; el build normal rechaza su activación accidental. Los APK de CI se compilan para el emulador x86_64; iOS se compila para la arquitectura del runner. No son artefactos de publicación en tiendas. Android usa API 36; iOS fija Xcode 26.6 y runtime 26.5. Las ejecuciones normales usan Pixel 6/iPhone 16 y las de recuperación un tamaño Android compacto/iPhone SE de tercera generación; los logs conservan las versiones efectivas.
+El workflow ejecuta tres repeticiones sobre el mismo commit y `Native acceptance` falla si no se completan los builds o flujos. Los tests de fixture requieren `APP_VARIANT=e2e`; el build normal rechaza su activación accidental. Los APK de CI se compilan para el emulador x86_64; iOS se compila para la arquitectura del runner. No son artefactos de publicación en tiendas. Android usa API 36; iOS fija Xcode 26.6 y runtime 26.5. Las ejecuciones normales usan Pixel 6/iPhone 16 y las de recuperación un tamaño Android compacto/iPhone SE de tercera generación; los logs conservan las versiones efectivas.
 
-La aceptación requiere además revisar atribución y posiciones con MapTiler real, tamaños compactos, texto al 200 %, accesibilidad y los presupuestos nativos de arranque, interacción, fotogramas y memoria. Esas comprobaciones no se consideran ejecutadas porque pasen las pruebas de Node o componentes. La estrategia del panel sigue siendo Playwright cuando se implemente su funcionalidad; este incremento no cambia el panel.
+La aceptación requiere además revisar teselas y atribución OSM en un dispositivo, tamaños compactos, texto al 200 %, accesibilidad y los presupuestos nativos de arranque, interacción, fotogramas y memoria. Esas comprobaciones no se consideran ejecutadas porque pasen las pruebas de Node o componentes. La estrategia del panel sigue siendo Playwright cuando se implemente su funcionalidad; este incremento no cambia el panel.
 
 Antes de abrir un pull request, ejecuta `npm run ci` y revisa el diff para confirmar que no incluye secretos, datos personales reales ni artefactos generados.
 

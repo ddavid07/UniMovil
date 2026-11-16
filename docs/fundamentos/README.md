@@ -43,7 +43,7 @@ La documentación debe responder a tres preguntas:
 - El panel de administración será una aplicación web React con Vite en `apps/admin`.
 - Node.js 24.21.0 LTS será la versión inicial fijada por el repositorio.
 - MapLibre React Native renderizará los mapas.
-- MapTiler Cloud Free será el proveedor inicial de mapas base.
+- OpenStreetMap servirá las teselas raster iniciales sin clave de API, sujetas a su política de uso.
 - openrouteservice se utilizará inicialmente para el cálculo de rutas.
 - OpenStreetMap será una fuente geográfica, respetando su atribución y políticas de uso.
 - El proyecto utilizará Apache License 2.0.

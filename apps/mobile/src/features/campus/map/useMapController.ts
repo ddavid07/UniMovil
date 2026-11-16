@@ -15,7 +15,7 @@ function useMapResources() {
       id: "unimovil-user-agent",
       name: "User-Agent",
       value: "UniMovil/0.1",
-      match: /^https:\/\/api\.maptiler\.com\//,
+    match: /^https:\/\/tile\.openstreetmap\.org\//,
     });
     LogManager.onLog((event) => {
       console.warn("MapLibre", event.level, event.tag);
@@ -32,15 +32,14 @@ export function useMapController(
   allPlaces: readonly Place[],
   selected: Place | null,
   mode: MapMode,
-  apiKey?: string,
 ) {
   const camera = useRef<CameraRef>(null);
   const zoom = useRef(14);
   const [attempt, setAttempt] = useState(0);
   const [state, setState] = useState<"loading" | "ready" | "error">("loading");
   const style = useMemo(
-    () => mapStyle(apiKey, mode, attempt),
-    [apiKey, mode, attempt],
+    () => mapStyle(mode, attempt),
+    [mode, attempt],
   );
   const bounds = useMemo(() => campusBounds(allPlaces), [allPlaces]);
   const resourcesReady = useMapResources();

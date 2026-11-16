@@ -67,7 +67,7 @@ La aplicación móvil se comunica con el backend mediante HTTPS. La API aplica a
 ## Mapas y rutas
 
 - MapLibre React Native renderiza los mapas.
-- MapTiler Cloud Free proporciona los mapas base iniciales.
+- OpenStreetMap proporciona las teselas raster iniciales sin clave de API.
 - openrouteservice calcula las rutas.
 - OpenStreetMap aporta datos geográficos respetando su atribución y políticas de uso.
 - Los edificios, servicios, paradas y recursos específicos del campus se mantienen en la base de datos de UniMovil.
@@ -96,15 +96,13 @@ Consulta [Contribuir a UniMovil](CONTRIBUTING.md) para instalar el monorepo y ej
 
 ## Desarrollo
 
-La aplicación móvil incorpora la exploración del campus mediante un catálogo local de solo lectura. MapLibre necesita un build nativo y configuración pública de MapTiler; consulta CONTRIBUTING para requisitos, atribución y validación. La API de lugares y la administración del catálogo pertenecen a incrementos posteriores.
+La aplicación móvil incorpora la exploración del campus mediante un catálogo local de solo lectura. MapLibre necesita un build nativo y conexión para mostrar las teselas de OpenStreetMap; consulta CONTRIBUTING para atribución y política de uso. La lista del catálogo continúa disponible sin conexión. La API de lugares y la administración del catálogo pertenecen a incrementos posteriores.
 
 Instala las dependencias, configura el cliente de mapas y crea el build de desarrollo:
 
 ```sh
 npm ci
 npm run build:packages
-cp apps/mobile/.env.example apps/mobile/.env.local
-# Configura la clave pública de cliente en el archivo local.
 npm run android --workspace=@unimovil/mobile
 # iOS requiere macOS y Xcode: npm run ios --workspace=@unimovil/mobile
 ```

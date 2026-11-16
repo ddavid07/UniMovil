@@ -12,7 +12,6 @@ interface Props {
   selected: Place | null;
   onSelect: (id: string) => void;
   mode: MapMode;
-  apiKey?: string;
 }
 export function CampusMap({
   places,
@@ -20,9 +19,8 @@ export function CampusMap({
   selected,
   onSelect,
   mode,
-  apiKey,
 }: Props) {
-  const controller = useMapController(allPlaces, selected, mode, apiKey);
+  const controller = useMapController(allPlaces, selected, mode);
   const [viewport, setViewport] = useState("inicial");
   if (!controller.resourcesReady)
     return (
@@ -34,8 +32,8 @@ export function CampusMap({
     return (
       <View style={styles.message}>
         <Text>
-          Falta configurar el proveedor del mapa. Puedes consultar todos los
-          lugares desde la lista.
+          No se pudo preparar el mapa. Puedes consultar todos los lugares desde
+          la lista.
         </Text>
       </View>
     );

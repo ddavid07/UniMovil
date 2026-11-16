@@ -43,7 +43,7 @@ export function MapStatus({
       )}
       {mode !== "live" && (
         <>
-          <Text style={styles.text}>Prueba cartográfica sin MapTiler</Text>
+          <Text style={styles.text}>Mapa de prueba sin conexión externa</Text>
           <Text style={styles.text}>Vista del mapa: {viewport}</Text>
         </>
       )}

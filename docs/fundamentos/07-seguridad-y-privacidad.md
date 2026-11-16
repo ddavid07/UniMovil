@@ -41,7 +41,7 @@
 
 Nunca se versionarán:
 
-- Claves de MapTiler.
+- Claves de servicios externos futuros, gestionadas fuera del cliente móvil.
 - Claves de openrouteservice.
 - Contraseñas.
 - Tokens de sesión.
