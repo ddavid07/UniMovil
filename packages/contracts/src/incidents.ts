@@ -269,3 +269,18 @@ export function validateIncidentReport(
     errors: [],
   };
 }
+
+const INCIDENT_TRANSITIONS = new Map<IncidentStatus, readonly IncidentStatus[]>([
+  ["reportada", ["en_curso", "resuelta"]],
+  ["en_curso", ["resuelta", "reportada"]],
+  ["resuelta", ["en_curso"]],
+]);
+
+export function isValidIncidentTransition(
+  current: IncidentStatus,
+  next: IncidentStatus,
+): boolean {
+  if (current === next) return true;
+  const target = INCIDENT_TRANSITIONS.get(current);
+  return target ? target.includes(next) : false;
+}

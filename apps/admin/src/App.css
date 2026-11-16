@@ -1,147 +1,133 @@
-.presentation-screen {
-  position: relative;
-  display: grid;
-  min-height: 100svh;
-  overflow: hidden;
-  place-items: center;
-  isolation: isolate;
-  padding: 2rem;
-  color: #fff;
-  background: #101a22;
+/*
+  Estilos globales para la aplicación de administración de UniMovil.
+  Paleta corporativa UCM (modo oscuro).
+*/
+
+:root {
+  --ucm-red: #9e1b32;
+  --ucm-dark-bg: #121212;
+  --ucm-light-bg: #1e1e1e;
+  --ucm-text-primary: #ffffff;
+  --ucm-text-secondary: #cccccc;
+  --ucm-primary: var(--ucm-red);
+  --ucm-primary-hover: #b3263a;
+  --ucm-border-radius: 4px;
+  --ucm-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
-.presentation-screen::before,
-.presentation-screen::after {
-  position: absolute;
-  z-index: -1;
-  content: "";
-  inset: 0;
-}
-
-.presentation-screen::before {
-  background-image:
-    linear-gradient(
-      105deg,
-      rgb(9 18 27 / 76%),
-      rgb(14 26 35 / 53%) 55%,
-      rgb(8 17 26 / 68%)
-    ),
-    url("/images/ucm-campus-map.webp");
-  background-position: center;
-  background-size: cover;
-  filter: saturate(0.75);
-  transform: scale(1.015);
-}
-
-.presentation-screen::after {
-  background: radial-gradient(
-    ellipse at center,
-    transparent 14%,
-    rgb(4 11 17 / 38%) 100%
-  );
-  pointer-events: none;
-}
-
-.university-logo {
-  position: absolute;
-  top: clamp(1.5rem, 4vw, 3.5rem);
-  left: clamp(1.5rem, 5vw, 5rem);
-  width: clamp(9rem, 17vw, 14rem);
-  height: auto;
-  filter: grayscale(1) invert(1);
-  mix-blend-mode: screen;
-  opacity: 0.9;
-}
-
-.title-group {
-  width: 100%;
-  text-align: center;
-  transform: translateY(2vh);
-}
-
-.title-group h1 {
+body {
   margin: 0;
-  font-size: clamp(4rem, 12.5vw, 11rem);
-  font-weight: 750;
-  letter-spacing: 0.1em;
-  line-height: 0.95;
-  text-indent: 0.1em;
-  text-shadow: 0 4px 36px rgb(0 0 0 / 24%);
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  background-color: var(--ucm-dark-bg);
+  color: var(--ucm-text-primary);
 }
 
-.title-group p {
-  margin: clamp(1rem, 3vw, 2rem) 0 0;
-  color: rgb(255 255 255 / 88%);
-  font-size: clamp(1.15rem, 2.2vw, 1.75rem);
-  font-weight: 400;
-  letter-spacing: 0.28em;
-  text-indent: 0.28em;
-  text-shadow: 0 2px 18px rgb(0 0 0 / 35%);
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-.image-credit {
-  position: absolute;
-  right: 1.5rem;
-  bottom: 1.25rem;
-  color: rgb(255 255 255 / 72%);
-  font-size: 0.7rem;
-  letter-spacing: 0.04em;
-  text-decoration-color: rgb(255 255 255 / 35%);
-  text-underline-offset: 0.2em;
+header {
+  background-color: var(--ucm-primary);
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--ucm-text-primary);
 }
 
-.image-credit:hover {
-  color: #fff;
+header .logo {
+  height: 40px;
 }
 
-@media (max-width: 600px) {
-  .presentation-screen {
-    padding: 1.5rem;
-  }
-
-  .presentation-screen::before {
-    background-position: center 58%;
-    background-size: auto 122%;
-  }
-
-  .university-logo {
-    top: 1.5rem;
-    left: 1.5rem;
-    width: 8.5rem;
-  }
-
-  .title-group h1 {
-    font-size: clamp(2.4rem, 12vw, 4.5rem);
-    letter-spacing: 0.04em;
-    text-indent: 0.04em;
-  }
-
-  .title-group p {
-    letter-spacing: 0.2em;
-    text-indent: 0.2em;
-  }
-
-  .image-credit {
-    right: 1rem;
-    bottom: 1rem;
-    font-size: 0.62rem;
-  }
+.tabs {
+  display: flex;
+  background-color: var(--ucm-light-bg);
+  padding: 0.5rem;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .presentation-screen::before {
-    animation: map-reveal 1.2s ease-out both;
-  }
+.tabs button {
+  background: none;
+  border: none;
+  color: var(--ucm-text-secondary);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
 }
 
-@keyframes map-reveal {
-  from {
-    opacity: 0.65;
-    transform: scale(1.06);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1.015);
-  }
+.tabs button.active {
+  color: var(--ucm-text-primary);
+  border-bottom-color: var(--ucm-primary);
 }
+
+.main-content {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--ucm-light-bg);
+}
+
+.table th,
+.table td {
+  padding: 0.75rem;
+  border: 1px solid #333;
+  text-align: left;
+}
+
+.table th {
+  background-color: var(--ucm-primary);
+  color: var(--ucm-text-primary);
+}
+
+.card {
+  background-color: var(--ucm-light-bg);
+  border-radius: var(--ucm-border-radius);
+  box-shadow: var(--ucm-shadow);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: var(--ucm-light-bg);
+  border-radius: var(--ucm-border-radius);
+  width: 90%;
+  max-width: 500px;
+  padding: 1.5rem;
+  box-shadow: var(--ucm-shadow);
+}
+
+.badge {
+  display: inline-block;
+  background-color: var(--ucm-primary);
+  color: var(--ucm-text-primary);
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--ucm-border-radius);
+  font-size: 0.75rem;
+}
+
+.diff-chip {
+  display: inline-block;
+  padding: 0.2rem 0.4rem;
+  border-radius: var(--ucm-border-radius);
+  font-size: 0.75rem;
+  margin-right: 0.25rem;
+}
+.diff-chip.add { background-color: #4caf50; color: #fff; }
+.diff-chip.remove { background-color: #f44336; color: #fff; }
+.diff-chip.update { background-color: #ff9800; color: #fff; }

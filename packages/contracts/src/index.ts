@@ -6,3 +6,4 @@ export * from "./parse-places.js";
 export * from "./routes.js";
 export * from "./transit.js";
 export * from "./incidents.js";
+export * from "./audit.js";

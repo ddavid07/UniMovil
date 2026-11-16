@@ -3,6 +3,7 @@ import {
   INCIDENT_SEVERITIES,
   INCIDENT_STATUSES,
   INCIDENT_TYPES,
+  isValidIncidentTransition,
   validateIncidentReport,
 } from "./incidents.js";
 
@@ -177,5 +178,15 @@ describe("Contratos de Incidencias (packages/contracts)", () => {
     expect(
       result.errors.some((e) => e.code === "ERR_COORDINATES_OUT_OF_CAMPUS"),
     ).toBe(true);
+  });
+
+  it("valida transiciones permitidas del ciclo de vida de incidencias", () => {
+    expect(isValidIncidentTransition("reportada", "en_curso")).toBe(true);
+    expect(isValidIncidentTransition("reportada", "resuelta")).toBe(true);
+    expect(isValidIncidentTransition("reportada", "reportada")).toBe(true);
+    expect(isValidIncidentTransition("en_curso", "resuelta")).toBe(true);
+    expect(isValidIncidentTransition("en_curso", "reportada")).toBe(true);
+    expect(isValidIncidentTransition("resuelta", "en_curso")).toBe(true);
+    expect(isValidIncidentTransition("resuelta", "reportada")).toBe(false);
   });
 });
