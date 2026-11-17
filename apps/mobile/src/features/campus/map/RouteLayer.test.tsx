@@ -26,4 +26,18 @@ describe("RouteLayer MapLibre Component (HU-021 - TDD Tema 3)", () => {
     const { toJSON } = await render(<RouteLayer route={mockRoute} />);
     expect(toJSON()).not.toBeNull();
   });
+
+  it("aplica el color distintivo ámbar para rutas en bicicleta", async () => {
+    const bikeRoute: RouteResponse = {
+      ...mockRoute,
+      accessible: false,
+      mode: "bicycle",
+    };
+    const { toJSON } = await render(<RouteLayer route={bikeRoute} />);
+    const json = toJSON() as any;
+    const mainLayer = json?.children?.find(
+      (c: any) => c.props?.id === "route-line-main",
+    );
+    expect(mainLayer?.props?.paint?.["line-color"]).toBe("#d97706");
+  });
 });

@@ -19,7 +19,14 @@ export function RouteLayer({ route }: Props) {
     return null;
   }
 
-  const lineColor = route.accessible ? "#10b981" : "#2563eb";
+  const lineColor =
+    route.mode === "bicycle"
+      ? "#d97706"
+      : route.mode === "bus"
+        ? "#2563eb"
+        : route.accessible
+          ? "#10b981"
+          : "#2563eb";
 
   return (
     <GeoJSONSource id="pedestrian-route-source" data={geojsonData}>
