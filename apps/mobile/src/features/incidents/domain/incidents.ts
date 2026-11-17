@@ -1,10 +1,17 @@
 import {
-  type Incident,
   type IncidentReportInput,
-  type IncidentStatus,
+  type IncidentReportStatus,
   type IncidentValidationError,
   validateIncidentReport,
 } from "@unimovil/contracts";
+
+export interface Incident extends IncidentReportInput {
+  readonly id: string;
+  readonly status: IncidentReportStatus;
+  readonly reportedAt: string;
+  readonly updatedAt?: string | undefined;
+  readonly resolvedAt?: string | undefined;
+}
 
 export interface IncidentSubmissionResult {
   readonly success: boolean;
@@ -66,7 +73,7 @@ export class IncidentStore {
     };
   }
 
-  public updateStatus(id: string, newStatus: IncidentStatus): boolean {
+  public updateStatus(id: string, newStatus: IncidentReportStatus): boolean {
     const target = this.incidents.find((inc) => inc.id === id);
     if (!target) {
       return false;

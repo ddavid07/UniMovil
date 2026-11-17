@@ -6,11 +6,6 @@ on:
     branches: [main]
   workflow_dispatch:
     inputs:
-      provider:
-        description: Fixtures reproducibles o MapTiler real (requiere MAPTILER_PUBLIC_CLIENT_KEY)
-        type: choice
-        options: [automatic, live]
-        default: automatic
       repetitions:
         description: Consecutive runs on the same commit
         type: choice
@@ -28,22 +23,10 @@ jobs:
     runs-on: ubuntu-24.04
     outputs:
       modes: ${{ steps.matrix.outputs.modes }}
-      live: ${{ steps.matrix.outputs.live }}
     steps:
       - id: matrix
-        env:
-          KEY_CONFIGURED: ${{ secrets.MAPTILER_PUBLIC_CLIENT_KEY != '' }}
-          LIVE_REQUESTED: ${{ inputs.provider == 'live' }}
         run: |
-          if [ "$LIVE_REQUESTED" = true ] && [ "$KEY_CONFIGURED" != true ]; then
-            echo '::error::Falta MAPTILER_PUBLIC_CLIENT_KEY para validar MapTiler real.'
-            exit 1
-          fi
-          modes='["fixture","fixture-error"]'
-          if [ "$KEY_CONFIGURED" = true ]; then
-            modes='["fixture","fixture-error","live"]'
-          fi
-          printf 'modes=%s\nlive=%s\n' "$modes" "$KEY_CONFIGURED" >> "$GITHUB_OUTPUT"
+          printf 'modes=["fixture","fixture-error"]\n' >> "$GITHUB_OUTPUT"
   native:
     name: Mobile ${{ matrix.platform }} (${{ matrix.mode }})
     needs: configuration
@@ -56,28 +39,24 @@ jobs:
     timeout-minutes: 60
     env:
       CI: "true"
-      APP_VARIANT: ${{ matrix.mode == 'live' && 'preview' || 'e2e' }}
-      EXPO_PUBLIC_MAPTILER_KEY: ${{ matrix.mode == 'live' && secrets.MAPTILER_PUBLIC_CLIENT_KEY || '' }}
+      APP_VARIANT: e2e
       EXPO_PUBLIC_MAP_MODE: ${{ matrix.mode }}
       E2E_REPETITIONS: ${{ inputs.repetitions || '3' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .node-version
           cache: npm
       - run: npm install --global npm@12.2.0
       - run: npm ci
       - run: npm run build:packages
-      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+      - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
         with:
           distribution: temurin
           java-version: "21"
-      - name: Validate live configuration
-        if: matrix.mode == 'live'
-        run: test -n "$EXPO_PUBLIC_MAPTILER_KEY"
       - name: Install verified Maestro CLI
         run: bash scripts/install-maestro.sh
       - name: Record toolchain
@@ -128,7 +107,7 @@ jobs:
         run: bash scripts/ios-e2e.sh
       - name: Preserve native diagnostics
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: native-${{ matrix.platform }}-${{ matrix.mode }}
           retention-days: 7
@@ -150,11 +129,6 @@ jobs:
         env:
           CONFIGURATION_RESULT: ${{ needs.configuration.result }}
           NATIVE_RESULT: ${{ needs.native.result }}
-          LIVE_CONFIGURED: ${{ needs.configuration.outputs.live }}
         run: |
           test "$CONFIGURATION_RESULT" = success
           test "$NATIVE_RESULT" = success
-          if [ "$LIVE_CONFIGURED" != true ]; then
-            echo '::error::La aceptación requiere configurar MAPTILER_PUBLIC_CLIENT_KEY y ejecutar los flujos con MapTiler real. Las fixtures no completan esa validación.'
-            exit 1
-          fi

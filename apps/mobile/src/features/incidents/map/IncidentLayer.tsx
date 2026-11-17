@@ -9,7 +9,7 @@
  */
 import { useMemo } from "react";
 import { GeoJSONSource, Layer } from "@maplibre/maplibre-react-native";
-import type { Incident } from "@unimovil/contracts";
+import type { Incident } from "../domain/incidents";
 import { incidentsToGeoJSON } from "./geojson";
 
 interface Props {
@@ -17,6 +17,7 @@ interface Props {
   readonly incidents: readonly Incident[];
   /** Controla la visibilidad de la capa. Por defecto: true. */
   readonly visible?: boolean;
+  readonly onSelectIncident?: ((incident: Incident) => void) | undefined;
 }
 
 /**
@@ -26,18 +27,31 @@ interface Props {
  * Color base: #f97316 (naranja, coherente con HU-053).
  * Las incidencias críticas usan #D32F2F (rojo) para máxima urgencia.
  */
-export function IncidentLayer({ incidents, visible = true }: Props) {
-  const geojsonData = useMemo(
-    () => incidentsToGeoJSON(incidents),
-    [incidents],
-  );
+export function IncidentLayer({
+  incidents,
+  visible = true,
+  onSelectIncident,
+}: Props) {
+  const geojsonData = useMemo(() => incidentsToGeoJSON(incidents), [incidents]);
 
   if (!visible || incidents.length === 0) {
     return null;
   }
 
   return (
-    <GeoJSONSource id="incidents-source" data={geojsonData}>
+    <GeoJSONSource
+      id="incidents-source"
+      data={geojsonData}
+      hitbox={{ top: 24, bottom: 24, left: 24, right: 24 }}
+      onPress={(event) => {
+        const id: unknown = event.nativeEvent.features[0]?.properties?.id;
+        const selected = incidents.find((incident) => incident.id === id);
+        if (selected) {
+          event.stopPropagation();
+          onSelectIncident?.(selected);
+        }
+      }}
+    >
       {/* Halo blanco para contraste con el fondo del mapa */}
       <Layer
         id="incidents-halo"

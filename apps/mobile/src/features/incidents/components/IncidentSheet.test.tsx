@@ -10,7 +10,7 @@ import {
   render,
   screen,
 } from "@testing-library/react-native";
-import type { Incident } from "@unimovil/contracts";
+import type { Incident } from "../domain/incidents";
 import { IncidentSheet } from "./IncidentSheet";
 
 const mockIncident: Incident = {
@@ -42,9 +42,7 @@ describe("IncidentSheet – ficha informativa de incidencia (HU-053, TDD Tema 3)
   it("muestra los datos principales de la incidencia", async () => {
     await render(<IncidentSheet incident={mockIncident} onClose={jest.fn()} />);
 
-    expect(
-      screen.getByText("Obras en vial de acceso a Medicina"),
-    ).toBeTruthy();
+    expect(screen.getByText("Obras en vial de acceso a Medicina")).toBeTruthy();
     expect(
       screen.getByText(
         "Zanja señalizada en acera peatonal derecha por canalizaciones eléctricas.",
@@ -70,9 +68,7 @@ describe("IncidentSheet – ficha informativa de incidencia (HU-053, TDD Tema 3)
     const onClose = jest.fn();
     await render(<IncidentSheet incident={mockIncident} onClose={onClose} />);
 
-    await fireEvent.press(
-      screen.getByLabelText("Cerrar ficha de incidencia"),
-    );
+    await fireEvent.press(screen.getByLabelText("Cerrar ficha de incidencia"));
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 

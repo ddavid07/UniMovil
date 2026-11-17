@@ -2,7 +2,6 @@ import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Camera, Map } from "@maplibre/maplibre-react-native";
 import type {
-  Incident,
   Place,
   RouteResponse,
   TransitLine,
@@ -22,6 +21,7 @@ import {
 import { IncidentLayer } from "../../incidents/map/IncidentLayer";
 import {
   MONCLOA_CAMPUS_SEED_INCIDENTS,
+  type Incident,
 } from "../../incidents/domain/incidents";
 
 interface Props {
@@ -30,13 +30,13 @@ interface Props {
   selected: Place | null;
   onSelect: (id: string) => void;
   mode: MapMode;
-  apiKey?: string | undefined;
   route?: RouteResponse | null | undefined;
   showTransit?: boolean | undefined;
   transitLines?: readonly TransitLine[] | undefined;
   transitStops?: readonly TransitStop[] | undefined;
   selectedTransitStop?: TransitStop | null | undefined;
   onSelectTransitStop?: ((stop: TransitStop) => void) | undefined;
+  onSelectIncident?: ((incident: Incident) => void) | undefined;
   showIncidents?: boolean | undefined;
   incidents?: readonly Incident[] | undefined;
 }
@@ -59,8 +59,8 @@ function MapStateMessage({
     return (
       <View style={styles.message}>
         <Text>
-          Falta configurar el proveedor del mapa. Puedes consultar todos los
-          lugares desde la lista.
+          No se pudo cargar el mapa. Puedes consultar todos los lugares desde la
+          lista.
         </Text>
       </View>
     );
@@ -81,6 +81,7 @@ function MapLayers({
   route,
   showIncidents,
   incidents,
+  onSelectIncident,
 }: {
   places: readonly Place[];
   selected: Place | null;
@@ -94,6 +95,7 @@ function MapLayers({
   route?: RouteResponse | null | undefined;
   showIncidents?: boolean | undefined;
   incidents?: readonly Incident[] | undefined;
+  onSelectIncident?: ((incident: Incident) => void) | undefined;
 }) {
   return (
     <>
@@ -117,6 +119,7 @@ function MapLayers({
       <IncidentLayer
         incidents={incidents ?? MONCLOA_CAMPUS_SEED_INCIDENTS}
         visible={showIncidents ?? true}
+        onSelectIncident={onSelectIncident}
       />
     </>
   );
@@ -176,17 +179,17 @@ export function CampusMap({
   selected,
   onSelect,
   mode,
-  apiKey,
   route,
   showTransit = false,
   transitLines,
   transitStops,
   selectedTransitStop,
   onSelectTransitStop,
+  onSelectIncident,
   showIncidents = false,
   incidents,
 }: Props) {
-  const controller = useMapController(allPlaces, selected, mode, apiKey);
+  const controller = useMapController(allPlaces, selected, mode);
   const [viewport, setViewport] = useState("inicial");
 
   if (!controller.resourcesReady || !controller.style) {
@@ -218,6 +221,7 @@ export function CampusMap({
           route,
           showIncidents,
           incidents,
+          onSelectIncident,
         }}
       />
       <MapStatus

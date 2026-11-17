@@ -1,4 +1,4 @@
-import type { Incident } from "@unimovil/contracts";
+import type { Incident } from "../domain/incidents";
 
 export interface IncidentGeoJSONProperties {
   readonly id: string;

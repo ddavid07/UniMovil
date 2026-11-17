@@ -15,12 +15,17 @@ import { CampusModals } from "./components/CampusModals";
 import { CampusInteractiveSection } from "./components/CampusInteractiveSection";
 import { useCampus } from "./useCampus";
 import type { PlacesRepository } from "./data/repository";
-import type { Incident, Place, TransitStop } from "@unimovil/contracts";
+import type { Place, TransitStop } from "@unimovil/contracts";
 import { useRouting } from "../routing/useRouting";
 import type { RoutingRepository } from "../routing/data/repository";
 import { NetworkBanner } from "../offline/components/NetworkBanner";
 import { useNetworkStatus } from "../offline/useNetworkStatus";
 import { ReportIncidentScreen } from "../incidents/components/ReportIncidentScreen";
+import {
+  IncidentStore,
+  MONCLOA_CAMPUS_SEED_INCIDENTS,
+  type Incident,
+} from "../incidents/domain/incidents";
 
 interface Props {
   readonly repository?: PlacesRepository;
@@ -70,6 +75,20 @@ function CampusCatalogStatus({
   return null;
 }
 
+function useCampusIncidents() {
+  const [store] = useState(
+    () => new IncidentStore(MONCLOA_CAMPUS_SEED_INCIDENTS),
+  );
+  const [incidents, setIncidents] = useState(store.getAll());
+
+  function submit(input: Parameters<IncidentStore["submitIncident"]>[0]) {
+    const result = store.submitIncident(input);
+    if (result.success) setIncidents(store.getAll());
+  }
+
+  return { incidents, submit };
+}
+
 function CampusHeader({
   network,
   campus,
@@ -103,6 +122,11 @@ function CampusHeader({
   );
 }
 
+function toggleRouting(routing: ReturnType<typeof useRouting>): void {
+  if (routing.isRoutingOpen) routing.closeRouting();
+  else routing.openRouting();
+}
+
 export function CampusScreen({
   repository,
   routingRepository,
@@ -117,7 +141,10 @@ export function CampusScreen({
   const [reportOpen, setReportOpen] = useState(false);
   const [selectedTransitStop, setSelectedTransitStop] =
     useState<TransitStop | null>(null);
-  const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
+  const [selectedIncident, setSelectedIncident] = useState<Incident | null>(
+    null,
+  );
+  const incidentState = useCampusIncidents();
 
   function select(id: string) {
     Keyboard.dismiss();
@@ -139,15 +166,11 @@ export function CampusScreen({
           showTransit={showTransit}
           showIncidents={showIncidents}
           selectedTransitStop={selectedTransitStop}
+          incidents={incidentState.incidents}
+          onSelectIncident={setSelectedIncident}
           onSelectTransitStop={(stop) => setSelectedTransitStop(stop)}
           onOpenList={() => setListOpen(true)}
-          onToggleRouting={() => {
-            if (routing.isRoutingOpen) {
-              routing.closeRouting();
-            } else {
-              routing.openRouting();
-            }
-          }}
+          onToggleRouting={() => toggleRouting(routing)}
           onToggleTransit={() => setShowTransit((prev) => !prev)}
           onToggleIncidents={() => setShowIncidents((prev) => !prev)}
           onReportIncident={() => setReportOpen(true)}
@@ -171,7 +194,10 @@ export function CampusScreen({
         />
         {reportOpen && (
           <ReportIncidentScreen
-            onSubmit={() => setReportOpen(false)}
+            onSubmit={(input) => {
+              incidentState.submit(input);
+              setReportOpen(false);
+            }}
             onClose={() => setReportOpen(false)}
           />
         )}

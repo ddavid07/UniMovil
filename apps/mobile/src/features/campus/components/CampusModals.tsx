@@ -1,4 +1,5 @@
-import type { Incident, TransitStop } from "@unimovil/contracts";
+import type { TransitStop } from "@unimovil/contracts";
+import type { Incident } from "../../incidents/domain/incidents";
 import type { useCampus } from "../useCampus";
 import type { useRouting } from "../../routing/useRouting";
 import { CampusDialogs } from "./CampusDialogs";

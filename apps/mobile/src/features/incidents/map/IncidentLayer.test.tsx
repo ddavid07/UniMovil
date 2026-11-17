@@ -5,7 +5,7 @@
  * @author pablopr06 <pabpalac@ucm.es>
  */
 import { render } from "@testing-library/react-native";
-import type { Incident } from "@unimovil/contracts";
+import type { Incident } from "../domain/incidents";
 import { IncidentLayer } from "./IncidentLayer";
 
 const makeIncident = (overrides: Partial<Incident> = {}): Incident => ({

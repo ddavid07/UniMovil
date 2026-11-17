@@ -1,23 +1,6 @@
 import type { ConfigContext, ExpoConfig } from "expo/config";
 export default function configure({ config }: ConfigContext): ExpoConfig {
   const testing = process.env.APP_VARIANT === "e2e";
-  const clientKey = process.env.EXPO_PUBLIC_MAPTILER_KEY;
-  // Public API keys are opaque provider values; only reject whitespace and
-  // known service-token prefixes, which must never be bundled.
-  const looksLikeServiceToken =
-    clientKey !== undefined && /^sk_[0-9a-fA-F]{64}$/.test(clientKey);
-  const missingProductionKey =
-    clientKey !== undefined && clientKey.length === 0 && !testing;
-  if (
-    missingProductionKey ||
-    (clientKey !== undefined &&
-      (clientKey.trim() !== clientKey ||
-        /\s/.test(clientKey) ||
-        looksLikeServiceToken))
-  )
-    throw new Error(
-      "La clave pública de MapTiler es inválida. No uses tokens de servicio.",
-    );
   const plugins = config.plugins ?? [];
   const hasMapLibre = plugins.some(
     (plugin) =>

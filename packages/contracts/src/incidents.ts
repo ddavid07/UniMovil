@@ -1,271 +1,168 @@
 import type { Coordinates } from "./places.js";
-import { isWithinCampusBounds } from "./routes.js";
 
-export const INCIDENT_TYPES = [
-  "obra",
-  "desvio",
-  "rampa_averiada",
-  "acera_cortada",
-  "obstaculo_temporal",
+export const INCIDENT_STATUSES = [
+  "recibida",
+  "en_revision",
+  "en_proceso",
+  "resuelta",
+  "cerrada",
 ] as const;
-
-export type IncidentType = (typeof INCIDENT_TYPES)[number];
-
-export const INCIDENT_SEVERITIES = [
-  "baja",
-  "media",
-  "alta",
-  "critica",
-] as const;
-
-export type IncidentSeverity = (typeof INCIDENT_SEVERITIES)[number];
-
-export const INCIDENT_STATUSES = ["reportada", "en_curso", "resuelta"] as const;
 
 export type IncidentStatus = (typeof INCIDENT_STATUSES)[number];
 
-export interface IncidentReportInput {
-  readonly title: string;
-  readonly description: string;
-  readonly type: IncidentType;
-  readonly severity: IncidentSeverity;
-  readonly coordinates: Coordinates;
-  readonly reportedAt?: string;
-}
+export const INCIDENT_PRIORITIES = [
+  "baja",
+  "media",
+  "alta",
+  "urgente",
+] as const;
+
+export type IncidentPriority = (typeof INCIDENT_PRIORITIES)[number];
+
+export const INCIDENT_CATEGORIES = [
+  "rampa",
+  "ascensor",
+  "acera",
+  "obstaculo",
+  "alumbrado",
+  "transporte",
+  "otro",
+] as const;
+
+export type IncidentCategory = (typeof INCIDENT_CATEGORIES)[number];
 
 export interface Incident {
   readonly id: string;
   readonly title: string;
   readonly description: string;
-  readonly type: IncidentType;
-  readonly severity: IncidentSeverity;
-  readonly coordinates: Coordinates;
+  readonly category: IncidentCategory;
+  readonly priority: IncidentPriority;
   readonly status: IncidentStatus;
-  readonly reportedAt: string;
-  readonly updatedAt?: string;
-  readonly resolvedAt?: string;
+  readonly locationName: string;
+  readonly coordinates?: Coordinates | undefined;
+  readonly reportedBy: string;
+  readonly createdAt: string;
+  readonly updatedAt: string;
+  readonly resolutionNote?: string | undefined;
+  readonly assignedTo?: string | undefined;
 }
 
-export const INCIDENT_ERROR_CODES = [
-  "ERR_TITLE_REQUIRED",
-  "ERR_TITLE_TOO_SHORT",
-  "ERR_TITLE_TOO_LONG",
-  "ERR_TITLE_INVALID_CHARS",
-  "ERR_DESCRIPTION_REQUIRED",
-  "ERR_DESCRIPTION_TOO_SHORT",
-  "ERR_DESCRIPTION_TOO_LONG",
-  "ERR_TYPE_INVALID",
-  "ERR_SEVERITY_INVALID",
-  "ERR_COORDINATES_REQUIRED",
-  "ERR_COORDINATES_INVALID",
-  "ERR_COORDINATES_OUT_OF_CAMPUS",
-] as const;
+const TRANSITIONS = new Map<IncidentStatus, readonly IncidentStatus[]>([
+  ["recibida", ["en_revision", "cerrada"]],
+  ["en_revision", ["en_proceso", "cerrada"]],
+  ["en_proceso", ["resuelta", "en_revision"]],
+  ["resuelta", ["cerrada", "en_proceso"]],
+  ["cerrada", ["recibida", "en_revision"]],
+]);
 
-export type IncidentErrorCode = (typeof INCIDENT_ERROR_CODES)[number];
-
-export interface IncidentValidationError {
-  readonly field: string;
-  readonly code: IncidentErrorCode;
-  readonly message: string;
+export function isValidIncidentTransition(
+  current: IncidentStatus,
+  next: IncidentStatus,
+): boolean {
+  if (current === next) return true;
+  const target = TRANSITIONS.get(current);
+  return target ? target.includes(next) : false;
 }
 
-export interface IncidentValidationResult {
-  readonly isValid: boolean;
-  readonly data?: IncidentReportInput;
-  readonly errors: readonly IncidentValidationError[];
+function requireText(value: unknown, fieldName: string): string {
+  if (typeof value !== "string" || value.trim().length === 0) {
+    throw new Error(
+      `Invalid incident: ${fieldName} must be a non-empty string`,
+    );
+  }
+  return value.trim();
 }
 
-const DANGEROUS_PATTERNS = [
-  /<script/i,
-  /javascript:/i,
-  /<iframe/i,
-  /onerror\s*=/i,
-  /onload\s*=/i,
-];
-
-function validateTitleField(
-  rawTitle: unknown,
-  errors: IncidentValidationError[],
-): void {
-  if (typeof rawTitle !== "string" || rawTitle.trim().length === 0) {
-    errors.push({
-      field: "title",
-      code: "ERR_TITLE_REQUIRED",
-      message: "El título de la incidencia es obligatorio.",
-    });
-    return;
+function requireCategory(value: unknown): IncidentCategory {
+  const found = INCIDENT_CATEGORIES.find((item) => item === value);
+  if (!found) {
+    throw new Error(`Invalid incident: unknown category "${String(value)}"`);
   }
-  const trimmed = rawTitle.trim();
-  if (trimmed.length < 3) {
-    errors.push({
-      field: "title",
-      code: "ERR_TITLE_TOO_SHORT",
-      message: "El título debe contener al menos 3 caracteres.",
-    });
-  } else if (trimmed.length > 80) {
-    errors.push({
-      field: "title",
-      code: "ERR_TITLE_TOO_LONG",
-      message: "El título no puede exceder los 80 caracteres.",
-    });
-  }
-  if (DANGEROUS_PATTERNS.some((pat) => pat.test(trimmed))) {
-    errors.push({
-      field: "title",
-      code: "ERR_TITLE_INVALID_CHARS",
-      message:
-        "El título contiene secuencias de texto o scripts no permitidos.",
-    });
-  }
+  return found;
 }
 
-function validateDescriptionField(
-  rawDesc: unknown,
-  errors: IncidentValidationError[],
-): void {
-  if (typeof rawDesc !== "string" || rawDesc.trim().length === 0) {
-    errors.push({
-      field: "description",
-      code: "ERR_DESCRIPTION_REQUIRED",
-      message: "La descripción de la incidencia es obligatoria.",
-    });
-    return;
+function requirePriority(value: unknown): IncidentPriority {
+  const found = INCIDENT_PRIORITIES.find((item) => item === value);
+  if (!found) {
+    throw new Error(`Invalid incident: unknown priority "${String(value)}"`);
   }
-  const trimmed = rawDesc.trim();
-  if (trimmed.length < 5) {
-    errors.push({
-      field: "description",
-      code: "ERR_DESCRIPTION_TOO_SHORT",
-      message: "La descripción debe contener al menos 5 caracteres.",
-    });
-  } else if (trimmed.length > 500) {
-    errors.push({
-      field: "description",
-      code: "ERR_DESCRIPTION_TOO_LONG",
-      message: "La descripción no puede exceder los 500 caracteres.",
-    });
-  }
-  if (DANGEROUS_PATTERNS.some((pat) => pat.test(trimmed))) {
-    errors.push({
-      field: "description",
-      code: "ERR_TITLE_INVALID_CHARS",
-      message: "La descripción contiene secuencias de texto no permitidas.",
-    });
-  }
+  return found;
 }
 
-function validateTypeAndSeverity(
-  rawType: unknown,
-  rawSeverity: unknown,
-  errors: IncidentValidationError[],
-): void {
+function requireStatus(value: unknown): IncidentStatus {
+  const found = INCIDENT_STATUSES.find((item) => item === value);
+  if (!found) {
+    throw new Error(`Invalid incident: unknown status "${String(value)}"`);
+  }
+  return found;
+}
+
+function requireIsoDate(value: unknown, fieldName: string): string {
+  const str = requireText(value, fieldName);
+  if (Number.isNaN(Date.parse(str))) {
+    throw new Error(
+      `Invalid incident: ${fieldName} must be a valid ISO date string`,
+    );
+  }
+  return str;
+}
+
+function parseCoordinates(raw: unknown): Coordinates | undefined {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
+    return undefined;
+  }
+  const coords = raw as Record<string, unknown>;
   if (
-    typeof rawType !== "string" ||
-    !INCIDENT_TYPES.includes(rawType as IncidentType)
+    typeof coords.latitude === "number" &&
+    typeof coords.longitude === "number"
   ) {
-    errors.push({
-      field: "type",
-      code: "ERR_TYPE_INVALID",
-      message: `El tipo de incidencia no es válido. Valores admitidos: ${INCIDENT_TYPES.join(", ")}.`,
-    });
-  }
-  if (
-    typeof rawSeverity !== "string" ||
-    !INCIDENT_SEVERITIES.includes(rawSeverity as IncidentSeverity)
-  ) {
-    errors.push({
-      field: "severity",
-      code: "ERR_SEVERITY_INVALID",
-      message: `La severidad no es válida. Valores admitidos: ${INCIDENT_SEVERITIES.join(", ")}.`,
-    });
-  }
-}
-
-function validateCoordinatesField(
-  rawCoords: unknown,
-  errors: IncidentValidationError[],
-): void {
-  if (!rawCoords || typeof rawCoords !== "object") {
-    errors.push({
-      field: "coordinates",
-      code: "ERR_COORDINATES_REQUIRED",
-      message: "Las coordenadas de la incidencia son obligatorias.",
-    });
-    return;
-  }
-  const coordsObj = rawCoords as Record<string, unknown>;
-  const lat = coordsObj["latitude"];
-  const lng = coordsObj["longitude"];
-  if (
-    typeof lat !== "number" ||
-    typeof lng !== "number" ||
-    Number.isNaN(lat) ||
-    Number.isNaN(lng)
-  ) {
-    errors.push({
-      field: "coordinates",
-      code: "ERR_COORDINATES_INVALID",
-      message: "Las coordenadas deben ser valores numéricos válidos.",
-    });
-    return;
-  }
-  const coords: Coordinates = { latitude: lat, longitude: lng };
-  if (!isWithinCampusBounds(coords)) {
-    errors.push({
-      field: "coordinates",
-      code: "ERR_COORDINATES_OUT_OF_CAMPUS",
-      message:
-        "La ubicación indicada queda fuera del perímetro del campus de Moncloa.",
-    });
-  }
-}
-
-export function validateIncidentReport(
-  input: unknown,
-): IncidentValidationResult {
-  const errors: IncidentValidationError[] = [];
-  if (!input || typeof input !== "object") {
     return {
-      isValid: false,
-      errors: [
-        {
-          field: "root",
-          code: "ERR_TITLE_REQUIRED",
-          message: "Los datos de la incidencia deben ser un objeto válido.",
-        },
-      ],
+      latitude: coords.latitude,
+      longitude: coords.longitude,
     };
   }
+  return undefined;
+}
 
-  const raw = input as Record<string, unknown>;
-  validateTitleField(raw["title"], errors);
-  validateDescriptionField(raw["description"], errors);
-  validateTypeAndSeverity(raw["type"], raw["severity"], errors);
-  validateCoordinatesField(raw["coordinates"], errors);
-
-  if (errors.length > 0) {
-    return { isValid: false, errors };
+export function parseIncident(raw: unknown): Incident {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
+    throw new Error("Invalid incident: expected an object");
   }
 
-  const rawCoords = raw["coordinates"] as Record<string, unknown>;
-  const validData: IncidentReportInput = {
-    title: (raw["title"] as string).trim(),
-    description: (raw["description"] as string).trim(),
-    type: raw["type"] as IncidentType,
-    severity: raw["severity"] as IncidentSeverity,
-    coordinates: {
-      latitude: rawCoords["latitude"] as number,
-      longitude: rawCoords["longitude"] as number,
-    },
-    reportedAt:
-      typeof raw["reportedAt"] === "string"
-        ? (raw["reportedAt"] as string)
-        : new Date().toISOString(),
-  };
+  const record = raw as Record<string, unknown>;
+  const id = requireText(record.id, "id");
+  const title = requireText(record.title, "title");
+  const description = requireText(record.description, "description");
+  const category = requireCategory(record.category);
+  const priority = requirePriority(record.priority);
+  const status = requireStatus(record.status);
+  const locationName = requireText(record.locationName, "locationName");
+  const reportedBy = requireText(record.reportedBy, "reportedBy");
+  const createdAt = requireIsoDate(record.createdAt, "createdAt");
+  const updatedAt = requireIsoDate(record.updatedAt, "updatedAt");
+  const coordinates = parseCoordinates(record.coordinates);
+  const resolutionNote =
+    typeof record.resolutionNote === "string"
+      ? record.resolutionNote.trim()
+      : undefined;
+  const assignedTo =
+    typeof record.assignedTo === "string" && record.assignedTo.trim().length > 0
+      ? record.assignedTo.trim()
+      : undefined;
 
   return {
-    isValid: true,
-    data: validData,
-    errors: [],
+    id,
+    title,
+    description,
+    category,
+    priority,
+    status,
+    locationName,
+    coordinates,
+    reportedBy,
+    createdAt,
+    updatedAt,
+    resolutionNote,
+    assignedTo,
   };
 }

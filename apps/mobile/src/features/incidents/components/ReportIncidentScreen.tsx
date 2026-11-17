@@ -233,7 +233,8 @@ export function ReportIncidentScreen({ onSubmit, onClose }: Props) {
               value={title}
               onChangeText={(text) => {
                 setTitle(text);
-                if (errors.title) setErrors((prev) => ({ ...prev, title: null }));
+                if (errors.title)
+                  setErrors((prev) => ({ ...prev, title: null }));
               }}
               placeholder="Ej: Obras en acera junto a Rectorado"
               maxLength={80}

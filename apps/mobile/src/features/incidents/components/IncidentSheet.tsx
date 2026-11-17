@@ -6,15 +6,9 @@
  *
  * @author pablopr06 <pabpalac@ucm.es>
  */
-import {
-  Modal,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Modal, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import type { Incident } from "@unimovil/contracts";
+import type { Incident } from "../domain/incidents";
 import { Action } from "../../campus/components/Action";
 
 // ─── Etiquetas legibles para los valores del dominio ────────────────────────
@@ -170,7 +164,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   badgeText: { color: "#ffffff", fontSize: 13, fontWeight: "600" },
-  sectionLabel: { fontSize: 13, fontWeight: "600", color: "#6b7280", marginTop: 4 },
+  sectionLabel: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#6b7280",
+    marginTop: 4,
+  },
   text: { fontSize: 15, lineHeight: 22, color: "#18212b" },
   disclaimer: { fontSize: 12, color: "#6b7280", marginTop: 8 },
 });

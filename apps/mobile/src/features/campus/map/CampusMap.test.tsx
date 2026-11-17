@@ -54,9 +54,9 @@ describe("adaptador nativo (eventos simulados en pruebas de componentes)", () =>
       );
     expect(camera.zoomTo).toHaveBeenLastCalledWith(10, { duration: 250 });
   });
-  it("mantiene la lista disponible cuando falta configuración", async () => {
+  it("carga un estilo OSM sin requerir configuración de proveedor", async () => {
     await render(<CampusMap {...props} mode="live" />);
-    expect(screen.getByText(/Falta configurar el proveedor/)).toBeTruthy();
+    expect(screen.getByTestId("campus-map")).toBeTruthy();
   });
   it("procesa carga, selección válida, eventos ajenos y recuperación", async () => {
     const onSelect = jest.fn();
@@ -113,9 +113,7 @@ describe("adaptador nativo (eventos simulados en pruebas de componentes)", () =>
   });
   it("registra errores nativos sin copiar mensajes que puedan contener claves", async () => {
     const warn = jest.spyOn(console, "warn").mockImplementation(() => {});
-    await render(
-      <CampusMap {...props} mode="live" apiKey="public_testing_key" />,
-    );
+    await render(<CampusMap {...props} mode="live" />);
     await fireEvent(screen.getByTestId("campus-map"), "regionDidChange", {
       nativeEvent: { center: [-3.73, 40.44], zoom: 14 },
     });
@@ -124,7 +122,7 @@ describe("adaptador nativo (eventos simulados en pruebas de componentes)", () =>
       handler({
         level: "error",
         tag: "HTTP",
-        message: "https://api.maptiler.com?key=private",
+        message: "https://tile.openstreetmap.org/17/123/456.png",
       }),
     ).toBe(true);
     expect(warn).toHaveBeenCalledWith("MapLibre", "error", "HTTP");

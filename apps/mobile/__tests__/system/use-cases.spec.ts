@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
   parsePlaces,
-  type Incident,
   type Place,
   type RouteRequest,
   type RouteResponse,
@@ -11,7 +10,10 @@ import {
   createSearchIndex,
   findPlaces,
 } from "../../src/features/campus/domain/places.js";
-import { IncidentStore } from "../../src/features/incidents/domain/incidents.js";
+import {
+  IncidentStore,
+  type Incident,
+} from "../../src/features/incidents/domain/incidents.js";
 import { incidentsToGeoJSON } from "../../src/features/incidents/map/geojson.js";
 import { OfflineCache } from "../../src/features/offline/domain/offline-cache.js";
 import {

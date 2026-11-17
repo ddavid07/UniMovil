@@ -1,5 +1,6 @@
 import { Keyboard, StyleSheet, Text, View } from "react-native";
 import type { TransitStop } from "@unimovil/contracts";
+import type { Incident } from "../../incidents/domain/incidents";
 import type { useCampus } from "../useCampus";
 import type { useRouting } from "../../routing/useRouting";
 import { Action } from "./Action";
@@ -16,6 +17,8 @@ interface Props {
   readonly showIncidents: boolean;
   readonly selectedTransitStop: TransitStop | null;
   readonly onSelectTransitStop: (stop: TransitStop) => void;
+  readonly incidents: readonly Incident[];
+  readonly onSelectIncident: (incident: Incident) => void;
   readonly onOpenList: () => void;
   readonly onToggleRouting: () => void;
   readonly onToggleTransit: () => void;
@@ -93,6 +96,8 @@ function CampusMapExplorer({
   showIncidents,
   selectedTransitStop,
   onSelectTransitStop,
+  incidents,
+  onSelectIncident,
 }: {
   readonly campus: ReturnType<typeof useCampus>;
   readonly routing: ReturnType<typeof useRouting>;
@@ -101,6 +106,8 @@ function CampusMapExplorer({
   readonly showIncidents: boolean;
   readonly selectedTransitStop: TransitStop | null;
   readonly onSelectTransitStop: (stop: TransitStop) => void;
+  readonly incidents: readonly Incident[];
+  readonly onSelectIncident: (incident: Incident) => void;
 }) {
   return (
     <>
@@ -119,10 +126,9 @@ function CampusMapExplorer({
         showIncidents={showIncidents}
         selectedTransitStop={selectedTransitStop}
         onSelectTransitStop={onSelectTransitStop}
+        incidents={incidents}
+        onSelectIncident={onSelectIncident}
         mode={mapMode(process.env.EXPO_PUBLIC_MAP_MODE)}
-        {...(process.env.EXPO_PUBLIC_MAPTILER_KEY
-          ? { apiKey: process.env.EXPO_PUBLIC_MAPTILER_KEY }
-          : {})}
       />
     </>
   );
@@ -136,6 +142,8 @@ export function CampusInteractiveSection({
   showIncidents,
   selectedTransitStop,
   onSelectTransitStop,
+  incidents,
+  onSelectIncident,
   onOpenList,
   onToggleRouting,
   onToggleTransit,
@@ -186,6 +194,8 @@ export function CampusInteractiveSection({
         showIncidents={showIncidents}
         selectedTransitStop={selectedTransitStop}
         onSelectTransitStop={onSelectTransitStop}
+        incidents={incidents}
+        onSelectIncident={onSelectIncident}
       />
     </>
   );

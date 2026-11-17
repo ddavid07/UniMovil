@@ -138,7 +138,7 @@ describe("Pruebas de Recuperación de Sistema (HU-094)", () => {
     it("ofusca claves privadas, tokens y credenciales de bases de datos antes de persistir en logs", () => {
       const internalDiagnosticDump = {
         message: "Conexión rechazada al servidor de enrutamiento",
-        apiKey: "MAPTILER_PUBLIC_CLIENT_KEY_123456789",
+        apiKey: "example-client-key",
         authToken: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.sample",
         dbCredentials:
           "postgres://admin:supersecretpassword@db.moncloa.ucm.es:5432/unimovil",
@@ -153,9 +153,7 @@ describe("Pruebas de Recuperación de Sistema (HU-094)", () => {
         "Conexión rechazada al servidor de enrutamiento",
       );
       expect(JSON.stringify(sanitizedLog)).not.toContain("supersecretpassword");
-      expect(JSON.stringify(sanitizedLog)).not.toContain(
-        "MAPTILER_PUBLIC_CLIENT_KEY_123456789",
-      );
+      expect(JSON.stringify(sanitizedLog)).not.toContain("example-client-key");
       expect(JSON.stringify(sanitizedLog)).not.toContain(
         "eyJhbGciOiJIUzI1NiIsInR5cCI6",
       );

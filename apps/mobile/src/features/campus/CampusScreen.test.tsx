@@ -32,7 +32,6 @@ describe("recorrido móvil del campus", () => {
     ).toBeTruthy();
   });
   it("ofrece sugerencias mientras se escribe y distingue datos ausentes", async () => {
-    process.env.EXPO_PUBLIC_MAPTILER_KEY = "public_test_configuration";
     try {
       await render(<CampusScreen />);
       await screen.findByRole("button", { name: "Ver lugares (24)" });
@@ -48,7 +47,7 @@ describe("recorrido móvil del campus", () => {
         screen.getByRole("button", { name: "Cerrar ficha" }),
       );
     } finally {
-      delete process.env.EXPO_PUBLIC_MAPTILER_KEY;
+      jest.restoreAllMocks();
     }
   });
   it("consulta un lugar desde la búsqueda, conserva criterios al cerrar y recupera una consulta vacía", async () => {
@@ -250,7 +249,24 @@ describe("recorrido móvil del campus", () => {
     await fireEvent.press(reportBtn);
     expect(screen.getByText("Reportar incidencia")).toBeTruthy();
 
-    await fireEvent.press(screen.getByLabelText("Cerrar formulario"));
+    await fireEvent.press(
+      screen.getByRole("button", { name: "Enviar reporte" }),
+    );
+    expect(
+      screen.getByText("El título de la incidencia es obligatorio."),
+    ).toBeTruthy();
+
+    await fireEvent.changeText(
+      screen.getByLabelText("Título de la incidencia"),
+      "Rampa bloqueada",
+    );
+    await fireEvent.changeText(
+      screen.getByLabelText("Descripción de la incidencia"),
+      "La rampa de entrada está bloqueada por obras.",
+    );
+    await fireEvent.press(
+      screen.getByRole("button", { name: "Enviar reporte" }),
+    );
     expect(screen.queryByText("Reportar incidencia")).toBeNull();
   });
 });
