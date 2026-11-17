@@ -1,4 +1,4 @@
-import { Keyboard, StyleSheet, Text, View } from "react-native";
+import { Keyboard, ScrollView, StyleSheet, Text, View } from "react-native";
 import type { TransitStop } from "@unimovil/contracts";
 import type { Incident } from "../../incidents/domain/incidents";
 import type { useCampus } from "../useCampus";
@@ -50,23 +50,33 @@ function CampusActions({
   readonly onReportIncident: () => void;
 }) {
   return (
-    <View style={styles.actionRow}>
-      <Action
-        label={`Ver lugares (${count})`}
-        onPress={() => {
-          Keyboard.dismiss();
-          onOpenList();
-        }}
-      />
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={styles.actionRow}
+      keyboardShouldPersistTaps="handled"
+      style={styles.actionScrollView}
+    >
       <Action
         label={isRoutingOpen ? "Cerrar ruta" : "Planificar ruta"}
+        text={isRoutingOpen ? "✕ Cerrar ruta" : "🗺️ Planificar ruta"}
+        primary
         onPress={() => {
           Keyboard.dismiss();
           onToggleRouting();
         }}
       />
       <Action
+        label={`Ver lugares (${count})`}
+        text={`📍 Lugares (${count})`}
+        onPress={() => {
+          Keyboard.dismiss();
+          onOpenList();
+        }}
+      />
+      <Action
         label={showTransit ? "Ocultar EMT" : "Ver EMT"}
+        text={showTransit ? "🚌 EMT activas" : "🚌 Ver EMT"}
         onPress={() => {
           Keyboard.dismiss();
           onToggleTransit();
@@ -74,6 +84,7 @@ function CampusActions({
       />
       <Action
         label={showIncidents ? "Ocultar incidencias" : "Ver incidencias"}
+        text={showIncidents ? "⚠️ Incidencias" : "⚠️ Ver avisos"}
         onPress={() => {
           Keyboard.dismiss();
           onToggleIncidents();
@@ -81,12 +92,13 @@ function CampusActions({
       />
       <Action
         label="⚠ Reportar incidencia"
+        text="➕ Reportar"
         onPress={() => {
           Keyboard.dismiss();
           onReportIncident();
         }}
       />
-    </View>
+    </ScrollView>
   );
 }
 
@@ -163,7 +175,7 @@ export function CampusInteractiveSection({
   if (campus.catalog.status !== "ready") return null;
 
   return (
-    <>
+    <View style={styles.container}>
       {campus.query.trim().length > 0 && (
         <SearchSuggestions places={campus.visible} onSelect={select} />
       )}
@@ -209,10 +221,29 @@ export function CampusInteractiveSection({
         onOpenRouteDetails={onOpenRouteDetails}
         onClearRoute={onClearRoute}
       />
-    </>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  actionRow: { flexDirection: "row", gap: 8 },
+  container: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    minHeight: 0,
+  },
+  actionScrollView: {
+    maxHeight: 46,
+    flexGrow: 0,
+    backgroundColor: "#ffffff",
+    borderBottomWidth: 1,
+    borderBottomColor: "#f1f5f9",
+  },
+  actionRow: {
+    flexDirection: "row",
+    gap: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    alignItems: "center",
+  },
 });

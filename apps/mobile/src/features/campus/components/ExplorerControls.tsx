@@ -39,7 +39,7 @@ export function ExplorerControls({
       />
       <ScrollView
         horizontal
-        showsHorizontalScrollIndicator
+        showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.row}
         keyboardShouldPersistTaps="handled"
       >
@@ -61,17 +61,22 @@ export function ExplorerControls({
   );
 }
 const styles = StyleSheet.create({
-  controls: { gap: 8 },
+  controls: { gap: 6 },
   input: {
-    minHeight: 48,
+    minHeight: 40,
     backgroundColor: "#ffffff",
     borderWidth: 1,
-    borderColor: "#68707a",
-    borderRadius: 8,
+    borderColor: "#e2e8f0",
+    borderRadius: 10,
     paddingHorizontal: 12,
-    paddingVertical: 12,
-    fontSize: 16,
+    paddingVertical: 8,
+    fontSize: 14,
     color: "#18212b",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 2,
+    elevation: 1,
   },
-  row: { gap: 8, paddingBottom: 4 },
+  row: { gap: 6, paddingBottom: 2 },
 });

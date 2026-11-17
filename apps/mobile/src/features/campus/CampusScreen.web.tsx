@@ -211,7 +211,7 @@ export function CampusScreen({
 
       {/* 2. BODY: EITHER FULL WEB LAYOUT OR SMARTPHONE MOCKUP PREVIEW */}
       {viewMode === "mobile" ? (
-        /* MOBILE PHONE SIMULATOR VIEW (WITH FULLY VISIBLE MAP) */
+        /* MOBILE PHONE SIMULATOR VIEW (WITH FIXED MODERN APP LAYOUT) */
         <View style={styles.mobileBackdrop}>
           <View style={styles.phoneDeviceShell}>
             {/* Phone speaker notch */}
@@ -219,15 +219,16 @@ export function CampusScreen({
               <View style={styles.phoneSpeaker} />
             </View>
 
-            {/* Mobile Scrollable Screen Container */}
-            <ScrollView
-              style={styles.mobileScreenContainer}
-              contentContainerStyle={styles.mobileScreenContent}
-              showsVerticalScrollIndicator={false}
-            >
-              <Text accessibilityRole="header" style={styles.mobileAppTitle}>
-                UniMovil · Moncloa
-              </Text>
+            {/* Mobile App Header */}
+            <View style={styles.mobileTopBar}>
+              <View style={styles.mobileHeaderRow}>
+                <View style={styles.mobileBrandBadge}>
+                  <Text style={styles.mobileBrandBadgeText}>UCM</Text>
+                </View>
+                <Text accessibilityRole="header" style={styles.mobileAppTitle}>
+                  UniMovil · Moncloa
+                </Text>
+              </View>
               <NetworkBanner
                 isOffline={network.isOffline}
                 onRetry={() => {
@@ -241,6 +242,10 @@ export function CampusScreen({
                 onToggle={campus.toggleCategory}
                 onReset={campus.reset}
               />
+            </View>
+
+            {/* Mobile Main Screen: Actions, Route Planner & Map */}
+            <View style={styles.mobileMainScreen}>
               <CampusInteractiveSection
                 campus={campus}
                 routing={routing}
@@ -259,10 +264,14 @@ export function CampusScreen({
                 onOpenRouteDetails={() => setRouteSheetOpen(true)}
                 onClearRoute={routing.clearRoute}
               />
+            </View>
+
+            {/* Mobile Bottom Attribution */}
+            <View style={styles.mobileFooterBar}>
               <Text style={styles.mobileAttribution}>
                 Datos de lugares © colaboradores de OpenStreetMap · ODbL
               </Text>
-            </ScrollView>
+            </View>
           </View>
         </View>
       ) : (
@@ -1184,42 +1193,85 @@ const styles = StyleSheet.create({
   },
   phoneDeviceShell: {
     width: "100%",
-    maxWidth: 440,
+    maxWidth: 420,
     height: "100%",
-    maxHeight: 880,
-    backgroundColor: "#f5f6f8",
+    maxHeight: 820,
+    backgroundColor: "#ffffff",
     borderRadius: 36,
     borderWidth: 8,
     borderColor: "#1e293b",
     overflow: "hidden",
+    display: "flex",
+    flexDirection: "column",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.35,
+    shadowRadius: 20,
   },
   phoneNotch: {
-    height: 20,
+    height: 18,
     backgroundColor: "#1e293b",
     alignItems: "center",
     justifyContent: "center",
+    flexShrink: 0,
   },
   phoneSpeaker: {
     width: 48,
-    height: 5,
-    borderRadius: 3,
+    height: 4,
+    borderRadius: 2,
     backgroundColor: "#334155",
   },
-  mobileScreenContainer: {
-    flex: 1,
+  mobileTopBar: {
+    backgroundColor: "#ffffff",
+    paddingHorizontal: 12,
+    paddingTop: 8,
+    paddingBottom: 6,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e2e8f0",
+    gap: 6,
+    flexShrink: 0,
+    zIndex: 10,
   },
-  mobileScreenContent: {
-    padding: 12,
+  mobileHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
   },
+  mobileBrandBadge: {
+    backgroundColor: "#8e1235",
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  mobileBrandBadgeText: {
+    color: "#ffffff",
+    fontSize: 10,
+    fontWeight: "800",
+  },
   mobileAppTitle: {
-    fontSize: 22,
+    fontSize: 15,
     fontWeight: "700",
     color: "#18212b",
   },
+  mobileMainScreen: {
+    flex: 1,
+    minHeight: 0,
+    display: "flex",
+    flexDirection: "column",
+    position: "relative",
+    backgroundColor: "#f8fafc",
+  },
+  mobileFooterBar: {
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    backgroundColor: "#ffffff",
+    borderTopWidth: 1,
+    borderTopColor: "#e2e8f0",
+    alignItems: "center",
+    flexShrink: 0,
+  },
   mobileAttribution: {
-    fontSize: 12,
-    color: "#414b57",
-    marginVertical: 4,
+    fontSize: 10,
+    color: "#64748b",
   },
 });

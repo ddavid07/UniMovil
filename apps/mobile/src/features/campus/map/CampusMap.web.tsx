@@ -509,7 +509,7 @@ export function CampusMap({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    minHeight: 380,
+    minHeight: 200,
     height: "100%",
     width: "100%",
     backgroundColor: "#ffffff",
@@ -517,7 +517,7 @@ const styles = StyleSheet.create({
   },
   mapFrame: {
     flex: 1,
-    minHeight: 320,
+    minHeight: 160,
     height: "100%",
     width: "100%",
     backgroundColor: "#e5e7eb",
