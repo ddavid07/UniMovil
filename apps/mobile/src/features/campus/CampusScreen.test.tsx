@@ -250,6 +250,14 @@ describe("recorrido móvil del campus", () => {
     expect(screen.getByText("Reportar incidencia")).toBeTruthy();
 
     await fireEvent.press(
+      screen.getByRole("button", { name: "Cerrar formulario" }),
+    );
+    expect(screen.queryByText("Reportar incidencia")).toBeNull();
+
+    await fireEvent.press(reportBtn);
+    expect(screen.getByText("Reportar incidencia")).toBeTruthy();
+
+    await fireEvent.press(
       screen.getByRole("button", { name: "Enviar reporte" }),
     );
     expect(
@@ -268,5 +276,48 @@ describe("recorrido móvil del campus", () => {
       screen.getByRole("button", { name: "Enviar reporte" }),
     );
     expect(screen.queryByText("Reportar incidencia")).toBeNull();
+  });
+
+  it("calcula ruta peatonal, permite verla en el mapa, reabrir el itinerario y cancelarla", async () => {
+    await render(<CampusScreen />);
+    await screen.findByRole("button", { name: "Ver lugares (24)" });
+
+    await fireEvent.press(
+      screen.getByRole("button", { name: "Planificar ruta" }),
+    );
+
+    await fireEvent.press(
+      screen.getByRole("button", { name: "Seleccionar origen" }),
+    );
+    await fireEvent.press(
+      screen.getByRole("button", { name: "Facultad de Medicina" }),
+    );
+
+    await fireEvent.press(
+      screen.getByRole("button", { name: "Seleccionar destino" }),
+    );
+    await fireEvent.press(
+      screen.getByRole("button", { name: "Facultad de Farmacia" }),
+    );
+
+    await fireEvent.press(
+      screen.getByRole("button", { name: "Calcular ruta" }),
+    );
+
+    expect(await screen.findByText("Itinerario peatonal")).toBeTruthy();
+
+    await fireEvent.press(
+      screen.getByRole("button", { name: "Ver en el mapa" }),
+    );
+    expect(screen.queryByText("Itinerario peatonal")).toBeNull();
+
+    await fireEvent.press(
+      screen.getByRole("button", { name: "Ver itinerario paso a paso" }),
+    );
+    expect(await screen.findByText("Itinerario peatonal")).toBeTruthy();
+
+    const closeBtns = screen.getAllByRole("button", { name: "Cerrar ruta" });
+    await fireEvent.press(closeBtns[closeBtns.length - 1]!);
+    expect(screen.queryByText("Itinerario peatonal")).toBeNull();
   });
 });

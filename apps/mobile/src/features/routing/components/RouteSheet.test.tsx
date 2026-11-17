@@ -104,4 +104,18 @@ describe("RouteSheet Component (HU-023 - TDD Tema 3)", () => {
     await fireEvent.press(screen.getByRole("button", { name: "Cerrar ruta" }));
     expect(onClose).toHaveBeenCalledTimes(1);
   });
+
+  it("invoca onAccept al pulsar 'Ver en el mapa'", async () => {
+    const onAccept = jest.fn();
+    await render(
+      <RouteSheet
+        route={mockRouteStandard}
+        onClose={jest.fn()}
+        onAccept={onAccept}
+      />,
+    );
+
+    await fireEvent.press(screen.getByRole("button", { name: "Ver en el mapa" }));
+    expect(onAccept).toHaveBeenCalledTimes(1);
+  });
 });

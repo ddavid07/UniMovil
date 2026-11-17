@@ -256,6 +256,8 @@ export function CampusScreen({
                 onToggleTransit={() => setShowTransit((prev) => !prev)}
                 onToggleIncidents={() => setShowIncidents((prev) => !prev)}
                 onReportIncident={() => setReportOpen(true)}
+                onOpenRouteDetails={() => setRouteSheetOpen(true)}
+                onClearRoute={routing.clearRoute}
               />
               <Text style={styles.mobileAttribution}>
                 Datos de lugares © colaboradores de OpenStreetMap · ODbL

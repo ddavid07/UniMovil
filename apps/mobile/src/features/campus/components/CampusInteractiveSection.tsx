@@ -24,6 +24,8 @@ interface Props {
   readonly onToggleTransit: () => void;
   readonly onToggleIncidents: () => void;
   readonly onReportIncident: () => void;
+  readonly onOpenRouteDetails?: (() => void) | undefined;
+  readonly onClearRoute?: (() => void) | undefined;
 }
 
 function CampusActions({
@@ -98,6 +100,8 @@ function CampusMapExplorer({
   onSelectTransitStop,
   incidents,
   onSelectIncident,
+  onOpenRouteDetails,
+  onClearRoute,
 }: {
   readonly campus: ReturnType<typeof useCampus>;
   readonly routing: ReturnType<typeof useRouting>;
@@ -108,6 +112,8 @@ function CampusMapExplorer({
   readonly onSelectTransitStop: (stop: TransitStop) => void;
   readonly incidents: readonly Incident[];
   readonly onSelectIncident: (incident: Incident) => void;
+  readonly onOpenRouteDetails?: (() => void) | undefined;
+  readonly onClearRoute?: (() => void) | undefined;
 }) {
   return (
     <>
@@ -129,6 +135,8 @@ function CampusMapExplorer({
         incidents={incidents}
         onSelectIncident={onSelectIncident}
         mode={mapMode(process.env.EXPO_PUBLIC_MAP_MODE)}
+        onOpenRouteDetails={onOpenRouteDetails}
+        onClearRoute={onClearRoute}
       />
     </>
   );
@@ -149,6 +157,8 @@ export function CampusInteractiveSection({
   onToggleTransit,
   onToggleIncidents,
   onReportIncident,
+  onOpenRouteDetails,
+  onClearRoute,
 }: Props) {
   if (campus.catalog.status !== "ready") return null;
 
@@ -196,6 +206,8 @@ export function CampusInteractiveSection({
         onSelectTransitStop={onSelectTransitStop}
         incidents={incidents}
         onSelectIncident={onSelectIncident}
+        onOpenRouteDetails={onOpenRouteDetails}
+        onClearRoute={onClearRoute}
       />
     </>
   );

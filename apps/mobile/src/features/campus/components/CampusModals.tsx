@@ -1,4 +1,4 @@
-import type { TransitStop } from "@unimovil/contracts";
+import type { RouteResponse, TransitStop } from "@unimovil/contracts";
 import type { Incident } from "../../incidents/domain/incidents";
 import type { useCampus } from "../useCampus";
 import type { useRouting } from "../../routing/useRouting";
@@ -18,6 +18,8 @@ interface Props {
   readonly onCloseTransitStop: () => void;
   readonly onCloseIncident?: () => void;
   readonly onPlanRouteToStop: (stop: TransitStop) => void;
+  readonly route: RouteResponse | null;
+  readonly onAcceptRoute?: (() => void) | undefined;
 }
 
 export function CampusModals({
@@ -31,6 +33,8 @@ export function CampusModals({
   onCloseTransitStop,
   onCloseIncident,
   onPlanRouteToStop,
+  route,
+  onAcceptRoute,
 }: Props) {
   return (
     <>
@@ -41,7 +45,11 @@ export function CampusModals({
         onSelect={onSelect}
         onPlanRoute={(place) => routing.openRouting(place)}
       />
-      <RouteSheet route={routing.route} onClose={routing.clearRoute} />
+      <RouteSheet
+        route={route}
+        onClose={routing.clearRoute}
+        onAccept={onAcceptRoute}
+      />
       <TransitStopSheet
         stop={selectedTransitStop}
         onClose={onCloseTransitStop}

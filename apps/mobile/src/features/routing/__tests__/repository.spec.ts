@@ -95,9 +95,12 @@ describe("RoutingRepository (TDD - Tema 3)", () => {
       for (let i = 0; i < Math.min(catalog.length, 6); i++) {
         for (let j = 0; j < Math.min(catalog.length, 6); j++) {
           if (i === j) continue;
+          const originPlace = catalog[i];
+          const destPlace = catalog[j];
+          if (!originPlace || !destPlace) continue;
           const route = await localRoutingRepository.calculateRoute({
-            origin: catalog[i].coordinates,
-            destination: catalog[j].coordinates,
+            origin: originPlace.coordinates,
+            destination: destPlace.coordinates,
           });
           expect(route.totalDistanceMeters).toBeGreaterThan(0);
         }

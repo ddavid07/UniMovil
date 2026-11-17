@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Keyboard,
@@ -136,6 +136,8 @@ export function CampusScreen({
   const routing = useRouting(routingRepository);
   const network = useNetworkStatus(isOffline);
   const [listOpen, setListOpen] = useState(false);
+  const [routeSheetOpen, setRouteSheetOpen] = useState(false);
+  const prevRouteIdRef = useRef<string | null>(null);
   const [showTransit, setShowTransit] = useState(true);
   const [showIncidents, setShowIncidents] = useState(true);
   const [reportOpen, setReportOpen] = useState(false);
@@ -145,6 +147,13 @@ export function CampusScreen({
     null,
   );
   const incidentState = useCampusIncidents();
+
+  useEffect(() => {
+    if (routing.route && routing.route.id !== prevRouteIdRef.current) {
+      prevRouteIdRef.current = routing.route.id;
+      setRouteSheetOpen(true);
+    }
+  }, [routing.route]);
 
   function select(id: string) {
     Keyboard.dismiss();
@@ -174,6 +183,8 @@ export function CampusScreen({
           onToggleTransit={() => setShowTransit((prev) => !prev)}
           onToggleIncidents={() => setShowIncidents((prev) => !prev)}
           onReportIncident={() => setReportOpen(true)}
+          onOpenRouteDetails={() => setRouteSheetOpen(true)}
+          onClearRoute={routing.clearRoute}
         />
         <Text style={styles.attribution}>
           Datos de lugares © colaboradores de OpenStreetMap · ODbL
@@ -181,6 +192,8 @@ export function CampusScreen({
         <CampusModals
           campus={campus}
           routing={routing}
+          route={routeSheetOpen ? routing.route : null}
+          onAcceptRoute={() => setRouteSheetOpen(false)}
           listOpen={listOpen}
           selectedTransitStop={selectedTransitStop}
           selectedIncident={selectedIncident}
