@@ -98,7 +98,7 @@ describe("MapStatus Component", () => {
     await render(
       <MapStatus
         state="ready"
-        mode="test"
+        mode="fixture"
         viewport="-3.72700,40.44300,15.00000"
         onRetry={defaultProps.onRetry}
         onRecenter={defaultProps.onRecenter}
