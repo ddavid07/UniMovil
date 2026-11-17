@@ -93,12 +93,40 @@ function computeBusAlternative(
     };
   }
 
-  const commonLine =
-    lines.find(
-      (l) =>
-        l.stops.some((s) => s.id === originNearest.stop.id) &&
-        l.stops.some((s) => s.id === destNearest.stop.id),
-    ) ?? lines[0];
+  const totalWalkToAndFromStops =
+    originNearest.distanceMeters + destNearest.distanceMeters;
+  if (totalWalkToAndFromStops >= walkingDistance) {
+    return {
+      mode: "bus",
+      label: "Autobús EMT",
+      durationMinutes: 0,
+      distanceMeters: walkingDistance,
+      accessible: true,
+      transfers: 0,
+      available: false,
+      unavailableReason: "Para esta ruta es más rápido ir a pie",
+    };
+  }
+
+  const commonLine = lines.find((l) => {
+    const origIdx = l.stops.findIndex((s) => s.id === originNearest.stop.id);
+    const destIdx = l.stops.findIndex((s) => s.id === destNearest.stop.id);
+    return origIdx !== -1 && destIdx !== -1 && origIdx < destIdx;
+  });
+
+  if (!commonLine) {
+    return {
+      mode: "bus",
+      label: "Autobús EMT",
+      durationMinutes: 0,
+      distanceMeters: walkingDistance,
+      accessible: true,
+      transfers: 0,
+      available: false,
+      unavailableReason:
+        "No hay paradas de autobús conectadas para este trayecto",
+    };
+  }
 
   const walkToStopMins = Math.max(
     1,
@@ -371,9 +399,21 @@ export async function fetchMultimodalBusLegs(
       fetchLeg(destStop, destination, "foot"),
     ]);
 
+    const stopDistance = haversineMeters(originStop, destStop);
+    let validBusRide = busRide;
+    if (busRide && busRide.length > 1) {
+      let routeDistance = 0;
+      for (let i = 0; i < busRide.length - 1; i++) {
+        routeDistance += haversineMeters(busRide[i]!, busRide[i + 1]!);
+      }
+      if (stopDistance > 250 && routeDistance > 2.5 * stopDistance) {
+        validBusRide = null;
+      }
+    }
+
     return {
       ...(walkTo ? { walkToStopPolyline: walkTo } : {}),
-      ...(busRide ? { busRidePolyline: busRide } : {}),
+      ...(validBusRide ? { busRidePolyline: validBusRide } : {}),
       ...(walkFrom ? { walkFromStopPolyline: walkFrom } : {}),
     };
   } catch {
@@ -421,11 +461,11 @@ export function buildMultimodalRoute(
         mode: "walking",
       };
     }
-    const commonLine = lines.find(
-      (l) =>
-        l.stops.some((s) => s.id === originNearest.stop.id) &&
-        l.stops.some((s) => s.id === destNearest.stop.id),
-    );
+    const commonLine = lines.find((l) => {
+      const origIdx = l.stops.findIndex((s) => s.id === originNearest.stop.id);
+      const destIdx = l.stops.findIndex((s) => s.id === destNearest.stop.id);
+      return origIdx !== -1 && destIdx !== -1 && origIdx < destIdx;
+    });
     if (!commonLine) {
       return {
         ...baseRoute,

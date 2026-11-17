@@ -256,8 +256,29 @@ describe("RoutingRepository (TDD - Tema 3)", () => {
       expect(result.segments.length).toBe(2);
     });
 
-    it("utiliza el repositorio local cuando se solicita ruta accesible PMR", async () => {
-      const mockFetch = vi.fn();
+    it("ajusta a caminos y viales con OSRM cuando se solicita ruta accesible PMR garantizando accesibilidad", async () => {
+      const mockOsrmData = {
+        code: "Ok",
+        routes: [
+          {
+            distance: 450,
+            duration: 360,
+            geometry: {
+              coordinates: [
+                [-3.7262, 40.4442],
+                [-3.7268, 40.445],
+                [-3.7275, 40.4455],
+              ],
+            },
+            legs: [{ steps: [] }],
+          },
+        ],
+      };
+
+      const mockFetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(mockOsrmData),
+      });
 
       const { createOsrmRoutingRepository } = await import(
         "../data/repository.js"
@@ -272,8 +293,12 @@ describe("RoutingRepository (TDD - Tema 3)", () => {
         accessibleOnly: true,
       });
 
-      expect(mockFetch).not.toHaveBeenCalled();
+      expect(mockFetch).toHaveBeenCalled();
       expect(result.accessible).toBe(true);
+      expect(result.polyline.length).toBe(3);
+      expect(result.segments.every((s) => s.isAccessible && !s.hasStairs)).toBe(
+        true,
+      );
     });
   });
 });

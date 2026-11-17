@@ -240,7 +240,7 @@ export function createOsrmRoutingRepository(
         throw error;
       }
 
-      if (accessibleOnly || !fetcher) {
+      if (!fetcher) {
         return fallback.calculateRoute(request);
       }
 
@@ -341,7 +341,7 @@ export function createOsrmRoutingRepository(
               durationSeconds: Math.round(step.duration ?? 0),
               isAccessible: true,
               hasStairs: false,
-              hasRamp: false,
+              hasRamp: accessibleOnly,
               pathCoordinates: stepCoords.length > 0 ? stepCoords : polyline,
             };
           });
@@ -351,13 +351,14 @@ export function createOsrmRoutingRepository(
               id: "seg-osrm-1",
               sourceNodeId: "node-origin",
               targetNodeId: "node-dest",
-              instruction:
-                "Avanza por los senderos y viales peatonales del campus",
+              instruction: accessibleOnly
+                ? "Avanza por los senderos adaptados y viales accesibles del campus"
+                : "Avanza por los senderos y viales peatonales del campus",
               distanceMeters: totalDistanceMeters,
               durationSeconds: estimatedDurationMinutes * 60,
               isAccessible: true,
               hasStairs: false,
-              hasRamp: false,
+              hasRamp: accessibleOnly,
               pathCoordinates: polyline,
             },
           ];
@@ -369,7 +370,7 @@ export function createOsrmRoutingRepository(
           destination,
           totalDistanceMeters,
           estimatedDurationMinutes,
-          accessible: false,
+          accessible: accessibleOnly,
           segments,
           polyline,
           mode: "walking",

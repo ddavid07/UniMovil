@@ -151,6 +151,55 @@ describe("Transit Domain (Sprint 3 Multimodal)", () => {
     );
   });
 
+  it("marks bus as unavailable when walking to and from stops exceeds direct walking distance (e.g. Bellas Artes to Medicina)", () => {
+    // Parking Bellas Artes (40.4392759, -3.7335048) to Medicina (40.4439292, -3.7240836)
+    // Direct walking distance ~880m. Walk to nearest Metro stop is ~692m, walk from stop is ~275m (total 967m > 880m).
+    const bellasArtesToMedicina: RouteResponse = {
+      ...dummyWalkingRoute,
+      origin: { latitude: 40.4392759, longitude: -3.7335048 },
+      destination: { latitude: 40.4439292, longitude: -3.7240836 },
+      totalDistanceMeters: 880,
+      estimatedDurationMinutes: 12,
+    };
+
+    const alternatives = calculateMultimodalAlternatives(
+      bellasArtesToMedicina.origin,
+      bellasArtesToMedicina.destination,
+      bellasArtesToMedicina,
+      {
+        lines: CAMPUS_TRANSIT_LINES,
+        stops: CAMPUS_TRANSIT_STOPS,
+      },
+    );
+
+    const bus = alternatives.find((a) => a.mode === "bus");
+    expect(bus?.available).toBe(false);
+    expect(bus?.unavailableReason).toContain("más rápido ir a pie");
+  });
+
+  it("marks bus as unavailable when traveling in reverse direction along a transit line", () => {
+    // From Metro (1688) to Gregorio del Amo (3276): Line F runs Cuatro Caminos -> Gregorio del Amo -> Metro -> Paraninfo
+    const reverseRoute: RouteResponse = {
+      ...dummyWalkingRoute,
+      origin: { latitude: 40.44328, longitude: -3.72725 }, // Metro (1688)
+      destination: { latitude: 40.44572, longitude: -3.72184 }, // Gregorio del Amo (3276)
+      totalDistanceMeters: 600,
+    };
+
+    const alternatives = calculateMultimodalAlternatives(
+      reverseRoute.origin,
+      reverseRoute.destination,
+      reverseRoute,
+      {
+        lines: CAMPUS_TRANSIT_LINES,
+        stops: CAMPUS_TRANSIT_STOPS,
+      },
+    );
+
+    const bus = alternatives.find((a) => a.mode === "bus");
+    expect(bus?.available).toBe(false);
+  });
+
   it("marks bus as unavailable when accessibleOnly is true and stop is not accessible", () => {
     // Route from Gregorio del Amo (inaccessible stop 3276) to Paraninfo
     const inaccessibleStopRoute: RouteResponse = {
@@ -275,6 +324,68 @@ describe("Transit Domain (Sprint 3 Multimodal)", () => {
       expect(result?.walkToStopPolyline?.length).toBe(2);
       expect(result?.busRidePolyline?.length).toBe(2);
       expect(result?.walkFromStopPolyline?.length).toBe(2);
+    });
+
+    it("descarta la polilínea OSRM de autobús cuando contiene un rodeo excesivo en autovía", async () => {
+      const { fetchMultimodalBusLegs } = await import("../domain/transit.js");
+      // Stop to stop direct distance: ~500m.
+      // Mock OSRM driving returning a 2000m detour loop.
+      const mockFetch = vi.fn().mockImplementation((url: string) => {
+        if (url.includes("/driving/")) {
+          return Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({
+                code: "Ok",
+                routes: [
+                  {
+                    distance: 2200, // > 2.5x of 500m
+                    geometry: {
+                      coordinates: [
+                        [-3.727, 40.443],
+                        [-3.715, 40.435],
+                        [-3.710, 40.440],
+                        [-3.721, 40.445],
+                      ],
+                    },
+                  },
+                ],
+              }),
+          });
+        }
+        return Promise.resolve({
+          ok: true,
+          json: () =>
+            Promise.resolve({
+              code: "Ok",
+              routes: [
+                {
+                  distance: 100,
+                  geometry: {
+                    coordinates: [
+                      [-3.726, 40.444],
+                      [-3.727, 40.445],
+                    ],
+                  },
+                },
+              ],
+            }),
+        });
+      });
+
+      const result = await fetchMultimodalBusLegs(
+        { latitude: 40.443, longitude: -3.727 },
+        { latitude: 40.445, longitude: -3.721 },
+        { latitude: 40.443, longitude: -3.727 }, // origin stop
+        { latitude: 40.445, longitude: -3.721 }, // dest stop (~500m)
+        mockFetch as unknown as typeof fetch,
+      );
+
+      // Bus ride polyline should be discarded because of excessive detour (> 2.5x)
+      expect(result?.busRidePolyline).toBeUndefined();
+      // Walking legs should still be populated
+      expect(result?.walkToStopPolyline).toBeDefined();
+      expect(result?.walkFromStopPolyline).toBeDefined();
     });
 
     it("construye correctamente una ruta en bicicleta", () => {

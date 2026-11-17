@@ -198,7 +198,7 @@ export function useRouting(
       setSelectedMode(mode);
       setRoute(initialRoute);
 
-      if (mode === "bus" && typeof fetch !== "undefined") {
+      if (initialRoute.mode === "bus" && typeof fetch !== "undefined") {
         const originNearest = findNearestStop(
           base.origin,
           CAMPUS_TRANSIT_STOPS,
