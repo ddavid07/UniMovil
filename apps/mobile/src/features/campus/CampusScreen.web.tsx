@@ -196,17 +196,8 @@ export function CampusScreen({
           </View>
         </View>
 
-        {/* Quick link to Admin App */}
-        <View style={styles.headerRight}>
-          <Pressable
-            style={styles.adminLink}
-            onPress={() => {
-              window.open("http://localhost:5173", "_blank");
-            }}
-          >
-            <Text style={styles.adminLinkText}>⚙️ Panel de Gestión Web ↗</Text>
-          </Pressable>
-        </View>
+        {/* Right side spacer for balance */}
+        <View style={styles.headerRight} />
       </header>
 
       {/* 2. BODY: EITHER FULL WEB LAYOUT OR SMARTPHONE MOCKUP PREVIEW */}
@@ -811,22 +802,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   headerRight: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  adminLink: {
-    backgroundColor: "rgba(255, 255, 255, 0.15)",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.25)",
-  },
-  adminLinkText: {
-    color: "#ffffff",
-    fontSize: 12,
-    fontWeight: "600",
+    minWidth: 100,
   },
   mainLayout: {
     flex: 1,
