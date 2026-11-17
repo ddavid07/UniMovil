@@ -26,7 +26,7 @@ function RouteHeader({
   onClose,
   onAccept,
 }: {
-  readonly onClose: () => void;
+  readonly onClose?: (() => void) | undefined;
   readonly onAccept?: (() => void) | undefined;
 }) {
   return (
@@ -44,15 +44,6 @@ function RouteHeader({
           Moncloa · Campus de la Universidad Complutense
         </Text>
       </View>
-      <TouchableOpacity
-        accessibilityRole="button"
-        accessibilityLabel="Cerrar ruta"
-        accessibilityHint="Cierra la ruta y limpia el trazado"
-        style={styles.closeBtn}
-        onPress={onClose}
-      >
-        <Text style={styles.closeBtnText}>✕ Cerrar ruta</Text>
-      </TouchableOpacity>
     </View>
   );
 }
