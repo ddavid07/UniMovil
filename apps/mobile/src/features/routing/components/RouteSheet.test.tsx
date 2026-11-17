@@ -131,4 +131,13 @@ describe("RouteSheet Component (HU-023 - TDD Tema 3)", () => {
     expect(screen.getByText("Itinerario peatonal")).toBeTruthy();
     expect(screen.getAllByText("5 min").length).toBeGreaterThanOrEqual(1);
   });
+
+  it("muestra la etiqueta correcta según el modo de transporte activo", async () => {
+    const busRoute: RouteResponse = {
+      ...mockRouteStandard,
+      mode: "bus",
+    };
+    await render(<RouteSheet route={busRoute} onClose={jest.fn()} />);
+    expect(screen.getByText("Tiempo en autobús")).toBeTruthy();
+  });
 });

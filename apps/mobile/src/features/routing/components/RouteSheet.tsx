@@ -65,11 +65,19 @@ function RouteMetricsRow({ route }: { route: RouteResponse }) {
   const durationStr = formatDuration(route.estimatedDurationMinutes);
   const distanceStr = formatDistance(route.totalDistanceMeters);
 
+  const isBus = route.mode === "bus";
+  const isBike = route.mode === "bicycle";
+  const timeLabel = isBus
+    ? "Tiempo en autobús"
+    : isBike
+      ? "Tiempo en bici"
+      : "Tiempo a pie";
+
   return (
     <View style={styles.metricsRow}>
       <View style={styles.metricCard}>
         <Text style={styles.metricValue}>{durationStr}</Text>
-        <Text style={styles.metricLabel}>Tiempo a pie</Text>
+        <Text style={styles.metricLabel}>{timeLabel}</Text>
       </View>
 
       <View style={styles.metricCard}>
