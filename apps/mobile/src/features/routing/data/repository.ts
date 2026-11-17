@@ -73,26 +73,45 @@ export const localRoutingRepository: RoutingRepository = {
       const { origin, destination, accessibleOnly = false } = request;
 
       if (!isWithinCampusBounds(origin)) {
-        reject(
-          new Error(
-            "El punto de origen se encuentra fuera de los límites del campus de Moncloa.",
-          ),
+        const error = new Error(
+          "El punto de origen se encuentra fuera de los límites del campus de Moncloa.",
         );
+        Object.assign(error, {
+          code: "ORIGIN_OUT_OF_BOUNDS",
+          userMessage:
+            "El punto de origen se encuentra fuera de los límites del campus de Moncloa.",
+          recommendedAction:
+            "Seleccione un origen dentro de Ciudad Universitaria.",
+        });
+        reject(error);
         return;
       }
 
       if (!isWithinCampusBounds(destination)) {
-        reject(
-          new Error(
-            "El destino se encuentra fuera de los límites del campus de Moncloa.",
-          ),
+        const error = new Error(
+          "El destino se encuentra fuera de los límites del campus de Moncloa.",
         );
+        Object.assign(error, {
+          code: "DESTINATION_OUT_OF_BOUNDS",
+          userMessage:
+            "El destino se encuentra fuera de los límites del campus de Moncloa.",
+          recommendedAction:
+            "Seleccione un destino dentro de Ciudad Universitaria.",
+        });
+        reject(error);
         return;
       }
 
       const distance = haversineDistanceMeters(origin, destination);
       if (distance < 5) {
-        reject(new Error("El origen y el destino son el mismo punto."));
+        const error = new Error("El origen y el destino son el mismo punto.");
+        Object.assign(error, {
+          code: "IDENTICAL_POINTS",
+          userMessage: "El origen y el destino son el mismo punto.",
+          recommendedAction:
+            "Seleccione dos lugares diferentes en el campus.",
+        });
+        reject(error);
         return;
       }
 

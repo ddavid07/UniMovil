@@ -74,6 +74,35 @@ describe("RoutingRepository (TDD - Tema 3)", () => {
         localRoutingRepository.calculateRoute(request),
       ).rejects.toThrow("destino se encuentra fuera");
     });
+
+    it("calcula ruta exitosamente hacia el Parking de Bellas Artes y lugares del sur del campus", async () => {
+      const coordsMedicina = { latitude: 40.4428, longitude: -3.7275 };
+      const coordsBellasArtes = { latitude: 40.4392759, longitude: -3.7335048 };
+
+      const result = await localRoutingRepository.calculateRoute({
+        origin: coordsMedicina,
+        destination: coordsBellasArtes,
+        accessibleOnly: false,
+      });
+
+      expect(result).toBeDefined();
+      expect(result.totalDistanceMeters).toBeGreaterThan(0);
+      expect(result.segments.length).toBe(2);
+    });
+
+    it("valida que los lugares del catálogo oficial pueden calcular rutas entre sí sin fallos de límites", async () => {
+      const catalog = (await import("../../campus/data/catalog.json")).default;
+      for (let i = 0; i < Math.min(catalog.length, 6); i++) {
+        for (let j = 0; j < Math.min(catalog.length, 6); j++) {
+          if (i === j) continue;
+          const route = await localRoutingRepository.calculateRoute({
+            origin: catalog[i].coordinates,
+            destination: catalog[j].coordinates,
+          });
+          expect(route.totalDistanceMeters).toBeGreaterThan(0);
+        }
+      }
+    });
   });
 
   describe("createHttpRoutingRepository", () => {

@@ -32,6 +32,12 @@ describe("Routing Contracts & Bounds Validation", () => {
     ).toBe(true);
   });
 
+  it("includes southern campus locations like Bellas Artes (latitude ~40.439)", () => {
+    expect(
+      isWithinCampusBounds({ latitude: 40.4392759, longitude: -3.7335048 }),
+    ).toBe(true);
+  });
+
   it("rejects coordinates outside campus bounds", () => {
     expect(isWithinCampusBounds({ latitude: 40.4, longitude: -3.725 })).toBe(
       false,

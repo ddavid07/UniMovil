@@ -57,7 +57,7 @@ export interface RoutingErrorResponse {
 }
 
 export const CAMPUS_BOUNDS = {
-  minLatitude: 40.44,
+  minLatitude: 40.435,
   maxLatitude: 40.46,
   minLongitude: -3.738,
   maxLongitude: -3.715,
