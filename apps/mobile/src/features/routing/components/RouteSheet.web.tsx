@@ -17,6 +17,7 @@ export interface RouteSheetProps {
   readonly route: RouteResponse | null;
   readonly onClose: () => void;
   readonly onAccept?: (() => void) | undefined;
+  readonly embedded?: boolean;
 }
 
 function RouteHeader({
@@ -141,7 +142,12 @@ function RouteStepList({ route }: { readonly route: RouteResponse }) {
   );
 }
 
-export function RouteSheet({ route, onClose, onAccept }: RouteSheetProps) {
+export function RouteSheet({
+  route,
+  onClose,
+  onAccept,
+  embedded = false,
+}: RouteSheetProps) {
   const multimodalAlternatives = useMemo(() => {
     if (!route) return [];
     return calculateMultimodalAlternatives(
@@ -164,85 +170,136 @@ export function RouteSheet({ route, onClose, onAccept }: RouteSheetProps) {
     }
   };
 
-  return (
-    <Modal transparent visible animationType="fade" onRequestClose={onClose}>
-      <View style={styles.overlay}>
-        <View style={styles.dialogCard}>
-          {/* Header */}
-          <RouteHeader onClose={onClose} onAccept={handleAccept} />
+  const sheetBody = (
+    <View style={embedded ? styles.embeddedSheet : styles.dialogCard}>
+      {/* Header */}
+      <RouteHeader onClose={onClose} onAccept={handleAccept} />
 
-          {/* Primary Call-To-Action Banner: Accept & View On Map */}
-          <View style={styles.acceptBanner}>
-            <View style={styles.acceptBannerTextCol}>
-              <Text style={styles.acceptBannerTitle}>
-                ¿Quieres seguir esta ruta en el mapa?
-              </Text>
-              <Text style={styles.acceptBannerSub}>
-                Cierra este panel y visualiza el trazado en el mapa interactivo.
-              </Text>
-            </View>
-            <View style={styles.acceptBannerActions}>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel="Aceptar y ver en el mapa"
-                style={styles.acceptBtn}
-                onPress={handleAccept}
-              >
-                <Text style={styles.acceptBtnText}>🗺️ Aceptar y ver en el mapa</Text>
-              </Pressable>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel="Cancelar ruta"
-                style={styles.cancelRouteBtn}
-                onPress={onClose}
-              >
-                <Text style={styles.cancelRouteBtnText}>✕ Cancelar</Text>
-              </Pressable>
-            </View>
-          </View>
-
-          {/* Scrollable details */}
-          <ScrollView
-            style={styles.scrollBody}
-            contentContainerStyle={styles.scrollBodyContent}
-            showsVerticalScrollIndicator={true}
+      {/* Primary Call-To-Action Banner: Accept & View On Map */}
+      <View style={styles.acceptBanner}>
+        <View style={styles.acceptBannerTextCol}>
+          <Text style={styles.acceptBannerTitle}>
+            ¿Quieres seguir esta ruta en el mapa?
+          </Text>
+          <Text style={styles.acceptBannerSub}>
+            Cierra este panel y visualiza el trazado en el mapa interactivo.
+          </Text>
+        </View>
+        <View style={styles.acceptBannerActions}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Aceptar y ver en el mapa"
+            style={styles.acceptBtn}
+            onPress={handleAccept}
           >
-            {/* Quick Metrics */}
-            <RouteMetricsRow route={route} />
-
-            {/* Multimodal comparison */}
-            {multimodalAlternatives.length > 0 && (
-              <View style={styles.multimodalWrapper}>
-                <MultimodalComparisonCard
-                  alternatives={multimodalAlternatives}
-                />
-              </View>
-            )}
-
-            {/* Step-by-step directions */}
-            <RouteStepList route={route} />
-
-            {/* Bottom accept reminder button */}
-            <View style={styles.bottomActions}>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel="Aceptar y ver en el mapa"
-                style={styles.bottomAcceptBtn}
-                onPress={handleAccept}
-              >
-                <Text style={styles.bottomAcceptBtnText}>
-                  🗺️ Aceptar y ver trazado en el mapa
-                </Text>
-              </Pressable>
-            </View>
-          </ScrollView>
+            <Text style={styles.acceptBtnText}>🗺️ Aceptar y ver en el mapa</Text>
+          </Pressable>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Cancelar ruta"
+            style={styles.cancelRouteBtn}
+            onPress={onClose}
+          >
+            <Text style={styles.cancelRouteBtnText}>✕ Cancelar</Text>
+          </Pressable>
         </View>
       </View>
+
+      {/* Scrollable details */}
+      <ScrollView
+        style={styles.scrollBody}
+        contentContainerStyle={styles.scrollBodyContent}
+        showsVerticalScrollIndicator={true}
+      >
+        {/* Quick Metrics */}
+        <RouteMetricsRow route={route} />
+
+        {/* Multimodal comparison */}
+        {multimodalAlternatives.length > 0 && (
+          <View style={styles.multimodalWrapper}>
+            <MultimodalComparisonCard
+              alternatives={multimodalAlternatives}
+            />
+          </View>
+        )}
+
+        {/* Step-by-step directions */}
+        <RouteStepList route={route} />
+
+        {/* Bottom accept reminder button */}
+        <View style={styles.bottomActions}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Aceptar y ver en el mapa"
+            style={styles.bottomAcceptBtn}
+            onPress={handleAccept}
+          >
+            <Text style={styles.bottomAcceptBtnText}>
+              🗺️ Aceptar y ver trazado en el mapa
+            </Text>
+          </Pressable>
+        </View>
+      </ScrollView>
+    </View>
+  );
+
+  if (embedded) {
+    return (
+      <View style={styles.embeddedOverlay}>
+        <Pressable
+          style={styles.embeddedBackdrop}
+          onPress={onClose}
+          accessibilityLabel="Cerrar detalles de ruta"
+        />
+        {sheetBody}
+      </View>
+    );
+  }
+
+  return (
+    <Modal transparent visible animationType="fade" onRequestClose={onClose}>
+      <View style={styles.overlay}>{sheetBody}</View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
+  embeddedOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1000,
+    justifyContent: "flex-end",
+    display: "flex",
+    flexDirection: "column",
+  },
+  embeddedBackdrop: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(15, 23, 42, 0.45)",
+  },
+  embeddedSheet: {
+    position: "relative",
+    backgroundColor: "#ffffff",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    maxHeight: "85%",
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 16,
+    elevation: 12,
+    zIndex: 1001,
+  },
   overlay: {
     flex: 1,
     backgroundColor: "rgba(15, 23, 42, 0.55)",

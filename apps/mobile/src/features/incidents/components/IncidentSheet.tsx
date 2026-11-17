@@ -72,9 +72,10 @@ interface Props {
   readonly incident: Incident | null;
   /** Callback para cerrar la ficha. */
   readonly onClose: () => void;
+  readonly embedded?: boolean;
 }
 
-export function IncidentSheet({ incident, onClose }: Props) {
+export function IncidentSheet({ incident, onClose, embedded = false }: Props) {
   if (!incident) return null;
 
   const typeLabel = TYPE_LABELS[incident.type] ?? incident.type;
@@ -88,6 +89,52 @@ export function IncidentSheet({ incident, onClose }: Props) {
     { year: "numeric", month: "long", day: "numeric" },
   );
 
+  const sheetContent = (
+    <View style={embedded ? styles.embeddedOverlay : styles.overlay}>
+      <SafeAreaView edges={["bottom"]} style={styles.sheet}>
+        <Action label="Cerrar ficha de incidencia" onPress={onClose} />
+        <ScrollView contentContainerStyle={styles.content}>
+          {/* Título */}
+          <Text accessibilityRole="header" style={styles.title}>
+            {incident.title}
+          </Text>
+
+          {/* Badges de estado y severidad */}
+          <View style={styles.badges}>
+            <Badge label={`⚠ ${typeLabel}`} color="#f97316" />
+            <Badge label={severityLabel} color={severityColor} />
+            <Badge label={statusLabel} color={statusColor} />
+          </View>
+
+          {/* Descripción */}
+          <Text style={styles.sectionLabel}>Descripción</Text>
+          <Text style={styles.text}>{incident.description}</Text>
+
+          {/* Coordenadas */}
+          <Text style={styles.sectionLabel}>Ubicación</Text>
+          <Text style={styles.text}>
+            {incident.coordinates.latitude.toFixed(6)},{" "}
+            {incident.coordinates.longitude.toFixed(6)}
+          </Text>
+
+          {/* Fecha */}
+          <Text style={styles.sectionLabel}>Reportada el</Text>
+          <Text style={styles.text}>{reportedDate}</Text>
+
+          {/* Aviso legal */}
+          <Text style={styles.disclaimer}>
+            Información reportada por usuarios. No constituye garantía de
+            accesibilidad ni confirmación oficial.
+          </Text>
+        </ScrollView>
+      </SafeAreaView>
+    </View>
+  );
+
+  if (embedded) {
+    return sheetContent;
+  }
+
   return (
     <Modal
       transparent
@@ -96,45 +143,7 @@ export function IncidentSheet({ incident, onClose }: Props) {
       onRequestClose={onClose}
       accessibilityViewIsModal
     >
-      <View style={styles.overlay}>
-        <SafeAreaView edges={["bottom"]} style={styles.sheet}>
-          <Action label="Cerrar ficha de incidencia" onPress={onClose} />
-          <ScrollView contentContainerStyle={styles.content}>
-            {/* Título */}
-            <Text accessibilityRole="header" style={styles.title}>
-              {incident.title}
-            </Text>
-
-            {/* Badges de estado y severidad */}
-            <View style={styles.badges}>
-              <Badge label={`⚠ ${typeLabel}`} color="#f97316" />
-              <Badge label={severityLabel} color={severityColor} />
-              <Badge label={statusLabel} color={statusColor} />
-            </View>
-
-            {/* Descripción */}
-            <Text style={styles.sectionLabel}>Descripción</Text>
-            <Text style={styles.text}>{incident.description}</Text>
-
-            {/* Coordenadas */}
-            <Text style={styles.sectionLabel}>Ubicación</Text>
-            <Text style={styles.text}>
-              {incident.coordinates.latitude.toFixed(6)},{" "}
-              {incident.coordinates.longitude.toFixed(6)}
-            </Text>
-
-            {/* Fecha */}
-            <Text style={styles.sectionLabel}>Reportada el</Text>
-            <Text style={styles.text}>{reportedDate}</Text>
-
-            {/* Aviso legal */}
-            <Text style={styles.disclaimer}>
-              Información reportada por usuarios. No constituye garantía de
-              accesibilidad ni confirmación oficial.
-            </Text>
-          </ScrollView>
-        </SafeAreaView>
-      </View>
+      {sheetContent}
     </Modal>
   );
 }
@@ -142,6 +151,16 @@ export function IncidentSheet({ incident, onClose }: Props) {
 // ─── Estilos ─────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
+  embeddedOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1000,
+    justifyContent: "flex-end",
+    backgroundColor: "#00000066",
+  },
   overlay: {
     flex: 1,
     justifyContent: "flex-end",

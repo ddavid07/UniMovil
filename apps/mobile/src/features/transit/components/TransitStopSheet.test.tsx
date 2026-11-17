@@ -80,4 +80,11 @@ describe("TransitStopSheet (HU-027 - Sprint 3)", () => {
       ),
     ).toBeTruthy();
   });
+
+  it("permite renderizar en modo embebido dentro del simulador", async () => {
+    await render(
+      <TransitStopSheet stop={mockStop} onClose={jest.fn()} embedded={true} />,
+    );
+    expect(screen.getByText("Metro Ciudad Universitaria")).toBeTruthy();
+  });
 });

@@ -17,6 +17,7 @@ interface Props {
   readonly route: RouteResponse | null;
   readonly onClose: () => void;
   readonly onAccept?: (() => void) | undefined;
+  readonly embedded?: boolean;
 }
 
 function RouteHeader({
@@ -139,7 +140,12 @@ function RouteStepList({ route }: { route: RouteResponse }) {
   );
 }
 
-export function RouteSheet({ route, onClose, onAccept }: Props) {
+export function RouteSheet({
+  route,
+  onClose,
+  onAccept,
+  embedded = false,
+}: Props) {
   const multimodalAlternatives = useMemo(() => {
     if (!route) return [];
     return calculateMultimodalAlternatives(
@@ -154,32 +160,50 @@ export function RouteSheet({ route, onClose, onAccept }: Props) {
     return null;
   }
 
+  const sheetContent = (
+    <View style={embedded ? styles.embeddedOverlay : styles.overlay}>
+      <SafeAreaView edges={["bottom"]} style={styles.sheet}>
+        <RouteHeader onClose={onClose} onAccept={onAccept} />
+        <RouteMetricsRow route={route} />
+        <ScrollView
+          style={styles.scrollBody}
+          contentContainerStyle={styles.scrollBodyContent}
+        >
+          {multimodalAlternatives.length > 0 && (
+            <View style={styles.multimodalWrapper}>
+              <MultimodalComparisonCard
+                alternatives={multimodalAlternatives}
+              />
+            </View>
+          )}
+          <RouteStepList route={route} />
+        </ScrollView>
+      </SafeAreaView>
+    </View>
+  );
+
+  if (embedded) {
+    return sheetContent;
+  }
+
   return (
     <Modal transparent visible animationType="slide" onRequestClose={onClose}>
-      <View style={styles.overlay}>
-        <SafeAreaView edges={["bottom"]} style={styles.sheet}>
-          <RouteHeader onClose={onClose} onAccept={onAccept} />
-          <RouteMetricsRow route={route} />
-          <ScrollView
-            style={styles.scrollBody}
-            contentContainerStyle={styles.scrollBodyContent}
-          >
-            {multimodalAlternatives.length > 0 && (
-              <View style={styles.multimodalWrapper}>
-                <MultimodalComparisonCard
-                  alternatives={multimodalAlternatives}
-                />
-              </View>
-            )}
-            <RouteStepList route={route} />
-          </ScrollView>
-        </SafeAreaView>
-      </View>
+      {sheetContent}
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
+  embeddedOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1000,
+    backgroundColor: "rgba(0, 0, 0, 0.35)",
+    justifyContent: "flex-end",
+  },
   overlay: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.35)",

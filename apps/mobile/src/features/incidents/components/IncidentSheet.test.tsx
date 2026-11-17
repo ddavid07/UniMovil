@@ -89,4 +89,15 @@ describe("IncidentSheet – ficha informativa de incidencia (HU-053, TDD Tema 3)
     expect(screen.getByText("Crítica")).toBeTruthy();
     expect(screen.getByText("En curso")).toBeTruthy();
   });
+
+  it("permite renderizar en modo embebido dentro del simulador", async () => {
+    await render(
+      <IncidentSheet
+        incident={mockIncident}
+        onClose={jest.fn()}
+        embedded={true}
+      />,
+    );
+    expect(screen.getByText(mockIncident.title)).toBeTruthy();
+  });
 });

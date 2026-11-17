@@ -118,4 +118,17 @@ describe("RouteSheet Component (HU-023 - TDD Tema 3)", () => {
     await fireEvent.press(screen.getByRole("button", { name: "Ver en el mapa" }));
     expect(onAccept).toHaveBeenCalledTimes(1);
   });
+
+  it("permite renderizar en modo embebido sin Modal externo", async () => {
+    const onClose = jest.fn();
+    await render(
+      <RouteSheet
+        route={mockRouteStandard}
+        onClose={onClose}
+        embedded={true}
+      />,
+    );
+    expect(screen.getByText("Itinerario peatonal")).toBeTruthy();
+    expect(screen.getAllByText("5 min").length).toBeGreaterThanOrEqual(1);
+  });
 });

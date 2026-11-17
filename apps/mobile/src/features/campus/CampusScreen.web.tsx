@@ -272,6 +272,37 @@ export function CampusScreen({
                 Datos de lugares © colaboradores de OpenStreetMap · ODbL
               </Text>
             </View>
+
+            {/* In-Phone Modals & Sheets (Embedded inside the mobile phone simulator) */}
+            <RouteSheet
+              route={routeSheetOpen ? routing.route : null}
+              onClose={routing.clearRoute}
+              onAccept={() => {
+                setRouteSheetOpen(false);
+                routing.closePlanner();
+              }}
+              embedded={true}
+            />
+            <TransitStopSheet
+              stop={selectedTransitStop}
+              onClose={() => setSelectedTransitStop(null)}
+              onPlanRouteToStop={(stop) =>
+                routing.openRouting(createStopPlace(stop))
+              }
+              embedded={true}
+            />
+            <IncidentSheet
+              incident={selectedIncident}
+              onClose={() => setSelectedIncident(null)}
+              embedded={true}
+            />
+            {reportOpen && (
+              <ReportIncidentScreen
+                onSubmit={handleReportSubmit}
+                onClose={() => setReportOpen(false)}
+                embedded={true}
+              />
+            )}
           </View>
         </View>
       ) : (
@@ -622,39 +653,43 @@ export function CampusScreen({
         </View>
       )}
 
-      {/* MODALS */}
-      <CampusDialogs
-        campus={campus}
-        listOpen={listOpen}
-        onCloseList={() => setListOpen(false)}
-        onSelect={select}
-        onPlanRoute={(place) => routing.openRouting(place)}
-      />
-      <RouteSheet
-        route={routeSheetOpen ? routing.route : null}
-        onClose={routing.clearRoute}
-        onAccept={() => {
-          setRouteSheetOpen(false);
-          routing.closePlanner();
-        }}
-      />
-      <TransitStopSheet
-        stop={selectedTransitStop}
-        onClose={() => setSelectedTransitStop(null)}
-        onPlanRouteToStop={(stop) =>
-          routing.openRouting(createStopPlace(stop))
-        }
-      />
-      <IncidentSheet
-        incident={selectedIncident}
-        onClose={() => setSelectedIncident(null)}
-      />
+      {/* DESKTOP MODALS (Rendered only when viewMode === "web") */}
+      {viewMode === "web" && (
+        <>
+          <CampusDialogs
+            campus={campus}
+            listOpen={listOpen}
+            onCloseList={() => setListOpen(false)}
+            onSelect={select}
+            onPlanRoute={(place) => routing.openRouting(place)}
+          />
+          <RouteSheet
+            route={routeSheetOpen ? routing.route : null}
+            onClose={routing.clearRoute}
+            onAccept={() => {
+              setRouteSheetOpen(false);
+              routing.closePlanner();
+            }}
+          />
+          <TransitStopSheet
+            stop={selectedTransitStop}
+            onClose={() => setSelectedTransitStop(null)}
+            onPlanRouteToStop={(stop) =>
+              routing.openRouting(createStopPlace(stop))
+            }
+          />
+          <IncidentSheet
+            incident={selectedIncident}
+            onClose={() => setSelectedIncident(null)}
+          />
 
-      {reportOpen && (
-        <ReportIncidentScreen
-          onSubmit={handleReportSubmit}
-          onClose={() => setReportOpen(false)}
-        />
+          {reportOpen && (
+            <ReportIncidentScreen
+              onSubmit={handleReportSubmit}
+              onClose={() => setReportOpen(false)}
+            />
+          )}
+        </>
       )}
     </View>
   );
