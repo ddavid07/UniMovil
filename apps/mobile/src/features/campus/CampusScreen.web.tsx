@@ -633,7 +633,10 @@ export function CampusScreen({
       <RouteSheet
         route={routeSheetOpen ? routing.route : null}
         onClose={routing.clearRoute}
-        onAccept={() => setRouteSheetOpen(false)}
+        onAccept={() => {
+          setRouteSheetOpen(false);
+          routing.closePlanner();
+        }}
       />
       <TransitStopSheet
         stop={selectedTransitStop}
@@ -1260,6 +1263,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     position: "relative",
     backgroundColor: "#f8fafc",
+    overflowY: "auto" as unknown as "scroll",
   },
   mobileFooterBar: {
     paddingVertical: 4,

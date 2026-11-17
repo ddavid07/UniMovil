@@ -193,7 +193,10 @@ export function CampusScreen({
           campus={campus}
           routing={routing}
           route={routeSheetOpen ? routing.route : null}
-          onAcceptRoute={() => setRouteSheetOpen(false)}
+          onAcceptRoute={() => {
+            setRouteSheetOpen(false);
+            routing.closePlanner();
+          }}
           listOpen={listOpen}
           selectedTransitStop={selectedTransitStop}
           selectedIncident={selectedIncident}

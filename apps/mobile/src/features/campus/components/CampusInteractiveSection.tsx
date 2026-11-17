@@ -128,7 +128,7 @@ function CampusMapExplorer({
   readonly onClearRoute?: (() => void) | undefined;
 }) {
   return (
-    <>
+    <View style={styles.mapExplorerContainer}>
       {campus.visible.length === 0 && (
         <Text accessibilityLiveRegion="polite">
           No hay coincidencias. Cambia la búsqueda o restablece los filtros.
@@ -150,7 +150,7 @@ function CampusMapExplorer({
         onOpenRouteDetails={onOpenRouteDetails}
         onClearRoute={onClearRoute}
       />
-    </>
+    </View>
   );
 }
 
@@ -205,7 +205,13 @@ export function CampusInteractiveSection({
           onCalculate={() => {
             void routing.calculate();
           }}
-          onClose={routing.closeRouting}
+          onClose={() => {
+            if (routing.route) {
+              routing.closePlanner();
+            } else {
+              routing.closeRouting();
+            }
+          }}
         />
       )}
       <CampusMapExplorer
@@ -245,5 +251,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     alignItems: "center",
+  },
+  mapExplorerContainer: {
+    flex: 1,
+    minHeight: 320,
+    display: "flex",
+    flexDirection: "column",
   },
 });

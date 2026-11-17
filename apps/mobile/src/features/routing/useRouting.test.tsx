@@ -62,6 +62,16 @@ describe("useRouting Hook (HU-020 & HU-023 - Jest Coverage)", () => {
     });
 
     expect(result.current.isRoutingOpen).toBe(false);
+
+    await act(async () => {
+      result.current.openRouting(placeB);
+    });
+    expect(result.current.isRoutingOpen).toBe(true);
+
+    await act(async () => {
+      result.current.closePlanner();
+    });
+    expect(result.current.isRoutingOpen).toBe(false);
   });
 
   it("permite seleccionar origen, destino, alternar accesibilidad e intercambiar", async () => {
@@ -166,6 +176,7 @@ describe("useRouting Hook (HU-020 & HU-023 - Jest Coverage)", () => {
     controller.openRouting(placeA);
     controller.clearRoute();
     controller.swap();
+    controller.closePlanner();
     controller.closeRouting();
     controller.setOrigin(null);
     controller.setDestination(null);

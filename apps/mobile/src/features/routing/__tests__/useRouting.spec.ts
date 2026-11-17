@@ -65,6 +65,11 @@ describe("Routing Controller / State Logic (TDD - Tema 3)", () => {
 
     controller.closeRouting();
     expect(controller.getState().isRoutingOpen).toBe(false);
+
+    controller.openRouting(placeB);
+    expect(controller.getState().isRoutingOpen).toBe(true);
+    controller.closePlanner();
+    expect(controller.getState().isRoutingOpen).toBe(false);
   });
 
   it("permite alternar el conmutador de accesibilidad PMR", () => {

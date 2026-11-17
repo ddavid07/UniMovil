@@ -48,6 +48,11 @@ export function createRoutingController(
         ...(initialDestination ? { destination: initialDestination } : {}),
       });
     },
+    closePlanner: () => {
+      update({
+        isRoutingOpen: false,
+      });
+    },
     closeRouting: () => {
       update({
         isRoutingOpen: false,
@@ -138,6 +143,10 @@ export function useRouting(
     }
   }, []);
 
+  const closePlanner = useCallback(() => {
+    setIsRoutingOpen(false);
+  }, []);
+
   const closeRouting = useCallback(() => {
     setIsRoutingOpen(false);
     setRoute(null);
@@ -212,6 +221,7 @@ export function useRouting(
       setDestination,
       setAccessibleOnly,
       openRouting,
+      closePlanner,
       closeRouting,
       swap,
       clearRoute,
@@ -226,6 +236,7 @@ export function useRouting(
       loading,
       error,
       openRouting,
+      closePlanner,
       closeRouting,
       swap,
       clearRoute,
