@@ -17,6 +17,7 @@ module.exports = {
     "src/features/routing/use*.ts",
     "src/features/transit/**/*.tsx",
     "src/features/transit/use*.ts",
+    "!src/**/*.web.tsx",
   ],
   coverageDirectory: "../../coverage/mobile",
   coverageReporters: ["text", "json-summary", "lcov"],

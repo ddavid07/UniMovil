@@ -39,6 +39,8 @@ interface Props {
   onSelectIncident?: ((incident: Incident) => void) | undefined;
   showIncidents?: boolean | undefined;
   incidents?: readonly Incident[] | undefined;
+  onOpenRouteDetails?: (() => void) | undefined;
+  onClearRoute?: (() => void) | undefined;
 }
 
 function MapStateMessage({

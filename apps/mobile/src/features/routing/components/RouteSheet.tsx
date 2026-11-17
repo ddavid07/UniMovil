@@ -16,9 +16,16 @@ import { MultimodalComparisonCard } from "../../transit/components/MultimodalCom
 interface Props {
   readonly route: RouteResponse | null;
   readonly onClose: () => void;
+  readonly onAccept?: (() => void) | undefined;
 }
 
-function RouteHeader({ onClose }: { onClose: () => void }) {
+function RouteHeader({
+  onClose,
+  onAccept,
+}: {
+  readonly onClose: () => void;
+  readonly onAccept?: (() => void) | undefined;
+}) {
   return (
     <View style={styles.header}>
       <View>
@@ -27,14 +34,26 @@ function RouteHeader({ onClose }: { onClose: () => void }) {
         </Text>
         <Text style={styles.subtitle}>Moncloa · Campus Complutense</Text>
       </View>
-      <TouchableOpacity
-        accessibilityRole="button"
-        accessibilityLabel="Cerrar ruta"
-        style={styles.closeBtn}
-        onPress={onClose}
-      >
-        <Text style={styles.closeBtnText}>Cerrar ruta</Text>
-      </TouchableOpacity>
+      <View style={styles.headerActions}>
+        {onAccept && (
+          <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel="Ver en el mapa"
+            style={styles.acceptBtn}
+            onPress={onAccept}
+          >
+            <Text style={styles.acceptBtnText}>Ver en el mapa</Text>
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity
+          accessibilityRole="button"
+          accessibilityLabel="Cerrar ruta"
+          style={styles.closeBtn}
+          onPress={onClose}
+        >
+          <Text style={styles.closeBtnText}>Cerrar ruta</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -120,7 +139,7 @@ function RouteStepList({ route }: { route: RouteResponse }) {
   );
 }
 
-export function RouteSheet({ route, onClose }: Props) {
+export function RouteSheet({ route, onClose, onAccept }: Props) {
   const multimodalAlternatives = useMemo(() => {
     if (!route) return [];
     return calculateMultimodalAlternatives(
@@ -139,7 +158,7 @@ export function RouteSheet({ route, onClose }: Props) {
     <Modal transparent visible animationType="slide" onRequestClose={onClose}>
       <View style={styles.overlay}>
         <SafeAreaView edges={["bottom"]} style={styles.sheet}>
-          <RouteHeader onClose={onClose} />
+          <RouteHeader onClose={onClose} onAccept={onAccept} />
           <RouteMetricsRow route={route} />
           <ScrollView
             style={styles.scrollBody}
@@ -196,6 +215,22 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#64748b",
     marginTop: 2,
+  },
+  headerActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  acceptBtn: {
+    backgroundColor: "#8e1235",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  acceptBtnText: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#ffffff",
   },
   closeBtn: {
     backgroundColor: "#f1f5f9",
