@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import L from "leaflet";
 import type {
   Place,
+  PlaceCategory,
   RouteResponse,
   TransitLine,
   TransitStop,
@@ -41,38 +42,63 @@ interface Props {
 const CAMPUS_CENTER: [number, number] = [40.449, -3.729];
 const DEFAULT_ZOOM = 15;
 
-function createPinIcon(color: string, symbol: string) {
+const CATEGORY_STYLES: Record<
+  PlaceCategory,
+  { icon: string; color: string; label: string }
+> = {
+  building: { icon: "🏛️", color: "#8e1235", label: "Edificio" },
+  transport: { icon: "🚌", color: "#0284c7", label: "Transporte" },
+  parking: { icon: "🅿️", color: "#2563eb", label: "Aparcamiento" },
+  bicycle: { icon: "🚲", color: "#16a34a", label: "Bicicletas" },
+  service: { icon: "ℹ️", color: "#d97706", label: "Servicios" },
+  entrance: { icon: "🚪", color: "#7c3aed", label: "Accesos" },
+};
+
+function createPinIcon(
+  color: string,
+  symbol: string,
+  isSelected: boolean = false,
+) {
+  const size = isSelected ? 36 : 28;
+  const iconSize = isSelected ? 16 : 13;
+  const shadow = isSelected
+    ? `0 4px 12px rgba(0,0,0,0.5), 0 0 0 3px #ffffff, 0 0 0 6px ${color}`
+    : "0 2px 5px rgba(0,0,0,0.35)";
+
   return L.divIcon({
     className: "unimovil-map-pin",
     html: `
       <div style="
         background-color: ${color};
-        width: 30px;
-        height: 30px;
+        width: ${size}px;
+        height: ${size}px;
         border-radius: 50% 50% 50% 0;
         transform: rotate(-45deg);
         display: flex;
         align-items: center;
         justify-content: center;
         border: 2px solid #ffffff;
-        box-shadow: 0 3px 6px rgba(0,0,0,0.35);
+        box-shadow: ${shadow};
       ">
         <span style="
           transform: rotate(45deg);
-          font-size: 14px;
+          font-size: ${iconSize}px;
           line-height: 1;
         ">${symbol}</span>
       </div>
     `,
-    iconSize: [30, 30],
-    iconAnchor: [15, 30],
-    popupAnchor: [0, -30],
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size],
+    popupAnchor: [0, -size],
   });
 }
 
-const PLACE_ICON = createPinIcon("#8e1235", "🏛️");
-const SELECTED_ICON = createPinIcon("#dc2626", "📍");
-const TRANSIT_ICON = createPinIcon("#16a34a", "🚌");
+function getPlaceIcon(category: PlaceCategory, isSelected: boolean) {
+  const meta = CATEGORY_STYLES[category] ?? CATEGORY_STYLES.building;
+  return createPinIcon(meta.color, meta.icon, isSelected);
+}
+
+const TRANSIT_ICON = createPinIcon("#0284c7", "🚌");
 const INCIDENT_ICON = createPinIcon("#d97706", "⚠️");
 
 export function CampusMap({
@@ -186,14 +212,19 @@ export function CampusMap({
 
     group.clearLayers();
 
-    // Add place markers
+    // Add place markers with distinct category icons and colors
     places.forEach((place) => {
       const isSelected = selected?.id === place.id;
+      const icon = getPlaceIcon(place.category, isSelected);
       const marker = L.marker(
         [place.coordinates.latitude, place.coordinates.longitude],
-        { icon: isSelected ? SELECTED_ICON : PLACE_ICON, zIndexOffset: isSelected ? 1000 : 100 },
+        { icon, zIndexOffset: isSelected ? 1000 : 100 },
       );
-      marker.bindTooltip(place.name, { direction: "top", offset: [0, -28] });
+      const meta = CATEGORY_STYLES[place.category] ?? CATEGORY_STYLES.building;
+      marker.bindTooltip(`${meta.icon} ${place.name} (${meta.label})`, {
+        direction: "top",
+        offset: [0, -28],
+      });
       marker.on("click", () => onSelect(place.id));
       group.addLayer(marker);
     });
@@ -400,14 +431,18 @@ export function CampusMap({
       {selected && (
         <View style={styles.selectedCard}>
           <View style={styles.selectedCardRow}>
-            <Text style={styles.selectedCardTitle}>📍 {selected.name}</Text>
+            <Text style={styles.selectedCardTitle}>
+              {CATEGORY_STYLES[selected.category]?.icon ?? "📍"} {selected.name}
+            </Text>
             <View style={styles.categoryBadge}>
-              <Text style={styles.categoryBadgeText}>{selected.category}</Text>
+              <Text style={styles.categoryBadgeText}>
+                {CATEGORY_STYLES[selected.category]?.label ?? selected.category}
+              </Text>
             </View>
           </View>
           {selected.accessibility && (
             <Text style={styles.selectedCardMeta}>
-              ♿ Accesibilidad: {selected.accessibility}
+              ♿ Accesibilidad: {selected.accessibility === "yes" ? "Adaptado PMR" : selected.accessibility}
             </Text>
           )}
         </View>

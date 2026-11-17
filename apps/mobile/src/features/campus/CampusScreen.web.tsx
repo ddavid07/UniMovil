@@ -465,7 +465,7 @@ export function CampusScreen({
                 <View style={styles.selectedPlaceCardCompact}>
                   <View style={styles.cardHeaderRow}>
                     <Text style={styles.selectedPlaceTitle}>
-                      📍 {campus.selected.name}
+                      {CATEGORY_META[campus.selected.category]?.icon ?? "📍"} {campus.selected.name}
                     </Text>
                     <Pressable onPress={() => campus.select("")}>
                       <Text style={styles.closeCardText}>✕</Text>
@@ -474,7 +474,8 @@ export function CampusScreen({
                   <View style={styles.placeTagsRow}>
                     <View style={styles.badgePill}>
                       <Text style={styles.badgePillText}>
-                        {campus.selected.category}
+                        {CATEGORY_META[campus.selected.category]?.label ??
+                          campus.selected.category}
                       </Text>
                     </View>
                     {campus.selected.accessibility === "yes" && (
