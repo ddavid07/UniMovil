@@ -323,12 +323,17 @@ export function buildMultimodalRoute(
         mode: "walking",
       };
     }
-    const commonLine =
-      lines.find(
-        (l) =>
-          l.stops.some((s) => s.id === originNearest.stop.id) &&
-          l.stops.some((s) => s.id === destNearest.stop.id),
-      ) ?? lines[0];
+    const commonLine = lines.find(
+      (l) =>
+        l.stops.some((s) => s.id === originNearest.stop.id) &&
+        l.stops.some((s) => s.id === destNearest.stop.id),
+    );
+    if (!commonLine) {
+      return {
+        ...baseRoute,
+        mode: "walking",
+      };
+    }
 
     const busRidePolyline = extractTransitSubPolyline(
       commonLine?.polyline ?? [],

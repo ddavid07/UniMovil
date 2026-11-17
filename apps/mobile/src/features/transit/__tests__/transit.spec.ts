@@ -209,6 +209,51 @@ describe("Transit Domain (Sprint 3 Multimodal)", () => {
       });
       expect(fallback.mode).toBe("walking");
     });
+
+    it("devuelve ruta a pie cuando las paradas no comparten ninguna línea común", () => {
+      const disjointStops = [
+        {
+          id: "stop-a",
+          code: "1001",
+          name: "Parada A",
+          lines: ["L1"],
+          accessible: true,
+          coordinates: { latitude: 40.44328, longitude: -3.72725 },
+        },
+        {
+          id: "stop-b",
+          code: "1002",
+          name: "Parada B",
+          lines: ["L2"],
+          accessible: true,
+          coordinates: { latitude: 40.452, longitude: -3.7335 },
+        },
+      ];
+      const disjointLines = [
+        {
+          id: "line-1",
+          code: "L1",
+          name: "Línea 1",
+          stops: [disjointStops[0]!],
+          polyline: [disjointStops[0]!.coordinates],
+        },
+        {
+          id: "line-2",
+          code: "L2",
+          name: "Línea 2",
+          stops: [disjointStops[1]!],
+          polyline: [disjointStops[1]!.coordinates],
+        },
+      ];
+
+      const fallback = buildMultimodalRoute(dummyWalkingRoute, "bus", {
+        stops: disjointStops,
+        lines: disjointLines,
+      });
+
+      expect(fallback.mode).toBe("walking");
+      expect(fallback.id).toBe(dummyWalkingRoute.id);
+    });
   });
 
   describe("extractTransitSubPolyline", () => {
