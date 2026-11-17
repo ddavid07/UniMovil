@@ -148,6 +148,7 @@ function CampusMapCanvas({
       attribution
       logo={false}
       onDidFinishLoadingMap={() => controller.setState("ready")}
+      onDidFinishLoadingStyle={() => controller.setState("ready")}
       onDidFailLoadingMap={() => controller.setState("error")}
       onRegionDidChange={(event) => {
         controller.recordZoom(event.nativeEvent.zoom);
