@@ -259,5 +259,28 @@ describe("Transit Domain (Sprint 3 Multimodal)", () => {
       expect(res[0]).toEqual(stopB);
       expect(res[res.length - 1]).toEqual(stopA);
     });
+
+    it("handles deduplication of consecutive identical points and appends distinct toStop", () => {
+      const lineWithDuplicates = [
+        { latitude: 40.445, longitude: -3.722 },
+        { latitude: 40.445, longitude: -3.722 }, // duplicate
+        { latitude: 40.448, longitude: -3.725 },
+        { latitude: 40.450, longitude: -3.728 },
+      ];
+      const from = { latitude: 40.445, longitude: -3.722 };
+      const toOffset = { latitude: 40.451, longitude: -3.729 }; // slightly offset toStop
+
+      const res = extractTransitSubPolyline(lineWithDuplicates, from, toOffset);
+      expect(res[res.length - 1]).toEqual(toOffset);
+      expect(res.length).toBe(4);
+    });
+
+    it("builds multimodal route with accessibleOnly option filtering", () => {
+      const pmrRoute = buildMultimodalRoute(dummyWalkingRoute, "bus", {
+        accessibleOnly: true,
+      });
+      expect(pmrRoute).toBeDefined();
+      expect(pmrRoute.accessible).toBe(true);
+    });
   });
 });

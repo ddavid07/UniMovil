@@ -177,4 +177,20 @@ describe("Routing Controller / State Logic (TDD - Tema 3)", () => {
     expect(controller.getState().selectedMode).toBe("walking");
     expect(controller.getState().route?.mode).toBe("walking");
   });
+
+  it("limpia la ruta activa y el modo base al invocar clearRoute", async () => {
+    const mockRepo: RoutingRepository = {
+      calculateRoute: vi.fn().mockResolvedValue(mockRoute),
+    };
+    const controller = createRoutingController(mockRepo);
+    controller.setOrigin(placeA);
+    controller.setDestination(placeB);
+    await controller.calculate();
+    expect(controller.getState().route).not.toBeNull();
+
+    controller.clearRoute();
+    expect(controller.getState().route).toBeNull();
+    expect(controller.getState().baseWalkingRoute).toBeNull();
+    expect(controller.getState().selectedMode).toBe("walking");
+  });
 });
