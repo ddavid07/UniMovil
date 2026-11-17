@@ -166,4 +166,114 @@ describe("RoutingRepository (TDD - Tema 3)", () => {
       ).rejects.toThrow("No existe camino");
     });
   });
+
+  describe("createOsrmRoutingRepository", () => {
+    it("calcula polilínea real siguiendo viales mediante respuesta de OSRM", async () => {
+      const mockOsrmData = {
+        code: "Ok",
+        routes: [
+          {
+            distance: 520,
+            duration: 416,
+            geometry: {
+              coordinates: [
+                [-3.7262, 40.4442],
+                [-3.7268, 40.445],
+                [-3.7272, 40.4453],
+                [-3.7275, 40.4455],
+              ],
+            },
+            legs: [
+              {
+                steps: [
+                  {
+                    name: "Avenida Complutense",
+                    distance: 300,
+                    duration: 240,
+                    maneuver: { type: "depart" },
+                    geometry: {
+                      coordinates: [
+                        [-3.7262, 40.4442],
+                        [-3.7268, 40.445],
+                      ],
+                    },
+                  },
+                  {
+                    name: "Plaza de Ramón y Cajal",
+                    distance: 220,
+                    duration: 176,
+                    maneuver: { type: "turn" },
+                    geometry: {
+                      coordinates: [
+                        [-3.7268, 40.445],
+                        [-3.7275, 40.4455],
+                      ],
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      };
+
+      const mockFetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(mockOsrmData),
+      });
+
+      const { createOsrmRoutingRepository } = await import(
+        "../data/repository.js"
+      );
+      const repo = createOsrmRoutingRepository({
+        fetchFn: mockFetch as unknown as typeof fetch,
+      });
+
+      const result = await repo.calculateRoute({ origin, destination });
+
+      expect(mockFetch).toHaveBeenCalled();
+      expect(result.polyline.length).toBe(4);
+      expect(result.polyline[0]).toEqual({ latitude: 40.4442, longitude: -3.7262 });
+      expect(result.polyline[3]).toEqual({ latitude: 40.4455, longitude: -3.7275 });
+      expect(result.segments.length).toBe(2);
+      expect(result.segments[0]?.instruction).toContain("Avenida Complutense");
+    });
+
+    it("recurre airosamente al repositorio local si la llamada a OSRM falla", async () => {
+      const mockFetch = vi.fn().mockRejectedValue(new Error("Network timeout"));
+
+      const { createOsrmRoutingRepository } = await import(
+        "../data/repository.js"
+      );
+      const repo = createOsrmRoutingRepository({
+        fetchFn: mockFetch as unknown as typeof fetch,
+      });
+
+      const result = await repo.calculateRoute({ origin, destination });
+
+      expect(result).toBeDefined();
+      expect(result.totalDistanceMeters).toBeGreaterThan(0);
+      expect(result.segments.length).toBe(2);
+    });
+
+    it("utiliza el repositorio local cuando se solicita ruta accesible PMR", async () => {
+      const mockFetch = vi.fn();
+
+      const { createOsrmRoutingRepository } = await import(
+        "../data/repository.js"
+      );
+      const repo = createOsrmRoutingRepository({
+        fetchFn: mockFetch as unknown as typeof fetch,
+      });
+
+      const result = await repo.calculateRoute({
+        origin,
+        destination,
+        accessibleOnly: true,
+      });
+
+      expect(mockFetch).not.toHaveBeenCalled();
+      expect(result.accessible).toBe(true);
+    });
+  });
 });

@@ -179,3 +179,207 @@ export const localRoutingRepository: RoutingRepository = {
     });
   },
 };
+
+export interface OsrmRoutingConfig {
+  readonly baseUrl?: string | undefined;
+  readonly fetchFn?: typeof fetch | undefined;
+  readonly fallbackRepository?: RoutingRepository | undefined;
+  readonly timeoutMs?: number | undefined;
+}
+
+export function createOsrmRoutingRepository(
+  config?: OsrmRoutingConfig,
+): RoutingRepository {
+  const fetcher =
+    config?.fetchFn ?? (typeof fetch !== "undefined" ? fetch : undefined);
+  const fallback = config?.fallbackRepository ?? localRoutingRepository;
+  const baseUrl = config?.baseUrl ?? "https://router.project-osrm.org";
+  const timeoutMs = config?.timeoutMs ?? 3000;
+
+  return {
+    async calculateRoute(request: RouteRequest): Promise<RouteResponse> {
+      const { origin, destination, accessibleOnly = false } = request;
+
+      if (!isWithinCampusBounds(origin)) {
+        const error = new Error(
+          "El punto de origen se encuentra fuera de los límites del campus de Moncloa.",
+        );
+        Object.assign(error, {
+          code: "ORIGIN_OUT_OF_BOUNDS",
+          userMessage:
+            "El punto de origen se encuentra fuera de los límites del campus de Moncloa.",
+          recommendedAction:
+            "Seleccione un origen dentro de Ciudad Universitaria.",
+        });
+        throw error;
+      }
+
+      if (!isWithinCampusBounds(destination)) {
+        const error = new Error(
+          "El destino se encuentra fuera de los límites del campus de Moncloa.",
+        );
+        Object.assign(error, {
+          code: "DESTINATION_OUT_OF_BOUNDS",
+          userMessage:
+            "El destino se encuentra fuera de los límites del campus de Moncloa.",
+          recommendedAction:
+            "Seleccione un destino dentro de Ciudad Universitaria.",
+        });
+        throw error;
+      }
+
+      const distance = haversineDistanceMeters(origin, destination);
+      if (distance < 5) {
+        const error = new Error("El origen y el destino son el mismo punto.");
+        Object.assign(error, {
+          code: "IDENTICAL_POINTS",
+          userMessage: "El origen y el destino son el mismo punto.",
+          recommendedAction:
+            "Seleccione dos lugares diferentes en el campus.",
+        });
+        throw error;
+      }
+
+      if (accessibleOnly || !fetcher) {
+        return fallback.calculateRoute(request);
+      }
+
+      try {
+        const url = `${baseUrl}/route/v1/foot/${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}?overview=full&geometries=geojson&steps=true`;
+
+        let timeoutId: ReturnType<typeof setTimeout> | undefined;
+        let signal: AbortSignal | undefined;
+        if (typeof AbortController !== "undefined") {
+          const controller = new AbortController();
+          signal = controller.signal;
+          timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+        }
+
+        const fetchOptions: RequestInit = {
+          headers: { Accept: "application/json" },
+          ...(signal ? { signal } : {}),
+        };
+
+        const response = await fetcher(url, fetchOptions);
+
+        if (timeoutId) clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          return fallback.calculateRoute(request);
+        }
+
+        const data = (await response.json()) as {
+          code?: string;
+          routes?: Array<{
+            distance?: number;
+            duration?: number;
+            geometry?: {
+              coordinates?: Array<[number, number]>;
+            };
+            legs?: Array<{
+              steps?: Array<{
+                name?: string;
+                distance?: number;
+                duration?: number;
+                geometry?: {
+                  coordinates?: Array<[number, number]>;
+                };
+              }>;
+            }>;
+          }>;
+        };
+
+        if (data.code !== "Ok" || !data.routes || data.routes.length === 0) {
+          return fallback.calculateRoute(request);
+        }
+
+        const routeData = data.routes[0];
+        const rawCoords = routeData?.geometry?.coordinates;
+        if (!rawCoords || !Array.isArray(rawCoords) || rawCoords.length < 2) {
+          return fallback.calculateRoute(request);
+        }
+
+        const polyline: Coordinates[] = rawCoords.map(([lon, lat]) => ({
+          latitude: lat,
+          longitude: lon,
+        }));
+
+        const totalDistanceMeters = Math.round(routeData.distance ?? distance);
+        const estimatedDurationMinutes = Math.max(
+          1,
+          Math.round(totalDistanceMeters / 75),
+        );
+
+        const rawSteps = routeData.legs?.[0]?.steps ?? [];
+        let segments: RouteSegment[];
+
+        if (rawSteps.length > 0) {
+          segments = rawSteps.map((step, index) => {
+            const stepCoords: Coordinates[] = (
+              step.geometry?.coordinates ?? []
+            ).map(([lon, lat]) => ({ latitude: lat, longitude: lon }));
+            const stepName = step.name?.trim();
+            const instruction =
+              index === 0
+                ? stepName
+                  ? `Sal por ${stepName}`
+                  : "Avanza por la vía peatonal de salida"
+                : index === rawSteps.length - 1
+                  ? stepName
+                    ? `Llegada a ${stepName}`
+                    : "Llegada al destino en el campus"
+                  : stepName
+                    ? `Avanza por ${stepName}`
+                    : "Continúa por el sendero peatonal";
+
+            return {
+              id: `seg-osrm-${index}`,
+              sourceNodeId: `node-step-${index}`,
+              targetNodeId: `node-step-${index + 1}`,
+              instruction,
+              distanceMeters: Math.round(step.distance ?? 0),
+              durationSeconds: Math.round(step.duration ?? 0),
+              isAccessible: true,
+              hasStairs: false,
+              hasRamp: false,
+              pathCoordinates: stepCoords.length > 0 ? stepCoords : polyline,
+            };
+          });
+        } else {
+          segments = [
+            {
+              id: "seg-osrm-1",
+              sourceNodeId: "node-origin",
+              targetNodeId: "node-dest",
+              instruction:
+                "Avanza por los senderos y viales peatonales del campus",
+              distanceMeters: totalDistanceMeters,
+              durationSeconds: estimatedDurationMinutes * 60,
+              isAccessible: true,
+              hasStairs: false,
+              hasRamp: false,
+              pathCoordinates: polyline,
+            },
+          ];
+        }
+
+        return {
+          id: `route-osrm-${Date.now()}`,
+          origin,
+          destination,
+          totalDistanceMeters,
+          estimatedDurationMinutes,
+          accessible: false,
+          segments,
+          polyline,
+          mode: "walking",
+        };
+      } catch {
+        return fallback.calculateRoute(request);
+      }
+    },
+  };
+}
+
+export const defaultRoutingRepository: RoutingRepository =
+  createOsrmRoutingRepository();

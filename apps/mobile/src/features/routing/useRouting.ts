@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import type { Place, RouteResponse, TransportMode } from "@unimovil/contracts";
 import {
+  defaultRoutingRepository,
   localRoutingRepository,
   type RoutingRepository,
 } from "./data/repository";
@@ -20,7 +21,7 @@ export interface RoutingState {
 }
 
 export function createRoutingController(
-  repository: RoutingRepository = localRoutingRepository,
+  repository: RoutingRepository = defaultRoutingRepository,
 ) {
   let state: RoutingState = {
     origin: null,
@@ -153,7 +154,7 @@ export function createRoutingController(
 }
 
 export function useRouting(
-  repository: RoutingRepository = localRoutingRepository,
+  repository: RoutingRepository = defaultRoutingRepository,
 ) {
   const [origin, setOrigin] = useState<Place | null>(null);
   const [destination, setDestination] = useState<Place | null>(null);
