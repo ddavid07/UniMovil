@@ -14,6 +14,7 @@ interface Props {
   onQuery: (value: string) => void;
   onToggle: (category: PlaceCategory) => void;
   onReset: () => void;
+  hideCategories?: boolean | undefined;
 }
 export function ExplorerControls({
   query,
@@ -21,6 +22,7 @@ export function ExplorerControls({
   onQuery,
   onToggle,
   onReset,
+  hideCategories,
 }: Props) {
   return (
     <View style={styles.controls}>
@@ -37,26 +39,28 @@ export function ExplorerControls({
         style={styles.input}
         clearButtonMode="while-editing"
       />
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.row}
-        keyboardShouldPersistTaps="handled"
-      >
-        {PLACE_CATEGORIES.map((category) => (
-          <Action
-            key={category}
-            label={
-              Object.entries(CATEGORY_LABELS).find(
-                ([key]) => key === category,
-              )![1]
-            }
-            selected={categories.includes(category)}
-            onPress={() => onToggle(category)}
-          />
-        ))}
-        <Action label="Restablecer" onPress={onReset} />
-      </ScrollView>
+      {!hideCategories && (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.row}
+          keyboardShouldPersistTaps="handled"
+        >
+          {PLACE_CATEGORIES.map((category) => (
+            <Action
+              key={category}
+              label={
+                Object.entries(CATEGORY_LABELS).find(
+                  ([key]) => key === category,
+                )![1]
+              }
+              selected={categories.includes(category)}
+              onPress={() => onToggle(category)}
+            />
+          ))}
+          <Action label="Restablecer" onPress={onReset} />
+        </ScrollView>
+      )}
     </View>
   );
 }

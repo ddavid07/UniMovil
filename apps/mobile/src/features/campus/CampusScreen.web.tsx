@@ -232,6 +232,7 @@ export function CampusScreen({
                 onQuery={campus.setQuery}
                 onToggle={campus.toggleCategory}
                 onReset={campus.reset}
+                hideCategories={true}
               />
             </View>
 
@@ -255,6 +256,62 @@ export function CampusScreen({
                 onOpenRouteDetails={() => setRouteSheetOpen(true)}
                 onClearRoute={routing.clearRoute}
               />
+
+              {/* Mobile Categories Checkboxes (Under the Map) */}
+              <View style={styles.mobileCategorySection}>
+                <View style={styles.filterHeaderRow}>
+                  <Text style={styles.filterSectionTitle}>CATEGORÍAS</Text>
+                  <Pressable onPress={campus.reset} style={styles.resetBtn}>
+                    <Text style={styles.resetBtnText}>Restablecer</Text>
+                  </Pressable>
+                </View>
+
+                <View style={styles.checkboxGrid}>
+                  {PLACE_CATEGORIES.map((category) => {
+                    const meta = CATEGORY_META[category];
+                    const isChecked = campus.categories.includes(category);
+                    const count = categoryCounts[category] ?? 0;
+
+                    return (
+                      <Pressable
+                        key={category}
+                        style={[
+                          styles.checkboxCard,
+                          isChecked && styles.checkboxCardChecked,
+                        ]}
+                        onPress={() => campus.toggleCategory(category)}
+                        accessibilityRole="checkbox"
+                        accessibilityState={{ checked: isChecked }}
+                        accessibilityLabel={meta.label}
+                      >
+                        <View
+                          style={[
+                            styles.checkboxBox,
+                            isChecked && styles.checkboxBoxChecked,
+                          ]}
+                        >
+                          {isChecked && (
+                            <Text style={styles.checkboxCheckmark}>✓</Text>
+                          )}
+                        </View>
+                        <Text style={styles.categoryIcon}>{meta.icon}</Text>
+                        <View style={styles.categoryTextCol}>
+                          <Text
+                            style={[
+                              styles.categoryLabel,
+                              isChecked && styles.categoryLabelChecked,
+                            ]}
+                            numberOfLines={1}
+                          >
+                            {meta.label}
+                          </Text>
+                          <Text style={styles.categoryCount}>({count})</Text>
+                        </View>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              </View>
             </View>
 
             {/* Mobile Bottom Attribution */}
@@ -1290,6 +1347,14 @@ const styles = StyleSheet.create({
     position: "relative",
     backgroundColor: "#f8fafc",
     overflowY: "auto" as unknown as "scroll",
+  },
+  mobileCategorySection: {
+    backgroundColor: "#ffffff",
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    borderTopWidth: 1,
+    borderTopColor: "#e2e8f0",
+    marginBottom: 8,
   },
   mobileFooterBar: {
     paddingVertical: 4,
