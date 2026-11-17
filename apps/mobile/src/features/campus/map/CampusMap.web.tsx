@@ -521,8 +521,9 @@ export function CampusMap({
         />
       </View>
 
-      {/* Map status footer with functional buttons */}
+      {/* Map status controls overlapping on top of map */}
       <MapStatus
+        style={styles.mapStatusOverlay}
         state="ready"
         mode={mode}
         viewport={viewportText}
@@ -543,6 +544,7 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: "#ffffff",
     overflow: "hidden",
+    position: "relative",
   },
   mapFrame: {
     flex: 1,
@@ -550,6 +552,15 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     backgroundColor: "#e5e7eb",
+  },
+  mapStatusOverlay: {
+    position: "absolute",
+    bottom: 12,
+    left: 12,
+    zIndex: 1000,
+    backgroundColor: "transparent",
+    padding: 0,
+    gap: 6,
   },
   routeBanner: {
     backgroundColor: "#ffffff",

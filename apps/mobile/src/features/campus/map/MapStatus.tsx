@@ -1,3 +1,4 @@
+import type { StyleProp, ViewStyle } from "react-native";
 import { StyleSheet, Text, View } from "react-native";
 import { Action } from "../components/Action";
 import type { MapMode } from "./map-style";
@@ -15,6 +16,7 @@ export function MapStatus({
   viewport,
   onZoomIn,
   onZoomOut,
+  style,
 }: {
   state: keyof typeof MESSAGES;
   mode: MapMode;
@@ -23,12 +25,13 @@ export function MapStatus({
   viewport: string;
   onZoomIn: () => void;
   onZoomOut: () => void;
+  style?: StyleProp<ViewStyle> | undefined;
 }) {
   // state is restricted to the three fixed message keys.
   // eslint-disable-next-line security/detect-object-injection
   const message = MESSAGES[state];
   return (
-    <View style={styles.status}>
+    <View style={[styles.status, style]}>
       <Text
         accessibilityLiveRegion="polite"
         style={[styles.text, state === "ready" && styles.srOnly]}
