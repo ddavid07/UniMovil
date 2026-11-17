@@ -213,9 +213,13 @@ export function CampusMap({
         <View style={styles.routeBanner}>
           <View style={styles.routeBannerTextCol}>
             <Text style={styles.routeBannerTitle}>
-              {route.accessible
-                ? "♿ Ruta accesible PMR activa"
-                : "🚶 Ruta activa"}
+              {route.mode === "bus"
+                ? "🚌 Autobús EMT activo"
+                : route.mode === "bicycle"
+                  ? "🚲 Bicicleta BiciMAD activa"
+                  : route.accessible
+                    ? "♿ Ruta accesible PMR activa"
+                    : "🚶 Ruta activa"}
             </Text>
             <Text style={styles.routeBannerSubtitle}>
               {formatDuration(route.estimatedDurationMinutes)} ·{" "}

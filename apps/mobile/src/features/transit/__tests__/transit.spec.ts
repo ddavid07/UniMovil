@@ -3,6 +3,7 @@ import type { RouteResponse } from "@unimovil/contracts";
 import {
   buildMultimodalRoute,
   calculateMultimodalAlternatives,
+  extractTransitSubPolyline,
   findNearestStop,
   haversineMeters,
 } from "../domain/transit";
@@ -207,6 +208,56 @@ describe("Transit Domain (Sprint 3 Multimodal)", () => {
         stops: [],
       });
       expect(fallback.mode).toBe("walking");
+    });
+  });
+
+  describe("extractTransitSubPolyline", () => {
+    const sampleLine = [
+      { latitude: 40.440, longitude: -3.720 }, // 0: South
+      { latitude: 40.445, longitude: -3.722 }, // 1: Stop A
+      { latitude: 40.448, longitude: -3.725 }, // 2: Intermediate
+      { latitude: 40.450, longitude: -3.728 }, // 3: Stop B
+      { latitude: 40.460, longitude: -3.735 }, // 4: Far North
+    ];
+
+    it("returns [fromStop, toStop] when line polyline is empty", () => {
+      const from = { latitude: 40.445, longitude: -3.722 };
+      const to = { latitude: 40.450, longitude: -3.728 };
+      const res = extractTransitSubPolyline([], from, to);
+      expect(res).toEqual([from, to]);
+    });
+
+    it("returns [fromStop, toStop] when origin and dest snap to the same index", () => {
+      const from = { latitude: 40.4451, longitude: -3.7221 };
+      const to = { latitude: 40.4452, longitude: -3.7222 };
+      const res = extractTransitSubPolyline(sampleLine, from, to);
+      expect(res).toEqual([from, to]);
+    });
+
+    it("extracts forward sub-polyline without loop to far north or south", () => {
+      const stopA = { latitude: 40.445, longitude: -3.722 };
+      const stopB = { latitude: 40.450, longitude: -3.728 };
+      const res = extractTransitSubPolyline(sampleLine, stopA, stopB);
+
+      // Should include stopA (or index 1), index 2, stopB (or index 3)
+      // and NOT include index 0 (South) or index 4 (Far North)
+      expect(res.length).toBeGreaterThanOrEqual(3);
+      expect(res).not.toContainEqual(sampleLine[0]);
+      expect(res).not.toContainEqual(sampleLine[4]);
+      expect(res[0]).toEqual(stopA);
+      expect(res[res.length - 1]).toEqual(stopB);
+    });
+
+    it("extracts reverse sub-polyline correctly when traveling opposite line definition", () => {
+      const stopB = { latitude: 40.450, longitude: -3.728 };
+      const stopA = { latitude: 40.445, longitude: -3.722 };
+      const res = extractTransitSubPolyline(sampleLine, stopB, stopA);
+
+      expect(res.length).toBeGreaterThanOrEqual(3);
+      expect(res).not.toContainEqual(sampleLine[0]);
+      expect(res).not.toContainEqual(sampleLine[4]);
+      expect(res[0]).toEqual(stopB);
+      expect(res[res.length - 1]).toEqual(stopA);
     });
   });
 });

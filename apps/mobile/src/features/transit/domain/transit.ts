@@ -220,12 +220,72 @@ export function calculateMultimodalAlternatives(
   return [walkingAlternative, busAlternative, bikeAlternative];
 }
 
+function findNearestCoordinateIndex(
+  polyline: readonly Coordinates[],
+  target: Coordinates,
+): number {
+  let bestIdx = 0;
+  let bestDist = Infinity;
+  for (let idx = 0; idx < polyline.length; idx++) {
+    const pt = polyline[idx]!;
+    const dist = haversineMeters(pt, target);
+    if (dist < bestDist) {
+      bestDist = dist;
+      bestIdx = idx;
+    }
+  }
+  return bestIdx;
+}
+
+export function extractTransitSubPolyline(
+  linePolyline: readonly Coordinates[],
+  fromStop: Coordinates,
+  toStop: Coordinates,
+): Coordinates[] {
+  if (!linePolyline || linePolyline.length === 0) {
+    return [fromStop, toStop];
+  }
+
+  const fromIdx = findNearestCoordinateIndex(linePolyline, fromStop);
+  const toIdx = findNearestCoordinateIndex(linePolyline, toStop);
+
+  if (fromIdx === toIdx) {
+    return [fromStop, toStop];
+  }
+
+  const sliced =
+    fromIdx < toIdx
+      ? linePolyline.slice(fromIdx, toIdx + 1)
+      : linePolyline.slice(toIdx, fromIdx + 1).slice().reverse();
+
+  const result: Coordinates[] = [fromStop];
+  for (const pt of sliced) {
+    const last = result[result.length - 1]!;
+    if (
+      Math.abs(last.latitude - pt.latitude) > 0.00001 ||
+      Math.abs(last.longitude - pt.longitude) > 0.00001
+    ) {
+      result.push(pt);
+    }
+  }
+  const last = result[result.length - 1]!;
+  if (
+    Math.abs(last.latitude - toStop.latitude) > 0.00001 ||
+    Math.abs(last.longitude - toStop.longitude) > 0.00001
+  ) {
+    result.push(toStop);
+  }
+
+  return result;
+}
+
 export function buildMultimodalRoute(
   baseRoute: RouteResponse,
   mode: TransportMode,
   options?: {
     lines?: readonly TransitLine[];
     stops?: readonly TransitStop[];
+    accessibleOnly?: boolean;
   },
 ): RouteResponse {
   if (mode === "walking") {
@@ -270,11 +330,15 @@ export function buildMultimodalRoute(
           l.stops.some((s) => s.id === destNearest.stop.id),
       ) ?? lines[0];
 
+    const busRidePolyline = extractTransitSubPolyline(
+      commonLine?.polyline ?? [],
+      originNearest.stop.coordinates,
+      destNearest.stop.coordinates,
+    );
+
     const busPolyline: Coordinates[] = [
       baseRoute.origin,
-      originNearest.stop.coordinates,
-      ...(commonLine?.polyline ?? []),
-      destNearest.stop.coordinates,
+      ...busRidePolyline,
       baseRoute.destination,
     ];
 
@@ -301,7 +365,7 @@ export function buildMultimodalRoute(
         isAccessible: alternative.accessible,
         hasStairs: false,
         hasRamp: false,
-        pathCoordinates: commonLine?.polyline ?? [],
+        pathCoordinates: busRidePolyline,
       },
       {
         id: "seg-bus-walk-from",

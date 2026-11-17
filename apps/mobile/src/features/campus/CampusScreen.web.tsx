@@ -468,7 +468,14 @@ export function CampusScreen({
                     <View style={styles.activeRouteBadgeRow}>
                       <Text style={styles.activeRouteIcon}>🗺️</Text>
                       <Text style={styles.activeRouteTitle}>
-                        Ruta activa {routing.route.accessible ? "(♿ Accesible PMR)" : "(🚶 Estándar)"}
+                        Ruta activa{" "}
+                        {routing.route.mode === "bus"
+                          ? "(🚌 Autobús EMT)"
+                          : routing.route.mode === "bicycle"
+                            ? "(🚲 Bicicleta)"
+                            : routing.route.accessible
+                              ? "(♿ Accesible PMR)"
+                              : "(🚶 Estándar)"}
                       </Text>
                     </View>
                     <Pressable
@@ -484,9 +491,13 @@ export function CampusScreen({
                       ⏱️ {formatDuration(routing.route.estimatedDurationMinutes)} · 📏 {formatDistance(routing.route.totalDistanceMeters)}
                     </Text>
                     <Text style={styles.activeRouteSub}>
-                      {routing.route.accessible
-                        ? "Itinerario accesible sin desniveles ni escaleras"
-                        : "Itinerario peatonal estándar"}
+                      {routing.route.mode === "bus"
+                        ? "Trayecto combinado en autobús urbano EMT"
+                        : routing.route.mode === "bicycle"
+                          ? "Itinerario ciclista por el campus"
+                          : routing.route.accessible
+                            ? "Itinerario accesible sin desniveles ni escaleras"
+                            : "Itinerario peatonal estándar"}
                     </Text>
                   </View>
                   <View style={styles.activeRouteActions}>
