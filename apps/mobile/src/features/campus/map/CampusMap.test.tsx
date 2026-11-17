@@ -54,7 +54,7 @@ describe("adaptador nativo (eventos simulados en pruebas de componentes)", () =>
       );
     expect(camera.zoomTo).toHaveBeenLastCalledWith(10, { duration: 250 });
   });
-  it("carga el proveedor público sin requerir configuración", async () => {
+  it("carga un estilo OSM sin requerir configuración de proveedor", async () => {
     await render(<CampusMap {...props} mode="live" />);
     expect(screen.getByTestId("campus-map")).toBeTruthy();
   });
@@ -122,7 +122,7 @@ describe("adaptador nativo (eventos simulados en pruebas de componentes)", () =>
       handler({
         level: "error",
         tag: "HTTP",
-        message: "https://tile.openstreetmap.org/14/1/1.png",
+        message: "https://tile.openstreetmap.org/17/123/456.png",
       }),
     ).toBe(true);
     expect(warn).toHaveBeenCalledWith("MapLibre", "error", "HTTP");

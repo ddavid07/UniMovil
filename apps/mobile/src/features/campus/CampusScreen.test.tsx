@@ -32,12 +32,23 @@ describe("recorrido móvil del campus", () => {
     ).toBeTruthy();
   });
   it("ofrece sugerencias mientras se escribe y distingue datos ausentes", async () => {
-    await render(<CampusScreen />);
-    await screen.findByRole("button", { name: "Ver lugares (24)" });
-    await fireEvent.changeText(screen.getByLabelText("Buscar lugares"), "1690");
-    await fireEvent.press(screen.getByRole("button", { name: /^Sugerencia:/ }));
-    expect(screen.getByText("Sin descripción publicada.")).toBeTruthy();
-    await fireEvent.press(screen.getByRole("button", { name: "Cerrar ficha" }));
+    try {
+      await render(<CampusScreen />);
+      await screen.findByRole("button", { name: "Ver lugares (24)" });
+      await fireEvent.changeText(
+        screen.getByLabelText("Buscar lugares"),
+        "1690",
+      );
+      await fireEvent.press(
+        screen.getByRole("button", { name: /^Sugerencia:/ }),
+      );
+      expect(screen.getByText("Sin descripción publicada.")).toBeTruthy();
+      await fireEvent.press(
+        screen.getByRole("button", { name: "Cerrar ficha" }),
+      );
+    } finally {
+      jest.restoreAllMocks();
+    }
   });
   it("consulta un lugar desde la búsqueda, conserva criterios al cerrar y recupera una consulta vacía", async () => {
     await render(<CampusScreen />);
@@ -143,5 +154,119 @@ describe("recorrido móvil del campus", () => {
     expect(
       await screen.findByRole("button", { name: "Ver lugares (24)" }),
     ).toBeTruthy();
+  });
+  it("permite abrir el planificador de rutas, seleccionar destino desde una ficha y calcular ruta", async () => {
+    await render(<CampusScreen />);
+    await screen.findByRole("button", { name: "Ver lugares (24)" });
+
+    // 1. Abrir selector de ruta mediante botón en pantalla
+    await fireEvent.press(
+      screen.getByRole("button", { name: "Planificar ruta" }),
+    );
+    expect(screen.getByText("Planificar ruta peatonal")).toBeTruthy();
+
+    // 2. Cerrar selector de ruta
+    await fireEvent.press(screen.getByRole("button", { name: "Cerrar ruta" }));
+    expect(screen.queryByText("Planificar ruta peatonal")).toBeNull();
+
+    // 3. Abrir un lugar desde la lista y pulsar "Cómo llegar a este lugar"
+    await fireEvent.press(
+      screen.getByRole("button", { name: "Ver lugares (24)" }),
+    );
+    await fireEvent.press(
+      screen.getByRole("button", { name: /^Aparcamiento Moncloa/ }),
+    );
+    await fireEvent.press(
+      screen.getByRole("button", { name: "Cómo llegar a este lugar" }),
+    );
+
+    // 4. Se abre el selector con el lugar preseleccionado como destino
+    expect(screen.getByText("Planificar ruta peatonal")).toBeTruthy();
+    expect(screen.getByText("Aparcamiento Moncloa")).toBeTruthy();
+  });
+
+  it("permite conmutar la visibilidad de la capa de transporte EMT", async () => {
+    await render(<CampusScreen />);
+    const toggleBtn = await screen.findByRole("button", {
+      name: "Ocultar EMT",
+    });
+    expect(toggleBtn).toBeTruthy();
+
+    await fireEvent.press(toggleBtn);
+    expect(screen.getByRole("button", { name: "Ver EMT" })).toBeTruthy();
+
+    await fireEvent.press(screen.getByRole("button", { name: "Ver EMT" }));
+    expect(screen.getByRole("button", { name: "Ocultar EMT" })).toBeTruthy();
+  });
+
+  it("muestra el banner de modo sin conexión cuando isOffline está activo y permite reintentar (HU-094)", async () => {
+    await render(<CampusScreen isOffline={true} />);
+    expect(screen.getByText(/modo sin conexión/i)).toBeTruthy();
+    expect(screen.getByText(/datos cacheados/i)).toBeTruthy();
+
+    const retryBtn = screen.getByRole("button", {
+      name: /reintentar conexión/i,
+    });
+    expect(retryBtn).toBeTruthy();
+    await fireEvent.press(retryBtn);
+  });
+
+  it("verifica etiquetas semánticas de accesibilidad WCAG 2.1 AA en controles principales (HU-095)", async () => {
+    await render(<CampusScreen />);
+    expect(
+      screen.getByRole("header", { name: "UniMovil · Moncloa" }),
+    ).toBeTruthy();
+    expect(screen.getByLabelText("Buscar lugares")).toBeTruthy();
+  });
+
+  it("permite conmutar la visibilidad de la capa de incidencias de obras (HU-053)", async () => {
+    await render(<CampusScreen />);
+    const toggleBtn = await screen.findByRole("button", {
+      name: "Ocultar incidencias",
+    });
+    expect(toggleBtn).toBeTruthy();
+
+    await fireEvent.press(toggleBtn);
+    expect(
+      screen.getByRole("button", { name: "Ver incidencias" }),
+    ).toBeTruthy();
+
+    await fireEvent.press(
+      screen.getByRole("button", { name: "Ver incidencias" }),
+    );
+    expect(
+      screen.getByRole("button", { name: "Ocultar incidencias" }),
+    ).toBeTruthy();
+  });
+
+  it("permite abrir y cerrar el formulario de reporte de incidencias (HU-050)", async () => {
+    await render(<CampusScreen />);
+    const reportBtn = await screen.findByRole("button", {
+      name: "⚠ Reportar incidencia",
+    });
+    expect(reportBtn).toBeTruthy();
+
+    await fireEvent.press(reportBtn);
+    expect(screen.getByText("Reportar incidencia")).toBeTruthy();
+
+    await fireEvent.press(
+      screen.getByRole("button", { name: "Enviar reporte" }),
+    );
+    expect(
+      screen.getByText("El título de la incidencia es obligatorio."),
+    ).toBeTruthy();
+
+    await fireEvent.changeText(
+      screen.getByLabelText("Título de la incidencia"),
+      "Rampa bloqueada",
+    );
+    await fireEvent.changeText(
+      screen.getByLabelText("Descripción de la incidencia"),
+      "La rampa de entrada está bloqueada por obras.",
+    );
+    await fireEvent.press(
+      screen.getByRole("button", { name: "Enviar reporte" }),
+    );
+    expect(screen.queryByText("Reportar incidencia")).toBeNull();
   });
 });

@@ -1,3 +1,4 @@
+import type { Place } from "@unimovil/contracts";
 import { PlaceResults } from "./PlaceResults";
 import { PlaceSheet } from "./PlaceSheet";
 import type { useCampus } from "../useCampus";
@@ -7,12 +8,14 @@ interface Props {
   listOpen: boolean;
   onCloseList: () => void;
   onSelect: (id: string) => void;
+  onPlanRoute?: ((place: Place) => void) | undefined;
 }
 export function CampusDialogs({
   campus,
   listOpen,
   onCloseList,
   onSelect,
+  onPlanRoute,
 }: Props) {
   return (
     <>
@@ -27,6 +30,7 @@ export function CampusDialogs({
         key={campus.selected?.id ?? "none"}
         place={campus.selected}
         onClose={() => campus.select(null)}
+        onPlanRoute={onPlanRoute}
       />
     </>
   );
