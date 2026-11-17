@@ -19,6 +19,7 @@
   },
   "scripts": {
     "dev:mobile": "npm run start --workspace=@unimovil/mobile",
+    "dev:mobile:web": "npm run start:web --workspace=@unimovil/mobile",
     "dev:api": "npm run start:dev --workspace=@unimovil/api",
     "dev:admin": "npm run dev --workspace=@unimovil/admin",
     "format": "prettier --write \"apps/**/*.{js,jsx,ts,tsx,json,jsonc,mjs,cjs,css,html}\" \"packages/**/*.{js,jsx,ts,tsx,json,jsonc,mjs,cjs}\" \"scripts/**/*.{js,jsx,ts,tsx,json,jsonc,mjs,cjs,md}\" \"docs/**/*.md\" \".github/**/*.{yml,yaml,md}\" \"*.{js,jsx,ts,tsx,json,jsonc,mjs,cjs,yml,yaml,md}\" \".maestro/**/*.yaml\"",

@@ -4,11 +4,13 @@ export function Action({
   onPress,
   selected,
   text = label,
+  primary,
 }: {
   label: string;
   onPress: () => void;
   selected?: boolean;
   text?: string;
+  primary?: boolean;
 }) {
   return (
     <Pressable
@@ -18,28 +20,48 @@ export function Action({
       onPress={onPress}
       style={({ pressed }) => [
         styles.button,
+        primary && styles.primary,
         selected && styles.selected,
         pressed && styles.pressed,
       ]}
     >
-      <Text style={[styles.text, selected && styles.selectedText]}>{text}</Text>
+      <Text
+        style={[
+          styles.text,
+          primary && styles.primaryText,
+          selected && styles.selectedText,
+        ]}
+      >
+        {text}
+      </Text>
     </Pressable>
   );
 }
 const styles = StyleSheet.create({
   button: {
-    minHeight: 48,
-    minWidth: 48,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    minHeight: 36,
+    minWidth: 44,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
     justifyContent: "center",
-    borderRadius: 8,
+    alignItems: "center",
+    borderRadius: 18,
     borderWidth: 1,
-    borderColor: "#68707a",
+    borderColor: "#cbd5e1",
     backgroundColor: "#ffffff",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  primary: {
+    backgroundColor: "#8e1235",
+    borderColor: "#8e1235",
   },
   selected: { backgroundColor: "#8e1235", borderColor: "#8e1235" },
   pressed: { opacity: 0.7 },
-  text: { color: "#18212b", fontSize: 16 },
-  selectedText: { color: "#ffffff" },
+  text: { color: "#334155", fontSize: 13, fontWeight: "600" },
+  primaryText: { color: "#ffffff", fontWeight: "700" },
+  selectedText: { color: "#ffffff", fontWeight: "700" },
 });

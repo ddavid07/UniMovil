@@ -74,6 +74,38 @@ describe("RoutingRepository (TDD - Tema 3)", () => {
         localRoutingRepository.calculateRoute(request),
       ).rejects.toThrow("destino se encuentra fuera");
     });
+
+    it("calcula ruta exitosamente hacia el Parking de Bellas Artes y lugares del sur del campus", async () => {
+      const coordsMedicina = { latitude: 40.4428, longitude: -3.7275 };
+      const coordsBellasArtes = { latitude: 40.4392759, longitude: -3.7335048 };
+
+      const result = await localRoutingRepository.calculateRoute({
+        origin: coordsMedicina,
+        destination: coordsBellasArtes,
+        accessibleOnly: false,
+      });
+
+      expect(result).toBeDefined();
+      expect(result.totalDistanceMeters).toBeGreaterThan(0);
+      expect(result.segments.length).toBe(2);
+    });
+
+    it("valida que los lugares del catálogo oficial pueden calcular rutas entre sí sin fallos de límites", async () => {
+      const catalog = (await import("../../campus/data/catalog.json")).default;
+      for (let i = 0; i < Math.min(catalog.length, 6); i++) {
+        for (let j = 0; j < Math.min(catalog.length, 6); j++) {
+          if (i === j) continue;
+          const originPlace = catalog[i];
+          const destPlace = catalog[j];
+          if (!originPlace || !destPlace) continue;
+          const route = await localRoutingRepository.calculateRoute({
+            origin: originPlace.coordinates,
+            destination: destPlace.coordinates,
+          });
+          expect(route.totalDistanceMeters).toBeGreaterThan(0);
+        }
+      }
+    });
   });
 
   describe("createHttpRoutingRepository", () => {
@@ -132,6 +164,141 @@ describe("RoutingRepository (TDD - Tema 3)", () => {
       await expect(
         repo.calculateRoute({ origin, destination }),
       ).rejects.toThrow("No existe camino");
+    });
+  });
+
+  describe("createOsrmRoutingRepository", () => {
+    it("calcula polilínea real siguiendo viales mediante respuesta de OSRM", async () => {
+      const mockOsrmData = {
+        code: "Ok",
+        routes: [
+          {
+            distance: 520,
+            duration: 416,
+            geometry: {
+              coordinates: [
+                [-3.7262, 40.4442],
+                [-3.7268, 40.445],
+                [-3.7272, 40.4453],
+                [-3.7275, 40.4455],
+              ],
+            },
+            legs: [
+              {
+                steps: [
+                  {
+                    name: "Avenida Complutense",
+                    distance: 300,
+                    duration: 240,
+                    maneuver: { type: "depart" },
+                    geometry: {
+                      coordinates: [
+                        [-3.7262, 40.4442],
+                        [-3.7268, 40.445],
+                      ],
+                    },
+                  },
+                  {
+                    name: "Plaza de Ramón y Cajal",
+                    distance: 220,
+                    duration: 176,
+                    maneuver: { type: "turn" },
+                    geometry: {
+                      coordinates: [
+                        [-3.7268, 40.445],
+                        [-3.7275, 40.4455],
+                      ],
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      };
+
+      const mockFetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(mockOsrmData),
+      });
+
+      const { createOsrmRoutingRepository } = await import(
+        "../data/repository.js"
+      );
+      const repo = createOsrmRoutingRepository({
+        fetchFn: mockFetch as unknown as typeof fetch,
+      });
+
+      const result = await repo.calculateRoute({ origin, destination });
+
+      expect(mockFetch).toHaveBeenCalled();
+      expect(result.polyline.length).toBe(4);
+      expect(result.polyline[0]).toEqual({ latitude: 40.4442, longitude: -3.7262 });
+      expect(result.polyline[3]).toEqual({ latitude: 40.4455, longitude: -3.7275 });
+      expect(result.segments.length).toBe(2);
+      expect(result.segments[0]?.instruction).toContain("Avenida Complutense");
+    });
+
+    it("recurre airosamente al repositorio local si la llamada a OSRM falla", async () => {
+      const mockFetch = vi.fn().mockRejectedValue(new Error("Network timeout"));
+
+      const { createOsrmRoutingRepository } = await import(
+        "../data/repository.js"
+      );
+      const repo = createOsrmRoutingRepository({
+        fetchFn: mockFetch as unknown as typeof fetch,
+      });
+
+      const result = await repo.calculateRoute({ origin, destination });
+
+      expect(result).toBeDefined();
+      expect(result.totalDistanceMeters).toBeGreaterThan(0);
+      expect(result.segments.length).toBe(2);
+    });
+
+    it("ajusta a caminos y viales con OSRM cuando se solicita ruta accesible PMR garantizando accesibilidad", async () => {
+      const mockOsrmData = {
+        code: "Ok",
+        routes: [
+          {
+            distance: 450,
+            duration: 360,
+            geometry: {
+              coordinates: [
+                [-3.7262, 40.4442],
+                [-3.7268, 40.445],
+                [-3.7275, 40.4455],
+              ],
+            },
+            legs: [{ steps: [] }],
+          },
+        ],
+      };
+
+      const mockFetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(mockOsrmData),
+      });
+
+      const { createOsrmRoutingRepository } = await import(
+        "../data/repository.js"
+      );
+      const repo = createOsrmRoutingRepository({
+        fetchFn: mockFetch as unknown as typeof fetch,
+      });
+
+      const result = await repo.calculateRoute({
+        origin,
+        destination,
+        accessibleOnly: true,
+      });
+
+      expect(mockFetch).toHaveBeenCalled();
+      expect(result.accessible).toBe(true);
+      expect(result.polyline.length).toBe(3);
+      expect(result.segments.every((s) => s.isAccessible && !s.hasStairs)).toBe(
+        true,
+      );
     });
   });
 });

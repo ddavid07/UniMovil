@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Camera, Map } from "@maplibre/maplibre-react-native";
 import type {
   Place,
@@ -7,6 +7,7 @@ import type {
   TransitLine,
   TransitStop,
 } from "@unimovil/contracts";
+import { formatDistance, formatDuration } from "../../routing/domain/routing";
 import { type MapMode } from "./map-style";
 import { useMapController } from "./useMapController";
 import { MapStatus } from "./MapStatus";
@@ -39,6 +40,8 @@ interface Props {
   onSelectIncident?: ((incident: Incident) => void) | undefined;
   showIncidents?: boolean | undefined;
   incidents?: readonly Incident[] | undefined;
+  onOpenRouteDetails?: (() => void) | undefined;
+  onClearRoute?: (() => void) | undefined;
 }
 
 function MapStateMessage({
@@ -189,6 +192,8 @@ export function CampusMap({
   onSelectIncident,
   showIncidents = false,
   incidents,
+  onOpenRouteDetails,
+  onClearRoute,
 }: Props) {
   const controller = useMapController(allPlaces, selected, mode);
   const [viewport, setViewport] = useState("inicial");
@@ -204,6 +209,47 @@ export function CampusMap({
 
   return (
     <View style={styles.container}>
+      {route && (
+        <View style={styles.routeBanner}>
+          <View style={styles.routeBannerTextCol}>
+            <Text style={styles.routeBannerTitle}>
+              {route.mode === "bus"
+                ? "🚌 Autobús EMT activo"
+                : route.mode === "bicycle"
+                  ? "🚲 Bicicleta BiciMAD activa"
+                  : route.accessible
+                    ? "♿ Ruta accesible PMR activa"
+                    : "🚶 Ruta activa"}
+            </Text>
+            <Text style={styles.routeBannerSubtitle}>
+              {formatDuration(route.estimatedDurationMinutes)} ·{" "}
+              {formatDistance(route.totalDistanceMeters)}
+            </Text>
+          </View>
+          <View style={styles.routeBannerActions}>
+            {onOpenRouteDetails && (
+              <TouchableOpacity
+                accessibilityRole="button"
+                accessibilityLabel="Ver itinerario paso a paso"
+                style={styles.routeDetailsBtn}
+                onPress={onOpenRouteDetails}
+              >
+                <Text style={styles.routeDetailsBtnText}>📋 Ver itinerario</Text>
+              </TouchableOpacity>
+            )}
+            {onClearRoute && (
+              <TouchableOpacity
+                accessibilityRole="button"
+                accessibilityLabel="Cancelar ruta"
+                style={styles.routeClearBtn}
+                onPress={onClearRoute}
+              >
+                <Text style={styles.routeClearBtnText}>✕ Cancelar</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+      )}
       <CampusMapCanvas
         controller={controller}
         style={controller.style}
@@ -242,4 +288,65 @@ const styles = StyleSheet.create({
   container: { flex: 1, minHeight: 180 },
   map: { flex: 1 },
   message: { flex: 1, justifyContent: "center", padding: 16 },
+  routeBanner: {
+    backgroundColor: "#ffffff",
+    borderBottomWidth: 2,
+    borderBottomColor: "#0284c7",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    flexWrap: "wrap",
+    gap: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 4,
+    zIndex: 10,
+  },
+  routeBannerTextCol: {
+    flex: 1,
+    minWidth: 140,
+  },
+  routeBannerTitle: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#0f172a",
+  },
+  routeBannerSubtitle: {
+    fontSize: 11,
+    color: "#64748b",
+    marginTop: 2,
+  },
+  routeBannerActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  routeDetailsBtn: {
+    backgroundColor: "#8e1235",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
+  routeDetailsBtnText: {
+    color: "#ffffff",
+    fontSize: 12,
+    fontWeight: "700",
+  },
+  routeClearBtn: {
+    backgroundColor: "#f1f5f9",
+    borderWidth: 1,
+    borderColor: "#cbd5e1",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
+  routeClearBtnText: {
+    color: "#475569",
+    fontSize: 12,
+    fontWeight: "600",
+  },
 });

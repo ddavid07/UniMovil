@@ -65,6 +65,11 @@ describe("Routing Controller / State Logic (TDD - Tema 3)", () => {
 
     controller.closeRouting();
     expect(controller.getState().isRoutingOpen).toBe(false);
+
+    controller.openRouting(placeB);
+    expect(controller.getState().isRoutingOpen).toBe(true);
+    controller.closePlanner();
+    expect(controller.getState().isRoutingOpen).toBe(false);
   });
 
   it("permite alternar el conmutador de accesibilidad PMR", () => {
@@ -141,5 +146,51 @@ describe("Routing Controller / State Logic (TDD - Tema 3)", () => {
     expect(controller.getState().route).toBeNull();
     expect(controller.getState().error).toBeDefined();
     expect(controller.getState().error?.safeForDisplay).toBe(true);
+  });
+
+  it("permite seleccionar el modo de transporte multimodal", async () => {
+    const mockRouteLong: RouteResponse = {
+      ...mockRoute,
+      totalDistanceMeters: 800,
+      estimatedDurationMinutes: 10,
+    };
+    const mockRepo: RoutingRepository = {
+      calculateRoute: vi.fn().mockResolvedValue(mockRouteLong),
+    };
+    const controller = createRoutingController(mockRepo);
+    controller.setOrigin(placeA);
+    controller.setDestination(placeB);
+
+    await controller.calculate();
+    expect(controller.getState().route?.id).toBe("route-test");
+    expect(controller.getState().selectedMode).toBe("walking");
+
+    controller.setTransportMode("bus");
+    expect(controller.getState().selectedMode).toBe("bus");
+    expect(controller.getState().route?.mode).toBe("bus");
+
+    controller.setTransportMode("bicycle");
+    expect(controller.getState().selectedMode).toBe("bicycle");
+    expect(controller.getState().route?.mode).toBe("bicycle");
+
+    controller.setTransportMode("walking");
+    expect(controller.getState().selectedMode).toBe("walking");
+    expect(controller.getState().route?.mode).toBe("walking");
+  });
+
+  it("limpia la ruta activa y el modo base al invocar clearRoute", async () => {
+    const mockRepo: RoutingRepository = {
+      calculateRoute: vi.fn().mockResolvedValue(mockRoute),
+    };
+    const controller = createRoutingController(mockRepo);
+    controller.setOrigin(placeA);
+    controller.setDestination(placeB);
+    await controller.calculate();
+    expect(controller.getState().route).not.toBeNull();
+
+    controller.clearRoute();
+    expect(controller.getState().route).toBeNull();
+    expect(controller.getState().baseWalkingRoute).toBeNull();
+    expect(controller.getState().selectedMode).toBe("walking");
   });
 });

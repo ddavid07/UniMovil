@@ -104,4 +104,56 @@ describe("RouteSheet Component (HU-023 - TDD Tema 3)", () => {
     await fireEvent.press(screen.getByRole("button", { name: "Cerrar ruta" }));
     expect(onClose).toHaveBeenCalledTimes(1);
   });
+
+  it("invoca onAccept al pulsar 'Ver en el mapa'", async () => {
+    const onAccept = jest.fn();
+    await render(
+      <RouteSheet
+        route={mockRouteStandard}
+        onClose={jest.fn()}
+        onAccept={onAccept}
+      />,
+    );
+
+    await fireEvent.press(screen.getByRole("button", { name: "Ver en el mapa" }));
+    expect(onAccept).toHaveBeenCalledTimes(1);
+  });
+
+  it("permite renderizar en modo embebido sin Modal externo", async () => {
+    const onClose = jest.fn();
+    await render(
+      <RouteSheet
+        route={mockRouteStandard}
+        onClose={onClose}
+        embedded={true}
+      />,
+    );
+    expect(screen.getByText("Itinerario peatonal")).toBeTruthy();
+    expect(screen.getAllByText("5 min").length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("muestra la etiqueta correcta según el modo de transporte activo", async () => {
+    const busRoute: RouteResponse = {
+      ...mockRouteStandard,
+      mode: "bus",
+    };
+    await render(<RouteSheet route={busRoute} onClose={jest.fn()} />);
+    expect(screen.getByText("Tiempo en autobús")).toBeTruthy();
+  });
+
+  it("preserva la duración de la alternativa a pie al usar baseWalkingRoute", async () => {
+    const bikeRoute: RouteResponse = {
+      ...mockRouteStandard,
+      estimatedDurationMinutes: 2,
+      mode: "bicycle",
+    };
+    await render(
+      <RouteSheet
+        route={bikeRoute}
+        baseWalkingRoute={mockRouteStandard}
+        onClose={jest.fn()}
+      />,
+    );
+    expect(screen.getByText("5 min")).toBeTruthy();
+  });
 });

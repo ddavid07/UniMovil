@@ -112,7 +112,12 @@ export const CAMPUS_TRANSIT_LINES: readonly TransitLine[] = [
     origin: "Cuatro Caminos",
     destination: "Ciudad Universitaria (Paraninfo)",
     frequency: "Cada 6-9 min en días lectivos",
-    stops: CAMPUS_TRANSIT_STOPS.filter((stop) => stop.lines.includes("F")),
+    stops: [
+      CAMPUS_TRANSIT_STOPS.find((s) => s.id === "emt-stop-3276")!,
+      ...CAMPUS_TRANSIT_STOPS.filter(
+        (stop) => stop.lines.includes("F") && stop.id !== "emt-stop-3276",
+      ),
+    ],
     polyline: [
       { latitude: 40.44572, longitude: -3.72184 },
       { latitude: 40.44328, longitude: -3.72725 },

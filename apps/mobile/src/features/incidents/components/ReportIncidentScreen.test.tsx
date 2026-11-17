@@ -206,4 +206,15 @@ describe("ReportIncidentScreen – formulario de reporte (HU-050, HU-051, TDD Te
     );
     expect(screen.getByLabelText("Severidad de la incidencia")).toBeTruthy();
   });
+
+  it("permite renderizar en modo embebido dentro del simulador", async () => {
+    await render(
+      <ReportIncidentScreen
+        onSubmit={jest.fn()}
+        onClose={jest.fn()}
+        embedded={true}
+      />,
+    );
+    expect(screen.getByText("Reportar incidencia")).toBeTruthy();
+  });
 });

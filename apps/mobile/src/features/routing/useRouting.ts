@@ -1,10 +1,17 @@
 import { useCallback, useMemo, useState } from "react";
-import type { Place, RouteResponse } from "@unimovil/contracts";
+import type { Place, RouteResponse, TransportMode } from "@unimovil/contracts";
 import {
+  defaultRoutingRepository,
   localRoutingRepository,
   type RoutingRepository,
 } from "./data/repository";
 import { classifyError, type UIErrorMessage } from "./domain/routing-errors";
+import {
+  buildMultimodalRoute,
+  fetchMultimodalBusLegs,
+  findNearestStop,
+} from "../transit/domain/transit";
+import { CAMPUS_TRANSIT_STOPS } from "../transit/data/transit-data";
 
 export interface RoutingState {
   readonly origin: Place | null;
@@ -12,12 +19,14 @@ export interface RoutingState {
   readonly accessibleOnly: boolean;
   readonly isRoutingOpen: boolean;
   readonly route: RouteResponse | null;
+  readonly baseWalkingRoute?: RouteResponse | null;
+  readonly selectedMode: TransportMode;
   readonly loading: boolean;
   readonly error: UIErrorMessage | null;
 }
 
 export function createRoutingController(
-  repository: RoutingRepository = localRoutingRepository,
+  repository: RoutingRepository = defaultRoutingRepository,
 ) {
   let state: RoutingState = {
     origin: null,
@@ -25,6 +34,8 @@ export function createRoutingController(
     accessibleOnly: false,
     isRoutingOpen: false,
     route: null,
+    baseWalkingRoute: null,
+    selectedMode: "walking",
     loading: false,
     error: null,
   };
@@ -48,10 +59,17 @@ export function createRoutingController(
         ...(initialDestination ? { destination: initialDestination } : {}),
       });
     },
+    closePlanner: () => {
+      update({
+        isRoutingOpen: false,
+      });
+    },
     closeRouting: () => {
       update({
         isRoutingOpen: false,
         route: null,
+        baseWalkingRoute: null,
+        selectedMode: "walking",
         error: null,
       });
     },
@@ -64,6 +82,15 @@ export function createRoutingController(
     setAccessibleOnly: (accessibleOnly: boolean) => {
       update({ accessibleOnly });
     },
+    setTransportMode: (mode: TransportMode) => {
+      const base = state.baseWalkingRoute ?? state.route;
+      if (!base) return;
+      const newRoute = buildMultimodalRoute(base, mode);
+      update({
+        selectedMode: mode,
+        route: newRoute,
+      });
+    },
     swap: () => {
       update({
         origin: state.destination,
@@ -72,7 +99,12 @@ export function createRoutingController(
       });
     },
     clearRoute: () => {
-      update({ route: null, error: null });
+      update({
+        route: null,
+        baseWalkingRoute: null,
+        selectedMode: "walking",
+        error: null,
+      });
     },
     calculate: async () => {
       if (!state.origin || !state.destination) {
@@ -111,7 +143,13 @@ export function createRoutingController(
           destination: state.destination.coordinates,
           accessibleOnly: state.accessibleOnly,
         });
-        update({ route: response, loading: false, error: null });
+        update({
+          route: response,
+          baseWalkingRoute: response,
+          selectedMode: "walking",
+          loading: false,
+          error: null,
+        });
       } catch (err) {
         const classified = classifyError(err);
         update({ error: classified, loading: false, route: null });
@@ -121,13 +159,15 @@ export function createRoutingController(
 }
 
 export function useRouting(
-  repository: RoutingRepository = localRoutingRepository,
+  repository: RoutingRepository = defaultRoutingRepository,
 ) {
   const [origin, setOrigin] = useState<Place | null>(null);
   const [destination, setDestination] = useState<Place | null>(null);
   const [accessibleOnly, setAccessibleOnly] = useState(false);
   const [isRoutingOpen, setIsRoutingOpen] = useState(false);
   const [route, setRoute] = useState<RouteResponse | null>(null);
+  const [baseWalkingRoute, setBaseWalkingRoute] = useState<RouteResponse | null>(null);
+  const [selectedMode, setSelectedMode] = useState<TransportMode>("walking");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<UIErrorMessage | null>(null);
 
@@ -138,11 +178,66 @@ export function useRouting(
     }
   }, []);
 
+  const closePlanner = useCallback(() => {
+    setIsRoutingOpen(false);
+  }, []);
+
   const closeRouting = useCallback(() => {
     setIsRoutingOpen(false);
     setRoute(null);
+    setBaseWalkingRoute(null);
+    setSelectedMode("walking");
     setError(null);
   }, []);
+
+  const setTransportMode = useCallback(
+    (mode: TransportMode) => {
+      const base = baseWalkingRoute ?? route;
+      if (!base) return;
+      const initialRoute = buildMultimodalRoute(base, mode);
+      setSelectedMode(mode);
+      setRoute(initialRoute);
+
+      if (initialRoute.mode === "bus" && typeof fetch !== "undefined") {
+        const originNearest = findNearestStop(
+          base.origin,
+          CAMPUS_TRANSIT_STOPS,
+        );
+        const destNearest = findNearestStop(
+          base.destination,
+          CAMPUS_TRANSIT_STOPS,
+        );
+        if (originNearest && destNearest) {
+          fetchMultimodalBusLegs(
+            base.origin,
+            base.destination,
+            originNearest.stop.coordinates,
+            destNearest.stop.coordinates,
+          )
+            .then((legs) => {
+              if (legs) {
+                const detailedRoute = buildMultimodalRoute(base, "bus", {
+                  ...(legs.walkToStopPolyline
+                    ? { walkToStopPolyline: legs.walkToStopPolyline }
+                    : {}),
+                  ...(legs.busRidePolyline
+                    ? { busRidePolyline: legs.busRidePolyline }
+                    : {}),
+                  ...(legs.walkFromStopPolyline
+                    ? { walkFromStopPolyline: legs.walkFromStopPolyline }
+                    : {}),
+                });
+                setRoute(detailedRoute);
+              }
+            })
+            .catch(() => {
+              // Mantener initialRoute de forma segura ante desconexión
+            });
+        }
+      }
+    },
+    [baseWalkingRoute, route],
+  );
 
   const swap = useCallback(() => {
     setOrigin(destination);
@@ -152,6 +247,8 @@ export function useRouting(
 
   const clearRoute = useCallback(() => {
     setRoute(null);
+    setBaseWalkingRoute(null);
+    setSelectedMode("walking");
     setError(null);
   }, []);
 
@@ -190,10 +287,14 @@ export function useRouting(
         accessibleOnly,
       });
       setRoute(result);
+      setBaseWalkingRoute(result);
+      setSelectedMode("walking");
     } catch (err) {
       const classified = classifyError(err);
       setError(classified);
       setRoute(null);
+      setBaseWalkingRoute(null);
+      setSelectedMode("walking");
     } finally {
       setLoading(false);
     }
@@ -206,12 +307,16 @@ export function useRouting(
       accessibleOnly,
       isRoutingOpen,
       route,
+      baseWalkingRoute,
+      selectedMode,
       loading,
       error,
       setOrigin,
       setDestination,
       setAccessibleOnly,
+      setTransportMode,
       openRouting,
+      closePlanner,
       closeRouting,
       swap,
       clearRoute,
@@ -223,9 +328,16 @@ export function useRouting(
       accessibleOnly,
       isRoutingOpen,
       route,
+      baseWalkingRoute,
+      selectedMode,
       loading,
       error,
+      setOrigin,
+      setDestination,
+      setAccessibleOnly,
+      setTransportMode,
       openRouting,
+      closePlanner,
       closeRouting,
       swap,
       clearRoute,

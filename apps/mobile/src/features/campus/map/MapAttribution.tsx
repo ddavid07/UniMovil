@@ -28,7 +28,15 @@ export function MapAttribution() {
   );
 }
 const styles = StyleSheet.create({
-  row: { flexDirection: "row", alignItems: "center", gap: 8 },
-  credit: { minHeight: 48, flex: 1, justifyContent: "center" },
-  text: { color: "#18212b", fontSize: 12 },
+  row: { flexDirection: "row", alignItems: "center", gap: 8, alignSelf: "flex-start" },
+  credit: {
+    minHeight: 22,
+    justifyContent: "center",
+    alignSelf: "flex-start",
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  text: { color: "#0284c7", fontSize: 12, textDecorationLine: "underline" },
 });

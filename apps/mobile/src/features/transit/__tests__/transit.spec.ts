@@ -1,7 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { RouteResponse } from "@unimovil/contracts";
 import {
+  buildMultimodalRoute,
   calculateMultimodalAlternatives,
+  extractTransitSubPolyline,
   findNearestStop,
   haversineMeters,
 } from "../domain/transit";
@@ -149,6 +151,55 @@ describe("Transit Domain (Sprint 3 Multimodal)", () => {
     );
   });
 
+  it("marks bus as unavailable when walking to and from stops exceeds direct walking distance (e.g. Bellas Artes to Medicina)", () => {
+    // Parking Bellas Artes (40.4392759, -3.7335048) to Medicina (40.4439292, -3.7240836)
+    // Direct walking distance ~880m. Walk to nearest Metro stop is ~692m, walk from stop is ~275m (total 967m > 880m).
+    const bellasArtesToMedicina: RouteResponse = {
+      ...dummyWalkingRoute,
+      origin: { latitude: 40.4392759, longitude: -3.7335048 },
+      destination: { latitude: 40.4439292, longitude: -3.7240836 },
+      totalDistanceMeters: 880,
+      estimatedDurationMinutes: 12,
+    };
+
+    const alternatives = calculateMultimodalAlternatives(
+      bellasArtesToMedicina.origin,
+      bellasArtesToMedicina.destination,
+      bellasArtesToMedicina,
+      {
+        lines: CAMPUS_TRANSIT_LINES,
+        stops: CAMPUS_TRANSIT_STOPS,
+      },
+    );
+
+    const bus = alternatives.find((a) => a.mode === "bus");
+    expect(bus?.available).toBe(false);
+    expect(bus?.unavailableReason).toContain("más rápido ir a pie");
+  });
+
+  it("marks bus as unavailable when traveling in reverse direction along a transit line", () => {
+    // From Metro (1688) to Gregorio del Amo (3276): Line F runs Cuatro Caminos -> Gregorio del Amo -> Metro -> Paraninfo
+    const reverseRoute: RouteResponse = {
+      ...dummyWalkingRoute,
+      origin: { latitude: 40.44328, longitude: -3.72725 }, // Metro (1688)
+      destination: { latitude: 40.44572, longitude: -3.72184 }, // Gregorio del Amo (3276)
+      totalDistanceMeters: 600,
+    };
+
+    const alternatives = calculateMultimodalAlternatives(
+      reverseRoute.origin,
+      reverseRoute.destination,
+      reverseRoute,
+      {
+        lines: CAMPUS_TRANSIT_LINES,
+        stops: CAMPUS_TRANSIT_STOPS,
+      },
+    );
+
+    const bus = alternatives.find((a) => a.mode === "bus");
+    expect(bus?.available).toBe(false);
+  });
+
   it("marks bus as unavailable when accessibleOnly is true and stop is not accessible", () => {
     // Route from Gregorio del Amo (inaccessible stop 3276) to Paraninfo
     const inaccessibleStopRoute: RouteResponse = {
@@ -172,5 +223,295 @@ describe("Transit Domain (Sprint 3 Multimodal)", () => {
     const bus = alternatives.find((a) => a.mode === "bus");
     expect(bus?.available).toBe(false);
     expect(bus?.unavailableReason).toContain("sin adaptación PMR");
+  });
+
+  it("does not report bicycle duration as walking duration when passed a non-walking route", () => {
+    const bikeRoute: RouteResponse = {
+      ...dummyWalkingRoute,
+      mode: "bicycle",
+      estimatedDurationMinutes: 4,
+      totalDistanceMeters: 600,
+    };
+    const alternatives = calculateMultimodalAlternatives(
+      bikeRoute.origin,
+      bikeRoute.destination,
+      bikeRoute,
+    );
+    const walking = alternatives.find((a) => a.mode === "walking");
+    expect(walking?.durationMinutes).toBe(8); // 600m / 75 m/min = 8 mins
+  });
+
+  describe("buildMultimodalRoute", () => {
+    it("devuelve la ruta a pie intacta cuando el modo es walking", () => {
+      const route = buildMultimodalRoute(dummyWalkingRoute, "walking");
+      expect(route.mode).toBe("walking");
+      expect(route.id).toBe(dummyWalkingRoute.id);
+      expect(route.totalDistanceMeters).toBe(dummyWalkingRoute.totalDistanceMeters);
+    });
+
+    it("construye correctamente una ruta combinada de autobús con 3 tramos y polilínea", () => {
+      const busRoute = buildMultimodalRoute(dummyWalkingRoute, "bus");
+      expect(busRoute.mode).toBe("bus");
+      expect(busRoute.id).toContain(":bus");
+      expect(busRoute.segments).toHaveLength(3);
+      expect(busRoute.segments[0]?.instruction).toContain("Caminar hasta la parada");
+      expect(busRoute.segments[1]?.instruction).toContain("Tomar Autobús EMT");
+      expect(busRoute.segments[2]?.instruction).toContain("hasta el destino");
+      expect(busRoute.polyline.length).toBeGreaterThan(2);
+    });
+
+    it("integra polilíneas detalladas para los tramos peatonales y de autobús cuando se proporcionan", () => {
+      const mockWalkTo = [
+        { latitude: 40.444, longitude: -3.726 },
+        { latitude: 40.4445, longitude: -3.7265 },
+        { latitude: 40.445, longitude: -3.727 },
+      ];
+      const mockBusRide = [
+        { latitude: 40.445, longitude: -3.727 },
+        { latitude: 40.447, longitude: -3.728 },
+        { latitude: 40.45, longitude: -3.73 },
+      ];
+      const mockWalkFrom = [
+        { latitude: 40.45, longitude: -3.73 },
+        { latitude: 40.451, longitude: -3.731 },
+        { latitude: 40.452, longitude: -3.732 },
+      ];
+
+      const busRoute = buildMultimodalRoute(dummyWalkingRoute, "bus", {
+        walkToStopPolyline: mockWalkTo,
+        busRidePolyline: mockBusRide,
+        walkFromStopPolyline: mockWalkFrom,
+      });
+
+      expect(busRoute.segments[0]?.pathCoordinates).toEqual(mockWalkTo);
+      expect(busRoute.segments[1]?.pathCoordinates).toEqual(mockBusRide);
+      expect(busRoute.segments[2]?.pathCoordinates).toEqual(mockWalkFrom);
+      expect(busRoute.polyline.length).toBe(7);
+    });
+
+    it("fetchMultimodalBusLegs consulta las 3 etapas y devuelve polilíneas completas", async () => {
+      const { fetchMultimodalBusLegs } = await import("../domain/transit.js");
+      const mockFetch = vi.fn().mockImplementation(() => {
+        return Promise.resolve({
+          ok: true,
+          json: () =>
+            Promise.resolve({
+              code: "Ok",
+              routes: [
+                {
+                  geometry: {
+                    coordinates: [
+                      [-3.726, 40.444],
+                      [-3.727, 40.445],
+                    ],
+                  },
+                },
+              ],
+            }),
+        });
+      });
+
+      const result = await fetchMultimodalBusLegs(
+        { latitude: 40.444, longitude: -3.726 },
+        { latitude: 40.452, longitude: -3.732 },
+        { latitude: 40.445, longitude: -3.727 },
+        { latitude: 40.45, longitude: -3.73 },
+        mockFetch as unknown as typeof fetch,
+      );
+
+      expect(mockFetch).toHaveBeenCalledTimes(3);
+      expect(result).toBeDefined();
+      expect(result?.walkToStopPolyline?.length).toBe(2);
+      expect(result?.busRidePolyline?.length).toBe(2);
+      expect(result?.walkFromStopPolyline?.length).toBe(2);
+    });
+
+    it("descarta la polilínea OSRM de autobús cuando contiene un rodeo excesivo en autovía", async () => {
+      const { fetchMultimodalBusLegs } = await import("../domain/transit.js");
+      // Stop to stop direct distance: ~500m.
+      // Mock OSRM driving returning a 2000m detour loop.
+      const mockFetch = vi.fn().mockImplementation((url: string) => {
+        if (url.includes("/driving/")) {
+          return Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({
+                code: "Ok",
+                routes: [
+                  {
+                    distance: 2200, // > 2.5x of 500m
+                    geometry: {
+                      coordinates: [
+                        [-3.727, 40.443],
+                        [-3.715, 40.435],
+                        [-3.710, 40.440],
+                        [-3.721, 40.445],
+                      ],
+                    },
+                  },
+                ],
+              }),
+          });
+        }
+        return Promise.resolve({
+          ok: true,
+          json: () =>
+            Promise.resolve({
+              code: "Ok",
+              routes: [
+                {
+                  distance: 100,
+                  geometry: {
+                    coordinates: [
+                      [-3.726, 40.444],
+                      [-3.727, 40.445],
+                    ],
+                  },
+                },
+              ],
+            }),
+        });
+      });
+
+      const result = await fetchMultimodalBusLegs(
+        { latitude: 40.443, longitude: -3.727 },
+        { latitude: 40.445, longitude: -3.721 },
+        { latitude: 40.443, longitude: -3.727 }, // origin stop
+        { latitude: 40.445, longitude: -3.721 }, // dest stop (~500m)
+        mockFetch as unknown as typeof fetch,
+      );
+
+      // Bus ride polyline should be discarded because of excessive detour (> 2.5x)
+      expect(result?.busRidePolyline).toBeUndefined();
+      // Walking legs should still be populated
+      expect(result?.walkToStopPolyline).toBeDefined();
+      expect(result?.walkFromStopPolyline).toBeDefined();
+    });
+
+    it("construye correctamente una ruta en bicicleta", () => {
+      const bikeRoute = buildMultimodalRoute(dummyWalkingRoute, "bicycle");
+      expect(bikeRoute.mode).toBe("bicycle");
+      expect(bikeRoute.id).toContain(":bicycle");
+      expect(bikeRoute.segments).toHaveLength(1);
+      expect(bikeRoute.segments[0]?.instruction).toContain("bicicleta BiciMAD");
+    });
+
+    it("devuelve ruta a pie si las paradas están vacías o la opción no está disponible", () => {
+      const fallback = buildMultimodalRoute(dummyWalkingRoute, "bus", {
+        stops: [],
+      });
+      expect(fallback.mode).toBe("walking");
+    });
+
+    it("devuelve ruta a pie cuando las paradas no comparten ninguna línea común", () => {
+      const stopA = {
+        ...CAMPUS_TRANSIT_STOPS[0]!,
+        id: "stop-disjoint-a",
+        lines: ["L1"],
+        coordinates: { latitude: 40.44328, longitude: -3.72725 },
+      };
+      const stopB = {
+        ...CAMPUS_TRANSIT_STOPS[1]!,
+        id: "stop-disjoint-b",
+        lines: ["L2"],
+        coordinates: { latitude: 40.452, longitude: -3.7335 },
+      };
+      const disjointStops = [stopA, stopB];
+      const disjointLines = [
+        {
+          ...CAMPUS_TRANSIT_LINES[0]!,
+          id: "line-disjoint-1",
+          code: "L1",
+          stops: [stopA],
+        },
+        {
+          ...CAMPUS_TRANSIT_LINES[0]!,
+          id: "line-disjoint-2",
+          code: "L2",
+          stops: [stopB],
+        },
+      ];
+
+      const fallback = buildMultimodalRoute(dummyWalkingRoute, "bus", {
+        stops: disjointStops,
+        lines: disjointLines,
+      });
+
+      expect(fallback.mode).toBe("walking");
+      expect(fallback.id).toBe(dummyWalkingRoute.id);
+    });
+  });
+
+  describe("extractTransitSubPolyline", () => {
+    const sampleLine = [
+      { latitude: 40.440, longitude: -3.720 }, // 0: South
+      { latitude: 40.445, longitude: -3.722 }, // 1: Stop A
+      { latitude: 40.448, longitude: -3.725 }, // 2: Intermediate
+      { latitude: 40.450, longitude: -3.728 }, // 3: Stop B
+      { latitude: 40.460, longitude: -3.735 }, // 4: Far North
+    ];
+
+    it("returns [fromStop, toStop] when line polyline is empty", () => {
+      const from = { latitude: 40.445, longitude: -3.722 };
+      const to = { latitude: 40.450, longitude: -3.728 };
+      const res = extractTransitSubPolyline([], from, to);
+      expect(res).toEqual([from, to]);
+    });
+
+    it("returns [fromStop, toStop] when origin and dest snap to the same index", () => {
+      const from = { latitude: 40.4451, longitude: -3.7221 };
+      const to = { latitude: 40.4452, longitude: -3.7222 };
+      const res = extractTransitSubPolyline(sampleLine, from, to);
+      expect(res).toEqual([from, to]);
+    });
+
+    it("extracts forward sub-polyline without loop to far north or south", () => {
+      const stopA = { latitude: 40.445, longitude: -3.722 };
+      const stopB = { latitude: 40.450, longitude: -3.728 };
+      const res = extractTransitSubPolyline(sampleLine, stopA, stopB);
+
+      // Should include stopA (or index 1), index 2, stopB (or index 3)
+      // and NOT include index 0 (South) or index 4 (Far North)
+      expect(res.length).toBeGreaterThanOrEqual(3);
+      expect(res).not.toContainEqual(sampleLine[0]);
+      expect(res).not.toContainEqual(sampleLine[4]);
+      expect(res[0]).toEqual(stopA);
+      expect(res[res.length - 1]).toEqual(stopB);
+    });
+
+    it("extracts reverse sub-polyline correctly when traveling opposite line definition", () => {
+      const stopB = { latitude: 40.450, longitude: -3.728 };
+      const stopA = { latitude: 40.445, longitude: -3.722 };
+      const res = extractTransitSubPolyline(sampleLine, stopB, stopA);
+
+      expect(res.length).toBeGreaterThanOrEqual(3);
+      expect(res).not.toContainEqual(sampleLine[0]);
+      expect(res).not.toContainEqual(sampleLine[4]);
+      expect(res[0]).toEqual(stopB);
+      expect(res[res.length - 1]).toEqual(stopA);
+    });
+
+    it("handles deduplication of consecutive identical points and appends distinct toStop", () => {
+      const lineWithDuplicates = [
+        { latitude: 40.445, longitude: -3.722 },
+        { latitude: 40.445, longitude: -3.722 }, // duplicate
+        { latitude: 40.448, longitude: -3.725 },
+        { latitude: 40.450, longitude: -3.728 },
+      ];
+      const from = { latitude: 40.445, longitude: -3.722 };
+      const toOffset = { latitude: 40.451, longitude: -3.729 }; // slightly offset toStop
+
+      const res = extractTransitSubPolyline(lineWithDuplicates, from, toOffset);
+      expect(res[res.length - 1]).toEqual(toOffset);
+      expect(res.length).toBe(4);
+    });
+
+    it("builds multimodal route with accessibleOnly option filtering", () => {
+      const pmrRoute = buildMultimodalRoute(dummyWalkingRoute, "bus", {
+        accessibleOnly: true,
+      });
+      expect(pmrRoute).toBeDefined();
+      expect(pmrRoute.accessible).toBe(true);
+    });
   });
 });

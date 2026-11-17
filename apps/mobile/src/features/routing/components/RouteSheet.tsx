@@ -8,17 +8,28 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import type { RouteResponse } from "@unimovil/contracts";
+import type { RouteResponse, TransportMode } from "@unimovil/contracts";
 import { formatDistance, formatDuration } from "../domain/routing";
 import { calculateMultimodalAlternatives } from "../../transit/domain/transit";
 import { MultimodalComparisonCard } from "../../transit/components/MultimodalComparisonCard";
 
 interface Props {
   readonly route: RouteResponse | null;
+  readonly baseWalkingRoute?: RouteResponse | null | undefined;
   readonly onClose: () => void;
+  readonly onAccept?: (() => void) | undefined;
+  readonly embedded?: boolean | undefined;
+  readonly selectedMode?: TransportMode | undefined;
+  readonly onSelectMode?: ((mode: TransportMode) => void) | undefined;
 }
 
-function RouteHeader({ onClose }: { onClose: () => void }) {
+function RouteHeader({
+  onClose,
+  onAccept,
+}: {
+  readonly onClose: () => void;
+  readonly onAccept?: (() => void) | undefined;
+}) {
   return (
     <View style={styles.header}>
       <View>
@@ -27,14 +38,26 @@ function RouteHeader({ onClose }: { onClose: () => void }) {
         </Text>
         <Text style={styles.subtitle}>Moncloa · Campus Complutense</Text>
       </View>
-      <TouchableOpacity
-        accessibilityRole="button"
-        accessibilityLabel="Cerrar ruta"
-        style={styles.closeBtn}
-        onPress={onClose}
-      >
-        <Text style={styles.closeBtnText}>Cerrar ruta</Text>
-      </TouchableOpacity>
+      <View style={styles.headerActions}>
+        {onAccept && (
+          <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel="Ver en el mapa"
+            style={styles.acceptBtn}
+            onPress={onAccept}
+          >
+            <Text style={styles.acceptBtnText}>Ver en el mapa</Text>
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity
+          accessibilityRole="button"
+          accessibilityLabel="Cerrar ruta"
+          style={styles.closeBtn}
+          onPress={onClose}
+        >
+          <Text style={styles.closeBtnText}>Cerrar ruta</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -43,11 +66,19 @@ function RouteMetricsRow({ route }: { route: RouteResponse }) {
   const durationStr = formatDuration(route.estimatedDurationMinutes);
   const distanceStr = formatDistance(route.totalDistanceMeters);
 
+  const isBus = route.mode === "bus";
+  const isBike = route.mode === "bicycle";
+  const timeLabel = isBus
+    ? "Tiempo en autobús"
+    : isBike
+      ? "Tiempo en bici"
+      : "Tiempo a pie";
+
   return (
     <View style={styles.metricsRow}>
       <View style={styles.metricCard}>
         <Text style={styles.metricValue}>{durationStr}</Text>
-        <Text style={styles.metricLabel}>Tiempo a pie</Text>
+        <Text style={styles.metricLabel}>{timeLabel}</Text>
       </View>
 
       <View style={styles.metricCard}>
@@ -120,47 +151,76 @@ function RouteStepList({ route }: { route: RouteResponse }) {
   );
 }
 
-export function RouteSheet({ route, onClose }: Props) {
+export function RouteSheet({
+  route,
+  baseWalkingRoute,
+  onClose,
+  onAccept,
+  embedded = false,
+  selectedMode,
+  onSelectMode,
+}: Props) {
+  const calculationRoute = baseWalkingRoute ?? route;
   const multimodalAlternatives = useMemo(() => {
-    if (!route) return [];
+    if (!calculationRoute) return [];
     return calculateMultimodalAlternatives(
-      route.origin,
-      route.destination,
-      route,
-      { accessibleOnly: route.accessible },
+      calculationRoute.origin,
+      calculationRoute.destination,
+      calculationRoute,
+      { accessibleOnly: calculationRoute.accessible },
     );
-  }, [route]);
+  }, [calculationRoute]);
 
   if (!route) {
     return null;
   }
 
+  const sheetContent = (
+    <View style={embedded ? styles.embeddedOverlay : styles.overlay}>
+      <SafeAreaView edges={["bottom"]} style={styles.sheet}>
+        <RouteHeader onClose={onClose} onAccept={onAccept} />
+        <RouteMetricsRow route={route} />
+        <ScrollView
+          style={styles.scrollBody}
+          contentContainerStyle={styles.scrollBodyContent}
+        >
+          {multimodalAlternatives.length > 0 && (
+            <View style={styles.multimodalWrapper}>
+              <MultimodalComparisonCard
+                alternatives={multimodalAlternatives}
+                selectedMode={selectedMode ?? route.mode ?? "walking"}
+                onSelectMode={onSelectMode}
+              />
+            </View>
+          )}
+          <RouteStepList route={route} />
+        </ScrollView>
+      </SafeAreaView>
+    </View>
+  );
+
+  if (embedded) {
+    return sheetContent;
+  }
+
   return (
     <Modal transparent visible animationType="slide" onRequestClose={onClose}>
-      <View style={styles.overlay}>
-        <SafeAreaView edges={["bottom"]} style={styles.sheet}>
-          <RouteHeader onClose={onClose} />
-          <RouteMetricsRow route={route} />
-          <ScrollView
-            style={styles.scrollBody}
-            contentContainerStyle={styles.scrollBodyContent}
-          >
-            {multimodalAlternatives.length > 0 && (
-              <View style={styles.multimodalWrapper}>
-                <MultimodalComparisonCard
-                  alternatives={multimodalAlternatives}
-                />
-              </View>
-            )}
-            <RouteStepList route={route} />
-          </ScrollView>
-        </SafeAreaView>
-      </View>
+      {sheetContent}
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
+  embeddedOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1000,
+    backgroundColor: "rgba(0, 0, 0, 0.35)",
+    justifyContent: "flex-end",
+  },
   overlay: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.35)",
@@ -196,6 +256,22 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#64748b",
     marginTop: 2,
+  },
+  headerActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  acceptBtn: {
+    backgroundColor: "#8e1235",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  acceptBtnText: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#ffffff",
   },
   closeBtn: {
     backgroundColor: "#f1f5f9",

@@ -124,6 +124,7 @@ interface Props {
   readonly onSubmit: (data: IncidentReportInput) => void;
   /** Se llama al pulsar el botón de cerrar sin enviar. */
   readonly onClose: () => void;
+  readonly embedded?: boolean;
 }
 
 interface FormErrors {
@@ -131,7 +132,11 @@ interface FormErrors {
   description: string | null;
 }
 
-export function ReportIncidentScreen({ onSubmit, onClose }: Props) {
+export function ReportIncidentScreen({
+  onSubmit,
+  onClose,
+  embedded = false,
+}: Props) {
   // ── Estado del formulario ──────────────────────────────────────────────────
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -174,16 +179,9 @@ export function ReportIncidentScreen({ onSubmit, onClose }: Props) {
   }
 
   // ── Render ─────────────────────────────────────────────────────────────────
-  return (
-    <Modal
-      transparent
-      visible
-      animationType="slide"
-      onRequestClose={onClose}
-      accessibilityViewIsModal
-    >
-      <View style={styles.overlay}>
-        <SafeAreaView edges={["bottom"]} style={styles.sheet}>
+  const screenContent = (
+    <View style={embedded ? styles.embeddedOverlay : styles.overlay}>
+      <SafeAreaView edges={["bottom"]} style={styles.sheet}>
           {/* Cabecera */}
           <View style={styles.header}>
             <Text accessibilityRole="header" style={styles.title}>
@@ -292,14 +290,39 @@ export function ReportIncidentScreen({ onSubmit, onClose }: Props) {
           </ScrollView>
         </SafeAreaView>
       </View>
-    </Modal>
-  );
-}
+    );
 
-// ─── Estilos ──────────────────────────────────────────────────────────────────
+    if (embedded) {
+      return screenContent;
+    }
 
-const styles = StyleSheet.create({
-  overlay: {
+    return (
+      <Modal
+        transparent
+        visible
+        animationType="slide"
+        onRequestClose={onClose}
+        accessibilityViewIsModal
+      >
+        {screenContent}
+      </Modal>
+    );
+  }
+
+  // ─── Estilos ──────────────────────────────────────────────────────────────────
+
+  const styles = StyleSheet.create({
+    embeddedOverlay: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      zIndex: 1000,
+      justifyContent: "flex-end",
+      backgroundColor: "#00000066",
+    },
+    overlay: {
     flex: 1,
     justifyContent: "flex-end",
     backgroundColor: "#00000066",

@@ -13,6 +13,7 @@ interface Props {
   readonly stop: TransitStop | null;
   readonly onClose: () => void;
   readonly onPlanRouteToStop?: (stop: TransitStop) => void;
+  readonly embedded?: boolean;
 }
 
 function LineBadge({ line }: { line: string }) {
@@ -65,100 +66,123 @@ function NextArrivalsList({ stop }: { stop: TransitStop }) {
   );
 }
 
-export function TransitStopSheet({ stop, onClose, onPlanRouteToStop }: Props) {
+export function TransitStopSheet({
+  stop,
+  onClose,
+  onPlanRouteToStop,
+  embedded = false,
+}: Props) {
   if (!stop) {
     return null;
   }
 
-  return (
-    <Modal transparent visible animationType="slide" onRequestClose={onClose}>
-      <View style={styles.overlay}>
-        <SafeAreaView edges={["bottom"]} style={styles.sheet}>
-          {/* Cabecera */}
-          <View style={styles.header}>
-            <View style={styles.titleCol}>
-              <View style={styles.codeRow}>
-                <Text style={styles.operatorTag}>EMT Madrid</Text>
-                <Text style={styles.codeTag}>Parada {stop.code}</Text>
-              </View>
-              <Text accessibilityRole="header" style={styles.stopName}>
-                {stop.name}
-              </Text>
+  const sheetContent = (
+    <View style={embedded ? styles.embeddedOverlay : styles.overlay}>
+      <SafeAreaView edges={["bottom"]} style={styles.sheet}>
+        {/* Cabecera */}
+        <View style={styles.header}>
+          <View style={styles.titleCol}>
+            <View style={styles.codeRow}>
+              <Text style={styles.operatorTag}>EMT Madrid</Text>
+              <Text style={styles.codeTag}>Parada {stop.code}</Text>
             </View>
-            <TouchableOpacity
-              accessibilityRole="button"
-              accessibilityLabel="Cerrar ficha de parada"
-              style={styles.closeBtn}
-              onPress={onClose}
-            >
-              <Text style={styles.closeBtnText}>Cerrar</Text>
-            </TouchableOpacity>
+            <Text accessibilityRole="header" style={styles.stopName}>
+              {stop.name}
+            </Text>
           </View>
+          <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel="Cerrar ficha de parada"
+            style={styles.closeBtn}
+            onPress={onClose}
+          >
+            <Text style={styles.closeBtnText}>Cerrar</Text>
+          </TouchableOpacity>
+        </View>
 
-          <ScrollView style={styles.content}>
-            {/* Accesibilidad PMR */}
-            <View
+        <ScrollView style={styles.content}>
+          {/* Accesibilidad PMR */}
+          <View
+            style={[
+              styles.pmrBox,
+              stop.wheelchairAccessible
+                ? styles.pmrBoxGreen
+                : styles.pmrBoxGray,
+            ]}
+          >
+            <Text style={styles.pmrIcon}>
+              {stop.wheelchairAccessible ? "♿" : "⚠️"}
+            </Text>
+            <Text
               style={[
-                styles.pmrBox,
+                styles.pmrText,
                 stop.wheelchairAccessible
-                  ? styles.pmrBoxGreen
-                  : styles.pmrBoxGray,
+                  ? styles.pmrTextGreen
+                  : styles.pmrTextGray,
               ]}
             >
-              <Text style={styles.pmrIcon}>
-                {stop.wheelchairAccessible ? "♿" : "⚠️"}
-              </Text>
-              <Text
-                style={[
-                  styles.pmrText,
-                  stop.wheelchairAccessible
-                    ? styles.pmrTextGreen
-                    : styles.pmrTextGray,
-                ]}
-              >
-                {stop.wheelchairAccessible
-                  ? "Parada adaptada para movilidad reducida (PMR)"
-                  : "Parada sin adaptación de accesibilidad"}
-              </Text>
+              {stop.wheelchairAccessible
+                ? "Parada adaptada para movilidad reducida (PMR)"
+                : "Parada sin adaptación de accesibilidad"}
+            </Text>
+          </View>
+
+          {/* Líneas que pasan */}
+          <View style={styles.linesSection}>
+            <Text style={styles.sectionSubtitle}>
+              Líneas que prestan servicio:
+            </Text>
+            <View style={styles.linesRow}>
+              {stop.lines.map((line) => (
+                <LineBadge key={line} line={line} />
+              ))}
             </View>
+          </View>
 
-            {/* Líneas que pasan */}
-            <View style={styles.linesSection}>
-              <Text style={styles.sectionSubtitle}>
-                Líneas que prestan servicio:
-              </Text>
-              <View style={styles.linesRow}>
-                {stop.lines.map((line) => (
-                  <LineBadge key={line} line={line} />
-                ))}
-              </View>
-            </View>
+          {/* Próximas llegadas */}
+          <NextArrivalsList stop={stop} />
 
-            {/* Próximas llegadas */}
-            <NextArrivalsList stop={stop} />
+          {/* Botón de acción */}
+          <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel="Planificar ruta hasta esta parada"
+            style={styles.planBtn}
+            onPress={() => {
+              onPlanRouteToStop?.(stop);
+              onClose();
+            }}
+          >
+            <Text style={styles.planBtnText}>
+              Planificar ruta hasta esta parada
+            </Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
+    </View>
+  );
 
-            {/* Botón de acción */}
-            <TouchableOpacity
-              accessibilityRole="button"
-              accessibilityLabel="Planificar ruta hasta esta parada"
-              style={styles.planBtn}
-              onPress={() => {
-                onPlanRouteToStop?.(stop);
-                onClose();
-              }}
-            >
-              <Text style={styles.planBtnText}>
-                Planificar ruta hasta esta parada
-              </Text>
-            </TouchableOpacity>
-          </ScrollView>
-        </SafeAreaView>
-      </View>
+  if (embedded) {
+    return sheetContent;
+  }
+
+  return (
+    <Modal transparent visible animationType="slide" onRequestClose={onClose}>
+      {sheetContent}
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
+  embeddedOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1000,
+    backgroundColor: "rgba(15, 23, 42, 0.4)",
+    justifyContent: "flex-end",
+  },
   overlay: {
     flex: 1,
     backgroundColor: "rgba(15, 23, 42, 0.4)",

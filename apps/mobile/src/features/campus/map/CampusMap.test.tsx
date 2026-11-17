@@ -118,13 +118,49 @@ describe("adaptador nativo (eventos simulados en pruebas de componentes)", () =>
       nativeEvent: { center: [-3.73, 40.44], zoom: 14 },
     });
     const handler = jest.mocked(LogManager.onLog).mock.calls.at(-1)![0];
-    expect(
-      handler({
-        level: "error",
-        tag: "HTTP",
-        message: "https://tile.openstreetmap.org/17/123/456.png",
-      }),
-    ).toBe(true);
+    expect(handler({
+      level: "error",
+      tag: "HTTP",
+      message: "https://tile.openstreetmap.org/17/123/456.png",
+    })).toBe(true);
     expect(warn).toHaveBeenCalledWith("MapLibre", "error", "HTTP");
+  });
+  it("muestra el banner de ruta activa con opciones de ver itinerario y cancelar", async () => {
+    const onOpenRouteDetails = jest.fn();
+    const onClearRoute = jest.fn();
+    const mockRoute = {
+      id: "route-test",
+      origin: { latitude: 40.4455, longitude: -3.7275 },
+      destination: { latitude: 40.4485, longitude: -3.731 },
+      totalDistanceMeters: 450,
+      estimatedDurationMinutes: 6,
+      accessible: true,
+      segments: [],
+      polyline: [
+        { latitude: 40.4455, longitude: -3.7275 },
+        { latitude: 40.4485, longitude: -3.731 },
+      ],
+    };
+    await render(
+      <CampusMap
+        {...props}
+        route={mockRoute}
+        onOpenRouteDetails={onOpenRouteDetails}
+        onClearRoute={onClearRoute}
+      />,
+    );
+
+    expect(screen.getByText("♿ Ruta accesible PMR activa")).toBeTruthy();
+    expect(screen.getByText("6 min · 450 m")).toBeTruthy();
+
+    await fireEvent.press(
+      screen.getByRole("button", { name: "Ver itinerario paso a paso" }),
+    );
+    expect(onOpenRouteDetails).toHaveBeenCalledTimes(1);
+
+    await fireEvent.press(
+      screen.getByRole("button", { name: "Cancelar ruta" }),
+    );
+    expect(onClearRoute).toHaveBeenCalledTimes(1);
   });
 });

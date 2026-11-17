@@ -14,6 +14,7 @@ interface Props {
   onQuery: (value: string) => void;
   onToggle: (category: PlaceCategory) => void;
   onReset: () => void;
+  hideCategories?: boolean | undefined;
 }
 export function ExplorerControls({
   query,
@@ -21,6 +22,7 @@ export function ExplorerControls({
   onQuery,
   onToggle,
   onReset,
+  hideCategories,
 }: Props) {
   return (
     <View style={styles.controls}>
@@ -37,41 +39,48 @@ export function ExplorerControls({
         style={styles.input}
         clearButtonMode="while-editing"
       />
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator
-        contentContainerStyle={styles.row}
-        keyboardShouldPersistTaps="handled"
-      >
-        {PLACE_CATEGORIES.map((category) => (
-          <Action
-            key={category}
-            label={
-              Object.entries(CATEGORY_LABELS).find(
-                ([key]) => key === category,
-              )![1]
-            }
-            selected={categories.includes(category)}
-            onPress={() => onToggle(category)}
-          />
-        ))}
-        <Action label="Restablecer" onPress={onReset} />
-      </ScrollView>
+      {!hideCategories && (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.row}
+          keyboardShouldPersistTaps="handled"
+        >
+          {PLACE_CATEGORIES.map((category) => (
+            <Action
+              key={category}
+              label={
+                Object.entries(CATEGORY_LABELS).find(
+                  ([key]) => key === category,
+                )![1]
+              }
+              selected={categories.includes(category)}
+              onPress={() => onToggle(category)}
+            />
+          ))}
+          <Action label="Restablecer" onPress={onReset} />
+        </ScrollView>
+      )}
     </View>
   );
 }
 const styles = StyleSheet.create({
-  controls: { gap: 8 },
+  controls: { gap: 6 },
   input: {
-    minHeight: 48,
+    minHeight: 40,
     backgroundColor: "#ffffff",
     borderWidth: 1,
-    borderColor: "#68707a",
-    borderRadius: 8,
+    borderColor: "#e2e8f0",
+    borderRadius: 10,
     paddingHorizontal: 12,
-    paddingVertical: 12,
-    fontSize: 16,
+    paddingVertical: 8,
+    fontSize: 14,
     color: "#18212b",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 2,
+    elevation: 1,
   },
-  row: { gap: 8, paddingBottom: 4 },
+  row: { gap: 6, paddingBottom: 2 },
 });

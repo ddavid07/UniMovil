@@ -92,6 +92,7 @@ export function classifyError(error: unknown): UIErrorMessage {
     const errObj = error as {
       code?: string;
       userMessage?: string;
+      message?: string;
       recommendedAction?: string;
     };
     return {
@@ -99,6 +100,7 @@ export function classifyError(error: unknown): UIErrorMessage {
       title: "Datos de ruta no válidos",
       userMessage:
         errObj.userMessage ??
+        errObj.message ??
         "Los puntos de origen o destino introducidos no son válidos para el campus de Moncloa.",
       recommendedAction:
         errObj.recommendedAction ??
@@ -240,11 +242,18 @@ function isNoResultsError(err: unknown): boolean {
 function isValidationError(err: unknown): boolean {
   if (typeof err !== "object" || err === null) return false;
   const code = "code" in err ? String((err as { code: unknown }).code) : "";
+  const msg =
+    "message" in err
+      ? String((err as { message: unknown }).message).toLowerCase()
+      : "";
   return (
     code === "INVALID_COORDINATES" ||
     code === "ORIGIN_OUT_OF_BOUNDS" ||
     code === "DESTINATION_OUT_OF_BOUNDS" ||
-    code === "IDENTICAL_POINTS"
+    code === "IDENTICAL_POINTS" ||
+    msg.includes("fuera de los límites") ||
+    msg.includes("mismo punto") ||
+    msg.includes("coordenadas")
   );
 }
 
