@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { RouteResponse } from "@unimovil/contracts";
 import {
   buildMultimodalRoute,
@@ -209,6 +209,72 @@ describe("Transit Domain (Sprint 3 Multimodal)", () => {
       expect(busRoute.segments[1]?.instruction).toContain("Tomar Autobús EMT");
       expect(busRoute.segments[2]?.instruction).toContain("hasta el destino");
       expect(busRoute.polyline.length).toBeGreaterThan(2);
+    });
+
+    it("integra polilíneas detalladas para los tramos peatonales y de autobús cuando se proporcionan", () => {
+      const mockWalkTo = [
+        { latitude: 40.444, longitude: -3.726 },
+        { latitude: 40.4445, longitude: -3.7265 },
+        { latitude: 40.445, longitude: -3.727 },
+      ];
+      const mockBusRide = [
+        { latitude: 40.445, longitude: -3.727 },
+        { latitude: 40.447, longitude: -3.728 },
+        { latitude: 40.45, longitude: -3.73 },
+      ];
+      const mockWalkFrom = [
+        { latitude: 40.45, longitude: -3.73 },
+        { latitude: 40.451, longitude: -3.731 },
+        { latitude: 40.452, longitude: -3.732 },
+      ];
+
+      const busRoute = buildMultimodalRoute(dummyWalkingRoute, "bus", {
+        walkToStopPolyline: mockWalkTo,
+        busRidePolyline: mockBusRide,
+        walkFromStopPolyline: mockWalkFrom,
+      });
+
+      expect(busRoute.segments[0]?.pathCoordinates).toEqual(mockWalkTo);
+      expect(busRoute.segments[1]?.pathCoordinates).toEqual(mockBusRide);
+      expect(busRoute.segments[2]?.pathCoordinates).toEqual(mockWalkFrom);
+      expect(busRoute.polyline.length).toBe(7);
+    });
+
+    it("fetchMultimodalBusLegs consulta las 3 etapas y devuelve polilíneas completas", async () => {
+      const { fetchMultimodalBusLegs } = await import("../domain/transit.js");
+      const mockFetch = vi.fn().mockImplementation(() => {
+        return Promise.resolve({
+          ok: true,
+          json: () =>
+            Promise.resolve({
+              code: "Ok",
+              routes: [
+                {
+                  geometry: {
+                    coordinates: [
+                      [-3.726, 40.444],
+                      [-3.727, 40.445],
+                    ],
+                  },
+                },
+              ],
+            }),
+        });
+      });
+
+      const result = await fetchMultimodalBusLegs(
+        { latitude: 40.444, longitude: -3.726 },
+        { latitude: 40.452, longitude: -3.732 },
+        { latitude: 40.445, longitude: -3.727 },
+        { latitude: 40.45, longitude: -3.73 },
+        mockFetch as unknown as typeof fetch,
+      );
+
+      expect(mockFetch).toHaveBeenCalledTimes(3);
+      expect(result).toBeDefined();
+      expect(result?.walkToStopPolyline?.length).toBe(2);
+      expect(result?.busRidePolyline?.length).toBe(2);
+      expect(result?.walkFromStopPolyline?.length).toBe(2);
     });
 
     it("construye correctamente una ruta en bicicleta", () => {

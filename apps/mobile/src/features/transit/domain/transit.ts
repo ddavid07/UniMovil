@@ -284,14 +284,107 @@ export function extractTransitSubPolyline(
   return result;
 }
 
+export function combinePolylines(
+  paths: ReadonlyArray<readonly Coordinates[]>,
+): Coordinates[] {
+  const result: Coordinates[] = [];
+  for (const path of paths) {
+    for (const pt of path) {
+      if (
+        result.length === 0 ||
+        result[result.length - 1]!.latitude !== pt.latitude ||
+        result[result.length - 1]!.longitude !== pt.longitude
+      ) {
+        result.push(pt);
+      }
+    }
+  }
+  return result;
+}
+
+export interface MultimodalRouteOptions {
+  lines?: readonly TransitLine[];
+  stops?: readonly TransitStop[];
+  accessibleOnly?: boolean;
+  walkToStopPolyline?: readonly Coordinates[];
+  busRidePolyline?: readonly Coordinates[];
+  walkFromStopPolyline?: readonly Coordinates[];
+}
+
+export async function fetchMultimodalBusLegs(
+  origin: Coordinates,
+  destination: Coordinates,
+  originStop: Coordinates,
+  destStop: Coordinates,
+  fetchFn: typeof fetch = fetch,
+  timeoutMs: number = 3000,
+): Promise<{
+  walkToStopPolyline?: Coordinates[];
+  busRidePolyline?: Coordinates[];
+  walkFromStopPolyline?: Coordinates[];
+} | null> {
+  if (!fetchFn) return null;
+
+  async function fetchLeg(
+    from: Coordinates,
+    to: Coordinates,
+    profile: "foot" | "driving",
+  ): Promise<Coordinates[] | null> {
+    try {
+      const url = `https://router.project-osrm.org/route/v1/${profile}/${from.longitude},${from.latitude};${to.longitude},${to.latitude}?overview=full&geometries=geojson`;
+      let signal: AbortSignal | undefined;
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      if (typeof AbortController !== "undefined") {
+        const controller = new AbortController();
+        signal = controller.signal;
+        timer = setTimeout(() => controller.abort(), timeoutMs);
+      }
+      const fetchOpts: RequestInit = {
+        headers: { Accept: "application/json" },
+        ...(signal ? { signal } : {}),
+      };
+      const res = await fetchFn(url, fetchOpts);
+      if (timer) clearTimeout(timer);
+      if (!res.ok) return null;
+      const json = (await res.json()) as {
+        code?: string;
+        routes?: Array<{
+          geometry?: { coordinates?: Array<[number, number]> };
+        }>;
+      };
+      if (json.code !== "Ok" || !json.routes?.[0]?.geometry?.coordinates) {
+        return null;
+      }
+      return json.routes[0].geometry.coordinates.map(([lon, lat]) => ({
+        latitude: lat,
+        longitude: lon,
+      }));
+    } catch {
+      return null;
+    }
+  }
+
+  try {
+    const [walkTo, busRide, walkFrom] = await Promise.all([
+      fetchLeg(origin, originStop, "foot"),
+      fetchLeg(originStop, destStop, "driving"),
+      fetchLeg(destStop, destination, "foot"),
+    ]);
+
+    return {
+      ...(walkTo ? { walkToStopPolyline: walkTo } : {}),
+      ...(busRide ? { busRidePolyline: busRide } : {}),
+      ...(walkFrom ? { walkFromStopPolyline: walkFrom } : {}),
+    };
+  } catch {
+    return null;
+  }
+}
+
 export function buildMultimodalRoute(
   baseRoute: RouteResponse,
   mode: TransportMode,
-  options?: {
-    lines?: readonly TransitLine[];
-    stops?: readonly TransitStop[];
-    accessibleOnly?: boolean;
-  },
+  options?: MultimodalRouteOptions,
 ): RouteResponse {
   if (mode === "walking") {
     return {
@@ -340,17 +433,32 @@ export function buildMultimodalRoute(
       };
     }
 
-    const busRidePolyline = extractTransitSubPolyline(
+    const defaultBusRide = extractTransitSubPolyline(
       commonLine?.polyline ?? [],
       originNearest.stop.coordinates,
       destNearest.stop.coordinates,
     );
 
-    const busPolyline: Coordinates[] = [
-      baseRoute.origin,
-      ...busRidePolyline,
-      baseRoute.destination,
-    ];
+    const walkToPath =
+      options?.walkToStopPolyline && options.walkToStopPolyline.length > 0
+        ? options.walkToStopPolyline
+        : [baseRoute.origin, originNearest.stop.coordinates];
+
+    const busRidePath =
+      options?.busRidePolyline && options.busRidePolyline.length > 0
+        ? options.busRidePolyline
+        : defaultBusRide;
+
+    const walkFromPath =
+      options?.walkFromStopPolyline && options.walkFromStopPolyline.length > 0
+        ? options.walkFromStopPolyline
+        : [destNearest.stop.coordinates, baseRoute.destination];
+
+    const busPolyline = combinePolylines([
+      walkToPath,
+      busRidePath,
+      walkFromPath,
+    ]);
 
     const segments: RouteSegment[] = [
       {
@@ -363,7 +471,7 @@ export function buildMultimodalRoute(
         isAccessible: alternative.accessible,
         hasStairs: false,
         hasRamp: false,
-        pathCoordinates: [baseRoute.origin, originNearest.stop.coordinates],
+        pathCoordinates: walkToPath,
       },
       {
         id: "seg-bus-ride",
@@ -375,7 +483,7 @@ export function buildMultimodalRoute(
         isAccessible: alternative.accessible,
         hasStairs: false,
         hasRamp: false,
-        pathCoordinates: busRidePolyline,
+        pathCoordinates: busRidePath,
       },
       {
         id: "seg-bus-walk-from",
@@ -387,7 +495,7 @@ export function buildMultimodalRoute(
         isAccessible: alternative.accessible,
         hasStairs: false,
         hasRamp: false,
-        pathCoordinates: [destNearest.stop.coordinates, baseRoute.destination],
+        pathCoordinates: walkFromPath,
       },
     ];
 

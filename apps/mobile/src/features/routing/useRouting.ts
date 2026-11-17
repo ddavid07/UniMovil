@@ -6,7 +6,12 @@ import {
   type RoutingRepository,
 } from "./data/repository";
 import { classifyError, type UIErrorMessage } from "./domain/routing-errors";
-import { buildMultimodalRoute } from "../transit/domain/transit";
+import {
+  buildMultimodalRoute,
+  fetchMultimodalBusLegs,
+  findNearestStop,
+} from "../transit/domain/transit";
+import { CAMPUS_TRANSIT_STOPS } from "../transit/data/transit-data";
 
 export interface RoutingState {
   readonly origin: Place | null;
@@ -189,9 +194,47 @@ export function useRouting(
     (mode: TransportMode) => {
       const base = baseWalkingRoute ?? route;
       if (!base) return;
-      const newRoute = buildMultimodalRoute(base, mode);
+      const initialRoute = buildMultimodalRoute(base, mode);
       setSelectedMode(mode);
-      setRoute(newRoute);
+      setRoute(initialRoute);
+
+      if (mode === "bus" && typeof fetch !== "undefined") {
+        const originNearest = findNearestStop(
+          base.origin,
+          CAMPUS_TRANSIT_STOPS,
+        );
+        const destNearest = findNearestStop(
+          base.destination,
+          CAMPUS_TRANSIT_STOPS,
+        );
+        if (originNearest && destNearest) {
+          fetchMultimodalBusLegs(
+            base.origin,
+            base.destination,
+            originNearest.stop.coordinates,
+            destNearest.stop.coordinates,
+          )
+            .then((legs) => {
+              if (legs) {
+                const detailedRoute = buildMultimodalRoute(base, "bus", {
+                  ...(legs.walkToStopPolyline
+                    ? { walkToStopPolyline: legs.walkToStopPolyline }
+                    : {}),
+                  ...(legs.busRidePolyline
+                    ? { busRidePolyline: legs.busRidePolyline }
+                    : {}),
+                  ...(legs.walkFromStopPolyline
+                    ? { walkFromStopPolyline: legs.walkFromStopPolyline }
+                    : {}),
+                });
+                setRoute(detailedRoute);
+              }
+            })
+            .catch(() => {
+              // Mantener initialRoute de forma segura ante desconexión
+            });
+        }
+      }
     },
     [baseWalkingRoute, route],
   );
