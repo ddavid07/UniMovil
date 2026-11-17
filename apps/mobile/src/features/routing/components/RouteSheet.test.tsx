@@ -140,4 +140,20 @@ describe("RouteSheet Component (HU-023 - TDD Tema 3)", () => {
     await render(<RouteSheet route={busRoute} onClose={jest.fn()} />);
     expect(screen.getByText("Tiempo en autobús")).toBeTruthy();
   });
+
+  it("preserva la duración de la alternativa a pie al usar baseWalkingRoute", async () => {
+    const bikeRoute: RouteResponse = {
+      ...mockRouteStandard,
+      estimatedDurationMinutes: 2,
+      mode: "bicycle",
+    };
+    await render(
+      <RouteSheet
+        route={bikeRoute}
+        baseWalkingRoute={mockRouteStandard}
+        onClose={jest.fn()}
+      />,
+    );
+    expect(screen.getByText("5 min")).toBeTruthy();
+  });
 });

@@ -192,10 +192,15 @@ export function calculateMultimodalAlternatives(
   const lines = options?.lines ?? CAMPUS_TRANSIT_LINES;
   const stops = options?.stops ?? CAMPUS_TRANSIT_STOPS;
 
+  const walkingDurationMinutes =
+    walkingRoute.mode && walkingRoute.mode !== "walking"
+      ? Math.max(1, Math.round(walkingRoute.totalDistanceMeters / 75))
+      : walkingRoute.estimatedDurationMinutes;
+
   const walkingAlternative: MultimodalAlternative = {
     mode: "walking",
     label: "A pie",
-    durationMinutes: walkingRoute.estimatedDurationMinutes,
+    durationMinutes: walkingDurationMinutes,
     distanceMeters: walkingRoute.totalDistanceMeters,
     accessible: walkingRoute.accessible,
     transfers: 0,

@@ -47,6 +47,7 @@ export function CampusModals({
       />
       <RouteSheet
         route={route}
+        baseWalkingRoute={routing.baseWalkingRoute}
         onClose={routing.clearRoute}
         onAccept={onAcceptRoute}
         selectedMode={routing.selectedMode}

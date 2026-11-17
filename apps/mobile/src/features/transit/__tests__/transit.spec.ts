@@ -176,6 +176,22 @@ describe("Transit Domain (Sprint 3 Multimodal)", () => {
     expect(bus?.unavailableReason).toContain("sin adaptación PMR");
   });
 
+  it("does not report bicycle duration as walking duration when passed a non-walking route", () => {
+    const bikeRoute: RouteResponse = {
+      ...dummyWalkingRoute,
+      mode: "bicycle",
+      estimatedDurationMinutes: 4,
+      totalDistanceMeters: 600,
+    };
+    const alternatives = calculateMultimodalAlternatives(
+      bikeRoute.origin,
+      bikeRoute.destination,
+      bikeRoute,
+    );
+    const walking = alternatives.find((a) => a.mode === "walking");
+    expect(walking?.durationMinutes).toBe(8); // 600m / 75 m/min = 8 mins
+  });
+
   describe("buildMultimodalRoute", () => {
     it("devuelve la ruta a pie intacta cuando el modo es walking", () => {
       const route = buildMultimodalRoute(dummyWalkingRoute, "walking");

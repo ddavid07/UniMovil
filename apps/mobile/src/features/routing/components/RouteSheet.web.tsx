@@ -15,6 +15,7 @@ import { MultimodalComparisonCard } from "../../transit/components/MultimodalCom
 
 export interface RouteSheetProps {
   readonly route: RouteResponse | null;
+  readonly baseWalkingRoute?: RouteResponse | null | undefined;
   readonly onClose: () => void;
   readonly onAccept?: (() => void) | undefined;
   readonly embedded?: boolean | undefined;
@@ -169,21 +170,23 @@ function RouteStepList({ route }: { readonly route: RouteResponse }) {
 
 export function RouteSheet({
   route,
+  baseWalkingRoute,
   onClose,
   onAccept,
   embedded = false,
   selectedMode,
   onSelectMode,
 }: RouteSheetProps) {
+  const calculationRoute = baseWalkingRoute ?? route;
   const multimodalAlternatives = useMemo(() => {
-    if (!route) return [];
+    if (!calculationRoute) return [];
     return calculateMultimodalAlternatives(
-      route.origin,
-      route.destination,
-      route,
-      { accessibleOnly: route.accessible },
+      calculationRoute.origin,
+      calculationRoute.destination,
+      calculationRoute,
+      { accessibleOnly: calculationRoute.accessible },
     );
-  }, [route]);
+  }, [calculationRoute]);
 
   if (!route) {
     return null;

@@ -324,6 +324,7 @@ export function CampusScreen({
             {/* In-Phone Modals & Sheets (Embedded inside the mobile phone simulator) */}
             <RouteSheet
               route={routeSheetOpen ? routing.route : null}
+              baseWalkingRoute={routing.baseWalkingRoute}
               onClose={routing.clearRoute}
               onAccept={() => {
                 setRouteSheetOpen(false);
@@ -726,6 +727,7 @@ export function CampusScreen({
           />
           <RouteSheet
             route={routeSheetOpen ? routing.route : null}
+            baseWalkingRoute={routing.baseWalkingRoute}
             onClose={routing.clearRoute}
             onAccept={() => {
               setRouteSheetOpen(false);
