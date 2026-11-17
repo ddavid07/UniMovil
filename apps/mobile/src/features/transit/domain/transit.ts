@@ -2,8 +2,10 @@ import type {
   Coordinates,
   MultimodalAlternative,
   RouteResponse,
+  RouteSegment,
   TransitLine,
   TransitStop,
+  TransportMode,
 } from "@unimovil/contracts";
 import {
   CAMPUS_TRANSIT_LINES,
@@ -216,4 +218,143 @@ export function calculateMultimodalAlternatives(
   );
 
   return [walkingAlternative, busAlternative, bikeAlternative];
+}
+
+export function buildMultimodalRoute(
+  baseRoute: RouteResponse,
+  mode: TransportMode,
+  options?: {
+    lines?: readonly TransitLine[];
+    stops?: readonly TransitStop[];
+  },
+): RouteResponse {
+  if (mode === "walking") {
+    return {
+      ...baseRoute,
+      mode: "walking",
+    };
+  }
+
+  const lines = options?.lines ?? CAMPUS_TRANSIT_LINES;
+  const stops = options?.stops ?? CAMPUS_TRANSIT_STOPS;
+  const accessibleOnly = options?.accessibleOnly ?? false;
+
+  const alternatives = calculateMultimodalAlternatives(
+    baseRoute.origin,
+    baseRoute.destination,
+    baseRoute,
+    { accessibleOnly, lines, stops },
+  );
+
+  const alternative = alternatives.find((alt) => alt.mode === mode);
+  if (!alternative || !alternative.available) {
+    return {
+      ...baseRoute,
+      mode: "walking",
+    };
+  }
+
+  if (mode === "bus") {
+    const originNearest = findNearestStop(baseRoute.origin, stops);
+    const destNearest = findNearestStop(baseRoute.destination, stops);
+    if (!originNearest || !destNearest) {
+      return {
+        ...baseRoute,
+        mode: "walking",
+      };
+    }
+    const commonLine =
+      lines.find(
+        (l) =>
+          l.stops.some((s) => s.id === originNearest.stop.id) &&
+          l.stops.some((s) => s.id === destNearest.stop.id),
+      ) ?? lines[0];
+
+    const busPolyline: Coordinates[] = [
+      baseRoute.origin,
+      originNearest.stop.coordinates,
+      ...(commonLine?.polyline ?? []),
+      destNearest.stop.coordinates,
+      baseRoute.destination,
+    ];
+
+    const segments: RouteSegment[] = [
+      {
+        id: "seg-bus-walk-to",
+        sourceNodeId: "origin",
+        targetNodeId: originNearest.stop.id,
+        instruction: `Caminar hasta la parada ${alternative.originStop ?? originNearest.stop.name} (${alternative.walkingToStopMinutes ?? 2} min)`,
+        distanceMeters: Math.round((alternative.walkingToStopMinutes ?? 2) * 75),
+        durationSeconds: (alternative.walkingToStopMinutes ?? 2) * 60,
+        isAccessible: alternative.accessible,
+        hasStairs: false,
+        hasRamp: false,
+        pathCoordinates: [baseRoute.origin, originNearest.stop.coordinates],
+      },
+      {
+        id: "seg-bus-ride",
+        sourceNodeId: originNearest.stop.id,
+        targetNodeId: destNearest.stop.id,
+        instruction: `Tomar ${alternative.label} hasta ${alternative.destinationStop ?? destNearest.stop.name} (${alternative.transitRideMinutes ?? 4} min)`,
+        distanceMeters: Math.max(100, alternative.distanceMeters - 200),
+        durationSeconds: (alternative.transitRideMinutes ?? 4) * 60,
+        isAccessible: alternative.accessible,
+        hasStairs: false,
+        hasRamp: false,
+        pathCoordinates: commonLine?.polyline ?? [],
+      },
+      {
+        id: "seg-bus-walk-from",
+        sourceNodeId: destNearest.stop.id,
+        targetNodeId: "destination",
+        instruction: `Caminar desde ${alternative.destinationStop ?? destNearest.stop.name} hasta el destino (${alternative.walkingFromStopMinutes ?? 1} min)`,
+        distanceMeters: Math.round((alternative.walkingFromStopMinutes ?? 1) * 75),
+        durationSeconds: (alternative.walkingFromStopMinutes ?? 1) * 60,
+        isAccessible: alternative.accessible,
+        hasStairs: false,
+        hasRamp: false,
+        pathCoordinates: [destNearest.stop.coordinates, baseRoute.destination],
+      },
+    ];
+
+    return {
+      id: `${baseRoute.id}:bus`,
+      origin: baseRoute.origin,
+      destination: baseRoute.destination,
+      totalDistanceMeters: alternative.distanceMeters,
+      estimatedDurationMinutes: alternative.durationMinutes,
+      accessible: alternative.accessible,
+      segments,
+      polyline: busPolyline,
+      mode: "bus",
+    };
+  }
+
+  // mode === "bicycle"
+  const bikeSegments: RouteSegment[] = [
+    {
+      id: "seg-bike-ride",
+      sourceNodeId: "origin",
+      targetNodeId: "destination",
+      instruction: `Trayecto en bicicleta BiciMAD por la calzada y ciclocalles del campus (${alternative.durationMinutes} min)`,
+      distanceMeters: alternative.distanceMeters,
+      durationSeconds: alternative.durationMinutes * 60,
+      isAccessible: false,
+      hasStairs: false,
+      hasRamp: false,
+      pathCoordinates: baseRoute.polyline,
+    },
+  ];
+
+  return {
+    id: `${baseRoute.id}:bicycle`,
+    origin: baseRoute.origin,
+    destination: baseRoute.destination,
+    totalDistanceMeters: alternative.distanceMeters,
+    estimatedDurationMinutes: alternative.durationMinutes,
+    accessible: false,
+    segments: bikeSegments,
+    polyline: baseRoute.polyline,
+    mode: "bicycle",
+  };
 }

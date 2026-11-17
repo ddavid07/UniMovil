@@ -4,8 +4,8 @@ import type { MultimodalAlternative, TransportMode } from "@unimovil/contracts";
 
 interface Props {
   readonly alternatives: readonly MultimodalAlternative[];
-  readonly selectedMode?: TransportMode;
-  readonly onSelectMode?: (mode: TransportMode) => void;
+  readonly selectedMode?: TransportMode | undefined;
+  readonly onSelectMode?: ((mode: TransportMode) => void) | undefined;
 }
 
 function ModeIcon({ mode }: { mode: TransportMode }) {

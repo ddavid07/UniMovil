@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import type { RouteResponse } from "@unimovil/contracts";
+import type { RouteResponse, TransportMode } from "@unimovil/contracts";
 import { formatDistance, formatDuration } from "../domain/routing";
 import { calculateMultimodalAlternatives } from "../../transit/domain/transit";
 import { MultimodalComparisonCard } from "../../transit/components/MultimodalComparisonCard";
@@ -17,7 +17,9 @@ interface Props {
   readonly route: RouteResponse | null;
   readonly onClose: () => void;
   readonly onAccept?: (() => void) | undefined;
-  readonly embedded?: boolean;
+  readonly embedded?: boolean | undefined;
+  readonly selectedMode?: TransportMode | undefined;
+  readonly onSelectMode?: ((mode: TransportMode) => void) | undefined;
 }
 
 function RouteHeader({
@@ -145,6 +147,8 @@ export function RouteSheet({
   onClose,
   onAccept,
   embedded = false,
+  selectedMode,
+  onSelectMode,
 }: Props) {
   const multimodalAlternatives = useMemo(() => {
     if (!route) return [];
@@ -173,6 +177,8 @@ export function RouteSheet({
             <View style={styles.multimodalWrapper}>
               <MultimodalComparisonCard
                 alternatives={multimodalAlternatives}
+                selectedMode={selectedMode ?? route.mode ?? "walking"}
+                onSelectMode={onSelectMode}
               />
             </View>
           )}

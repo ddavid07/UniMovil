@@ -1,4 +1,5 @@
 import type { Coordinates } from "./places.js";
+import type { TransportMode } from "./transit.js";
 
 export type { Coordinates };
 
@@ -31,6 +32,7 @@ export interface RouteResponse {
   readonly accessible: boolean;
   readonly segments: readonly RouteSegment[];
   readonly polyline: readonly Coordinates[];
+  readonly mode?: TransportMode;
 }
 
 export const ROUTING_ERROR_CODES = [

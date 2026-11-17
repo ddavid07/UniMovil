@@ -49,6 +49,8 @@ export function CampusModals({
         route={route}
         onClose={routing.clearRoute}
         onAccept={onAcceptRoute}
+        selectedMode={routing.selectedMode}
+        onSelectMode={routing.setTransportMode}
       />
       <TransitStopSheet
         stop={selectedTransitStop}

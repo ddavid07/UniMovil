@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { RouteResponse } from "@unimovil/contracts";
 import {
+  buildMultimodalRoute,
   calculateMultimodalAlternatives,
   findNearestStop,
   haversineMeters,
@@ -172,5 +173,40 @@ describe("Transit Domain (Sprint 3 Multimodal)", () => {
     const bus = alternatives.find((a) => a.mode === "bus");
     expect(bus?.available).toBe(false);
     expect(bus?.unavailableReason).toContain("sin adaptación PMR");
+  });
+
+  describe("buildMultimodalRoute", () => {
+    it("devuelve la ruta a pie intacta cuando el modo es walking", () => {
+      const route = buildMultimodalRoute(dummyWalkingRoute, "walking");
+      expect(route.mode).toBe("walking");
+      expect(route.id).toBe(dummyWalkingRoute.id);
+      expect(route.totalDistanceMeters).toBe(dummyWalkingRoute.totalDistanceMeters);
+    });
+
+    it("construye correctamente una ruta combinada de autobús con 3 tramos y polilínea", () => {
+      const busRoute = buildMultimodalRoute(dummyWalkingRoute, "bus");
+      expect(busRoute.mode).toBe("bus");
+      expect(busRoute.id).toContain(":bus");
+      expect(busRoute.segments).toHaveLength(3);
+      expect(busRoute.segments[0]?.instruction).toContain("Caminar hasta la parada");
+      expect(busRoute.segments[1]?.instruction).toContain("Tomar Autobús EMT");
+      expect(busRoute.segments[2]?.instruction).toContain("hasta el destino");
+      expect(busRoute.polyline.length).toBeGreaterThan(2);
+    });
+
+    it("construye correctamente una ruta en bicicleta", () => {
+      const bikeRoute = buildMultimodalRoute(dummyWalkingRoute, "bicycle");
+      expect(bikeRoute.mode).toBe("bicycle");
+      expect(bikeRoute.id).toContain(":bicycle");
+      expect(bikeRoute.segments).toHaveLength(1);
+      expect(bikeRoute.segments[0]?.instruction).toContain("bicicleta BiciMAD");
+    });
+
+    it("devuelve ruta a pie si las paradas están vacías o la opción no está disponible", () => {
+      const fallback = buildMultimodalRoute(dummyWalkingRoute, "bus", {
+        stops: [],
+      });
+      expect(fallback.mode).toBe("walking");
+    });
   });
 });

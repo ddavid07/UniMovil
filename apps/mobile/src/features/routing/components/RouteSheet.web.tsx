@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import type { RouteResponse } from "@unimovil/contracts";
+import type { RouteResponse, TransportMode } from "@unimovil/contracts";
 import { formatDistance, formatDuration } from "../domain/routing";
 import { calculateMultimodalAlternatives } from "../../transit/domain/transit";
 import { MultimodalComparisonCard } from "../../transit/components/MultimodalComparisonCard";
@@ -17,7 +17,9 @@ export interface RouteSheetProps {
   readonly route: RouteResponse | null;
   readonly onClose: () => void;
   readonly onAccept?: (() => void) | undefined;
-  readonly embedded?: boolean;
+  readonly embedded?: boolean | undefined;
+  readonly selectedMode?: TransportMode | undefined;
+  readonly onSelectMode?: ((mode: TransportMode) => void) | undefined;
 }
 
 function RouteHeader({
@@ -59,12 +61,22 @@ function RouteMetricsRow({ route }: { readonly route: RouteResponse }) {
   const durationStr = formatDuration(route.estimatedDurationMinutes);
   const distanceStr = formatDistance(route.totalDistanceMeters);
 
+  const isBus = route.mode === "bus";
+  const isBike = route.mode === "bicycle";
+
+  const timeIcon = isBus ? "🚌" : isBike ? "🚲" : "⏱️";
+  const timeLabel = isBus
+    ? "Tiempo en autobús"
+    : isBike
+      ? "Tiempo en bici"
+      : "Tiempo a pie";
+
   return (
     <View style={styles.metricsRow}>
       <View style={styles.metricCard}>
-        <Text style={styles.metricIcon}>⏱️</Text>
+        <Text style={styles.metricIcon}>{timeIcon}</Text>
         <Text style={styles.metricValue}>{durationStr}</Text>
-        <Text style={styles.metricLabel}>Tiempo a pie</Text>
+        <Text style={styles.metricLabel}>{timeLabel}</Text>
       </View>
 
       <View style={styles.metricCard}>
@@ -76,20 +88,42 @@ function RouteMetricsRow({ route }: { readonly route: RouteResponse }) {
       <View
         style={[
           styles.metricCard,
-          route.accessible ? styles.pmrCardGreen : styles.pmrCardGray,
+          isBus
+            ? styles.pmrCardBlue
+            : route.accessible
+              ? styles.pmrCardGreen
+              : styles.pmrCardGray,
         ]}
       >
-        <Text style={styles.metricIcon}>{route.accessible ? "♿" : "🚶"}</Text>
+        <Text style={styles.metricIcon}>
+          {isBus ? "🚍" : isBike ? "🚲" : route.accessible ? "♿" : "🚶"}
+        </Text>
         <Text
           style={[
             styles.metricValueSmall,
-            route.accessible ? styles.pmrTextGreen : styles.pmrTextGray,
+            isBus
+              ? styles.pmrTextBlue
+              : route.accessible
+                ? styles.pmrTextGreen
+                : styles.pmrTextGray,
           ]}
         >
-          {route.accessible ? "Ruta accesible PMR" : "Ruta con escaleras"}
+          {isBus
+            ? "Autobús EMT"
+            : isBike
+              ? "BiciMAD Campus"
+              : route.accessible
+                ? "Ruta accesible PMR"
+                : "Ruta con escaleras"}
         </Text>
         <Text style={styles.metricLabel}>
-          {route.accessible ? "Sin barreras" : "Con desniveles"}
+          {isBus
+            ? "Transporte público"
+            : isBike
+              ? "Ciclocalles campus"
+              : route.accessible
+                ? "Sin barreras"
+                : "Con desniveles"}
         </Text>
       </View>
     </View>
@@ -147,6 +181,8 @@ export function RouteSheet({
   onClose,
   onAccept,
   embedded = false,
+  selectedMode,
+  onSelectMode,
 }: RouteSheetProps) {
   const multimodalAlternatives = useMemo(() => {
     if (!route) return [];
@@ -219,6 +255,8 @@ export function RouteSheet({
           <View style={styles.multimodalWrapper}>
             <MultimodalComparisonCard
               alternatives={multimodalAlternatives}
+              selectedMode={selectedMode ?? route.mode ?? "walking"}
+              onSelectMode={onSelectMode}
             />
           </View>
         )}
@@ -476,12 +514,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#f0fdf4",
     borderColor: "#bbf7d0",
   },
+  pmrCardBlue: {
+    backgroundColor: "#eff6ff",
+    borderColor: "#bfdbfe",
+  },
   pmrCardGray: {
     backgroundColor: "#f8fafc",
     borderColor: "#cbd5e1",
   },
   pmrTextGreen: {
     color: "#166534",
+  },
+  pmrTextBlue: {
+    color: "#1d4ed8",
   },
   pmrTextGray: {
     color: "#475569",

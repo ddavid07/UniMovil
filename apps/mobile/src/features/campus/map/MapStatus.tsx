@@ -29,7 +29,10 @@ export function MapStatus({
   const message = MESSAGES[state];
   return (
     <View style={styles.status}>
-      <Text accessibilityLiveRegion="polite" style={styles.text}>
+      <Text
+        accessibilityLiveRegion="polite"
+        style={[styles.text, state === "ready" && styles.srOnly]}
+      >
         {message}
       </Text>
       {state === "error" ? (
@@ -54,5 +57,14 @@ export function MapStatus({
 const styles = StyleSheet.create({
   status: { backgroundColor: "#ffffff", padding: 8, gap: 4 },
   text: { fontSize: 14, color: "#18212b" },
+  srOnly: {
+    position: "absolute",
+    width: 1,
+    height: 1,
+    padding: 0,
+    margin: -1,
+    overflow: "hidden",
+    opacity: 0,
+  },
   row: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
 });

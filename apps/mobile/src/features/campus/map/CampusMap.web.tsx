@@ -310,7 +310,14 @@ export function CampusMap({
         coord.longitude,
       ]);
       const line = L.polyline(latLngs, {
-        color: route.accessible ? "#16a34a" : "#0284c7",
+        color:
+          route.mode === "bus"
+            ? "#2563eb"
+            : route.mode === "bicycle"
+              ? "#d97706"
+              : route.accessible
+                ? "#16a34a"
+                : "#0284c7",
         weight: 6,
         opacity: 0.9,
         lineCap: "round",
@@ -381,14 +388,32 @@ export function CampusMap({
             <View
               style={[
                 styles.routeBadge,
-                route.accessible ? styles.routeBadgePmr : styles.routeBadgeStd,
+                route.mode === "bus"
+                  ? styles.routeBadgeBus
+                  : route.mode === "bicycle"
+                    ? styles.routeBadgeBike
+                    : route.accessible
+                      ? styles.routeBadgePmr
+                      : styles.routeBadgeStd,
               ]}
             >
               <Text style={styles.routeBadgeIcon}>
-                {route.accessible ? "♿" : "🚶"}
+                {route.mode === "bus"
+                  ? "🚌"
+                  : route.mode === "bicycle"
+                    ? "🚲"
+                    : route.accessible
+                      ? "♿"
+                      : "🚶"}
               </Text>
               <Text style={styles.routeBadgeText}>
-                {route.accessible ? "Accesible PMR" : "Peatonal"}
+                {route.mode === "bus"
+                  ? "Autobús EMT"
+                  : route.mode === "bicycle"
+                    ? "Bicicleta"
+                    : route.accessible
+                      ? "Accesible PMR"
+                      : "Peatonal"}
               </Text>
             </View>
             <View style={styles.routeTextGroup}>
@@ -396,9 +421,13 @@ export function CampusMap({
                 {formatDuration(route.estimatedDurationMinutes)} ({formatDistance(route.totalDistanceMeters)})
               </Text>
               <Text style={styles.routeDetails}>
-                {route.accessible
-                  ? "Itinerario sin desniveles ni escaleras"
-                  : "Itinerario peatonal estándar"}
+                {route.mode === "bus"
+                  ? "Trayecto combinado en autobús urbano EMT"
+                  : route.mode === "bicycle"
+                    ? "Itinerario en bicicleta por el campus"
+                    : route.accessible
+                      ? "Itinerario sin desniveles ni escaleras"
+                      : "Itinerario peatonal estándar"}
               </Text>
             </View>
           </View>
@@ -560,6 +589,16 @@ const styles = StyleSheet.create({
   },
   routeBadgeStd: {
     backgroundColor: "#e0f2fe",
+  },
+  routeBadgeBus: {
+    backgroundColor: "#eff6ff",
+    borderColor: "#bfdbfe",
+    borderWidth: 1,
+  },
+  routeBadgeBike: {
+    backgroundColor: "#fef3c7",
+    borderColor: "#fde68a",
+    borderWidth: 1,
   },
   routeBadgeIcon: {
     fontSize: 14,

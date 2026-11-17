@@ -281,6 +281,8 @@ export function CampusScreen({
                 setRouteSheetOpen(false);
                 routing.closePlanner();
               }}
+              selectedMode={routing.selectedMode}
+              onSelectMode={routing.setTransportMode}
               embedded={true}
             />
             <TransitStopSheet
@@ -670,6 +672,8 @@ export function CampusScreen({
               setRouteSheetOpen(false);
               routing.closePlanner();
             }}
+            selectedMode={routing.selectedMode}
+            onSelectMode={routing.setTransportMode}
           />
           <TransitStopSheet
             stop={selectedTransitStop}

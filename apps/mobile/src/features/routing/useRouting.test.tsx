@@ -42,6 +42,12 @@ const mockRoute: RouteResponse = {
   polyline: [placeA.coordinates, placeB.coordinates],
 };
 
+const mockRouteLong: RouteResponse = {
+  ...mockRoute,
+  totalDistanceMeters: 800,
+  estimatedDurationMinutes: 10,
+};
+
 describe("useRouting Hook (HU-020 & HU-023 - Jest Coverage)", () => {
   it("inicia con valores nulos y permite abrir/cerrar", async () => {
     const { result } = await renderHook(() => useRouting());
@@ -96,8 +102,13 @@ describe("useRouting Hook (HU-020 & HU-023 - Jest Coverage)", () => {
   });
 
   it("calcula ruta exitosamente llamando al repositorio", async () => {
+    const mockRouteLong: RouteResponse = {
+      ...mockRoute,
+      totalDistanceMeters: 800,
+      estimatedDurationMinutes: 10,
+    };
     const mockRepo: RoutingRepository = {
-      calculateRoute: jest.fn().mockResolvedValue(mockRoute),
+      calculateRoute: jest.fn().mockResolvedValue(mockRouteLong),
     };
 
     const { result } = await renderHook(() => useRouting(mockRepo));
@@ -112,8 +123,20 @@ describe("useRouting Hook (HU-020 & HU-023 - Jest Coverage)", () => {
     });
 
     expect(mockRepo.calculateRoute).toHaveBeenCalled();
-    expect(result.current.route).toEqual(mockRoute);
+    expect(result.current.route).toEqual(mockRouteLong);
     expect(result.current.loading).toBe(false);
+
+    await act(async () => {
+      result.current.setTransportMode("bus");
+    });
+    expect(result.current.selectedMode).toBe("bus");
+    expect(result.current.route?.mode).toBe("bus");
+
+    await act(async () => {
+      result.current.setTransportMode("walking");
+    });
+    expect(result.current.selectedMode).toBe("walking");
+    expect(result.current.route?.mode).toBe("walking");
 
     await act(async () => {
       result.current.clearRoute();
@@ -189,6 +212,19 @@ describe("useRouting Hook (HU-020 & HU-023 - Jest Coverage)", () => {
     controller.setDestination(placeA);
     await controller.calculate();
     expect(controller.getState().error?.title).toBe("Puntos idénticos");
+
+    const mockRepoSuccess = {
+      calculateRoute: jest.fn().mockResolvedValue(mockRouteLong),
+    };
+    const activeController = createRoutingController(mockRepoSuccess);
+    activeController.setOrigin(placeA);
+    activeController.setDestination(placeB);
+    await activeController.calculate();
+    expect(activeController.getState().selectedMode).toBe("walking");
+    activeController.setTransportMode("bus");
+    expect(activeController.getState().selectedMode).toBe("bus");
+    activeController.setTransportMode("walking");
+    expect(activeController.getState().selectedMode).toBe("walking");
 
     unsub();
   });
