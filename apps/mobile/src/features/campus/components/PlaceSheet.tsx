@@ -21,10 +21,14 @@ export function PlaceSheet({
   place,
   onClose,
   onPlanRoute,
+  isFavorite = false,
+  onToggleFavorite,
 }: {
   place: Place | null;
   onClose: () => void;
   onPlanRoute?: ((place: Place) => void) | undefined;
+  isFavorite?: boolean | undefined;
+  onToggleFavorite?: ((place: Place) => void) | undefined;
 }) {
   const [linkError, setLinkError] = useState(false);
   if (!place) return null;
@@ -63,6 +67,14 @@ export function PlaceSheet({
                   onClose();
                   onPlanRoute(place);
                 }}
+              />
+            )}
+            {onToggleFavorite && (
+              <Action
+                label={
+                  isFavorite ? "★ Quitar de favoritos" : "☆ Guardar en favoritos"
+                }
+                onPress={() => onToggleFavorite(place)}
               />
             )}
             <Action
