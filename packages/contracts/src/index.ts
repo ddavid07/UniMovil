@@ -5,3 +5,4 @@ export * from "./incidents.js";
 export * from "./incident-reports.js";
 export * from "./routes.js";
 export * from "./transit.js";
+export * from "./favorites.js";
