@@ -14,6 +14,8 @@ interface Props {
   onQuery: (value: string) => void;
   onToggle: (category: PlaceCategory) => void;
   onReset: () => void;
+  onlyFavorites?: boolean | undefined;
+  onToggleFavorites?: (() => void) | undefined;
 }
 export function ExplorerControls({
   query,
@@ -21,6 +23,8 @@ export function ExplorerControls({
   onQuery,
   onToggle,
   onReset,
+  onlyFavorites,
+  onToggleFavorites,
 }: Props) {
   return (
     <View style={styles.controls}>
@@ -43,6 +47,13 @@ export function ExplorerControls({
         contentContainerStyle={styles.row}
         keyboardShouldPersistTaps="handled"
       >
+        {onToggleFavorites && (
+          <Action
+            label={onlyFavorites ? "★ Favoritos" : "☆ Favoritos"}
+            selected={Boolean(onlyFavorites)}
+            onPress={onToggleFavorites}
+          />
+        )}
         {PLACE_CATEGORIES.map((category) => (
           <Action
             key={category}

@@ -17,14 +17,46 @@ const ACCESSIBILITY = {
   no: "OSM indica ausencia de acceso para silla de ruedas",
   limited: "OSM indica acceso limitado para silla de ruedas",
 };
+function PlaceDetails({ place }: { readonly place: Place }) {
+  return (
+    <>
+      <Text accessibilityRole="header" style={styles.title}>
+        {place.name}
+      </Text>
+      <Text style={styles.text}>{CATEGORY_LABELS[place.category]}</Text>
+      <Text style={styles.text}>
+        Ubicación: {place.coordinates.latitude.toFixed(6)},{" "}
+        {place.coordinates.longitude.toFixed(6)}
+      </Text>
+      <Text style={styles.text}>
+        {place.description ?? "Sin descripción publicada."}
+      </Text>
+      <Text style={styles.text}>
+        {ACCESSIBILITY[place.accessibility]}. Consulta la fuente; no es una
+        certificación de accesibilidad.
+      </Text>
+      <Text style={styles.text}>
+        Fuente: OpenStreetMap · Consulta: {place.source.checkedAt}
+      </Text>
+      <Text style={styles.text}>
+        Los datos pueden cambiar. No se ha realizado una inspección de campo.
+      </Text>
+    </>
+  );
+}
+
 export function PlaceSheet({
   place,
   onClose,
   onPlanRoute,
+  isFavorite = false,
+  onToggleFavorite,
 }: {
-  place: Place | null;
-  onClose: () => void;
-  onPlanRoute?: ((place: Place) => void) | undefined;
+  readonly place: Place | null;
+  readonly onClose: () => void;
+  readonly onPlanRoute?: ((place: Place) => void) | undefined;
+  readonly isFavorite?: boolean | undefined;
+  readonly onToggleFavorite?: ((place: Place) => void) | undefined;
 }) {
   const [linkError, setLinkError] = useState(false);
   if (!place) return null;
@@ -34,28 +66,7 @@ export function PlaceSheet({
         <SafeAreaView edges={["bottom"]} style={styles.sheet}>
           <Action label="Cerrar ficha" onPress={onClose} />
           <ScrollView contentContainerStyle={styles.content}>
-            <Text accessibilityRole="header" style={styles.title}>
-              {place.name}
-            </Text>
-            <Text style={styles.text}>{CATEGORY_LABELS[place.category]}</Text>
-            <Text style={styles.text}>
-              Ubicación: {place.coordinates.latitude.toFixed(6)},{" "}
-              {place.coordinates.longitude.toFixed(6)}
-            </Text>
-            <Text style={styles.text}>
-              {place.description ?? "Sin descripción publicada."}
-            </Text>
-            <Text style={styles.text}>
-              {ACCESSIBILITY[place.accessibility]}. Consulta la fuente; no es
-              una certificación de accesibilidad.
-            </Text>
-            <Text style={styles.text}>
-              Fuente: OpenStreetMap · Consulta: {place.source.checkedAt}
-            </Text>
-            <Text style={styles.text}>
-              Los datos pueden cambiar. No se ha realizado una inspección de
-              campo.
-            </Text>
+            <PlaceDetails place={place} />
             {onPlanRoute && (
               <Action
                 label="Cómo llegar a este lugar"
@@ -63,6 +74,16 @@ export function PlaceSheet({
                   onClose();
                   onPlanRoute(place);
                 }}
+              />
+            )}
+            {onToggleFavorite && (
+              <Action
+                label={
+                  isFavorite
+                    ? "★ Quitar de favoritos"
+                    : "☆ Guardar en favoritos"
+                }
+                onPress={() => onToggleFavorite(place)}
               />
             )}
             <Action

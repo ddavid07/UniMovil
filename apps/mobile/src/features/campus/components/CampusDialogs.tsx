@@ -31,6 +31,10 @@ export function CampusDialogs({
         place={campus.selected}
         onClose={() => campus.select(null)}
         onPlanRoute={onPlanRoute}
+        isFavorite={
+          campus.selected ? campus.isFavorite(campus.selected.id) : false
+        }
+        onToggleFavorite={campus.toggleFavorite}
       />
     </>
   );
