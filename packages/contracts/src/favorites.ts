@@ -13,21 +13,22 @@ export interface FavoriteItem {
   readonly customLabel?: string;
 }
 
+function isNonEmptyString(val: unknown): val is string {
+  return typeof val === "string" && val.trim().length > 0;
+}
+
 export function isValidFavorite(item: unknown): item is FavoriteItem {
   if (!item || typeof item !== "object") return false;
-  const candidate = item as Partial<FavoriteItem>;
-  return (
-    typeof candidate.id === "string" &&
-    candidate.id.trim().length > 0 &&
-    typeof candidate.targetId === "string" &&
-    candidate.targetId.trim().length > 0 &&
-    typeof candidate.type === "string" &&
-    FAVORITE_TYPES.includes(candidate.type as FavoriteType) &&
-    typeof candidate.name === "string" &&
-    candidate.name.trim().length > 0 &&
-    typeof candidate.addedAt === "string" &&
-    !Number.isNaN(Date.parse(candidate.addedAt))
-  );
+  const c = item as Partial<FavoriteItem>;
+  const validStrings =
+    isNonEmptyString(c.id) &&
+    isNonEmptyString(c.targetId) &&
+    isNonEmptyString(c.name);
+  const validType =
+    typeof c.type === "string" && FAVORITE_TYPES.includes(c.type as FavoriteType);
+  const validDate =
+    typeof c.addedAt === "string" && !Number.isNaN(Date.parse(c.addedAt));
+  return validStrings && validType && validDate;
 }
 
 export function createFavoritePlace(

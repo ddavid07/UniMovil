@@ -74,4 +74,30 @@ describe("estado de exploración", () => {
       });
     },
   );
+  it("permite alternar favoritos y filtrar solo por favoritos", async () => {
+    const { result } = await renderHook(() => useCampus());
+    await waitFor(() => expect(result.current.catalog.status).toBe("ready"));
+    const firstPlace = places[0]!;
+
+    expect(result.current.isFavorite(firstPlace.id)).toBe(false);
+    await act(() => result.current.toggleFavorite(firstPlace));
+    expect(result.current.isFavorite(firstPlace.id)).toBe(true);
+
+    expect(result.current.onlyFavorites).toBe(false);
+    await act(() => result.current.toggleOnlyFavorites());
+    expect(result.current.onlyFavorites).toBe(true);
+    expect(result.current.visible).toHaveLength(1);
+    expect(result.current.visible[0]?.id).toBe(firstPlace.id);
+
+    await act(() => result.current.toggleOnlyFavorites());
+    expect(result.current.visible).toHaveLength(24);
+
+    await act(() => result.current.toggleOnlyFavorites());
+    expect(result.current.onlyFavorites).toBe(true);
+    await act(() => result.current.reset());
+    expect(result.current.onlyFavorites).toBe(false);
+
+    await act(() => result.current.toggleFavorite(firstPlace));
+    expect(result.current.isFavorite(firstPlace.id)).toBe(false);
+  });
 });

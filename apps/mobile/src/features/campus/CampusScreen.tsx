@@ -113,6 +113,8 @@ function CampusHeader({
         onQuery={campus.setQuery}
         onToggle={campus.toggleCategory}
         onReset={campus.reset}
+        onlyFavorites={campus.onlyFavorites}
+        onToggleFavorites={campus.toggleOnlyFavorites}
       />
       <CampusCatalogStatus
         status={campus.catalog.status}
