@@ -25,7 +25,8 @@ export function isValidFavorite(item: unknown): item is FavoriteItem {
     isNonEmptyString(c.targetId) &&
     isNonEmptyString(c.name);
   const validType =
-    typeof c.type === "string" && FAVORITE_TYPES.includes(c.type as FavoriteType);
+    typeof c.type === "string" &&
+    FAVORITE_TYPES.includes(c.type as FavoriteType);
   const validDate =
     typeof c.addedAt === "string" && !Number.isNaN(Date.parse(c.addedAt));
   return validStrings && validType && validDate;

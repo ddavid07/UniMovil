@@ -72,7 +72,9 @@ export function PlaceSheet({
             {onToggleFavorite && (
               <Action
                 label={
-                  isFavorite ? "★ Quitar de favoritos" : "☆ Guardar en favoritos"
+                  isFavorite
+                    ? "★ Quitar de favoritos"
+                    : "☆ Guardar en favoritos"
                 }
                 onPress={() => onToggleFavorite(place)}
               />
