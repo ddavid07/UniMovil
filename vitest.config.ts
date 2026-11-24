@@ -15,6 +15,7 @@ export default defineConfig({
       "apps/mobile/src/features/transit/map/*.spec.ts",
       "apps/mobile/src/features/incidents/__tests__/*.spec.ts",
       "apps/mobile/src/features/offline/**/*.spec.ts",
+      "apps/mobile/src/features/favorites/**/*.spec.ts",
       "apps/mobile/__tests__/system/**/*.spec.ts",
       "apps/api/test/**/*.spec.ts",
     ],
@@ -41,6 +42,7 @@ export default defineConfig({
         "apps/mobile/src/features/incidents/domain/incidents.ts",
         "apps/mobile/src/features/incidents/map/geojson.ts",
         "apps/mobile/src/features/offline/domain/offline-cache.ts",
+        "apps/mobile/src/features/favorites/domain/favorites-store.ts",
       ],
       thresholds: {
         lines: 90,
