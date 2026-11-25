@@ -1,0 +1,38 @@
+{
+  "name": "@unimovil/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "start": "tsx src/main.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "tsx --test test/*.spec.ts",
+    "db:generate": "drizzle-kit generate --config drizzle.config.ts",
+    "db:migrate": "drizzle-kit migrate --config drizzle.config.ts"
+  },
+  "dependencies": {
+    "@nestjs/common": "12.6.2",
+    "@nestjs/core": "12.6.2",
+    "@nestjs/platform-express": "12.6.2",
+    "@nestjs/swagger": "12.1.2",
+    "@supabase/supabase-js": "2.119.2",
+    "@unimovil/contracts": "0.1.0",
+    "cookie": "1.0.2",
+    "dotenv": "17.3.1",
+    "drizzle-orm": "0.45.4",
+    "helmet": "8.1.0",
+    "pg": "8.23.1",
+    "reflect-metadata": "0.2.2",
+    "rxjs": "7.8.2",
+    "sharp": "0.35.5",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/express": "5.0.3",
+    "@types/node": "24.10.1",
+    "@types/pg": "8.23.1",
+    "drizzle-kit": "0.31.11",
+    "tsx": "4.20.6"
+  }
+}

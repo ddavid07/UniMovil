@@ -1,0 +1,13 @@
+node_modules/
+coverage/
+dist/
+apps/mobile/android/
+apps/mobile/ios/
+apps/mobile/expo-env.d.ts
+docs/assets/course-materials/lecture-notes/
+*.jpg
+*.png
+*.pdf
+package-lock.json
+apps/mobile/src/features/campus/data/campus-transit.json
+apps/mobile/src/features/campus/data/campus-routing-network.json

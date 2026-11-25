@@ -1,0 +1,35 @@
+Tema 2:
+- https://es.wikipedia.org/wiki/Historias_de_usuario
+- https://asana.com/es/resources/user-stories
+- https://www.atlassian.com/agile/project-management/user-stories
+- https://www.mountaingoatsoftware.com/agile/user-stories
+- https://www.freecodecamp.org/news/how-to-write-user-stories-epics-pesonas/
+- https://www.visual-paradigm.com/scrum/3c-and-invest-guide/
+- https://ronjeffries.com/xprog/articles/expcardconversationconfirmation/
+- https://xp123.com/invest-in-good-stories-and-smart-tasks/
+- https://www.romanpichler.com/blog/10-tips-writing-good-user-stories
+- https://www.easyagile.com/blog/how-to-write-good-user-stories-in-agile-software-development
+- https://javiergarzas.com/2018/01/historias-de-usuario.html
+- https://javiergarzas.com/2017/05/por-que-las-historias-de-usuario-deben-ser-lo-mas-pequenas-posible.html
+- https://javiergarzas.com/2017/01/estrategias-para-descomponer-y-hacer-pequenas-historias-de-usuario.html
+- https://javiergarzas.com/2016/03/nunca-empieces-un-desarrollo-agil-sin-hacer-antes-un-mapa-de-historias-de-usuario-o-similar.html
+- https://javiergarzas.com/2012/07/scrum-solo.html
+
+Tema 3:
+- https://en.wikipedia.org/wiki/Minimum_viable_product
+
+Tema 4:
+- https://git-scm.com/book/en/v2
+- https://git-scm.com/tools/guis
+- https://docs.github.com/es/get-started/using-github/hello-world
+
+Tema 6:
+- http://butunclebob.com/ArticleS.UncleBob.TheThreeRulesOfTdd
+- Librerías de testing:
+ - https://junit.org/
+ - https://link-springer-com.bucm.idm.oclc.org/book/10.1007/978-1-4842-3015-2
+ - https://learn.microsoft.com/es-es/visualstudio/test/writing-unit-tests-for-c-cpp?view=vs-2022
+ - https://docs.python.org/3/library/unittest.html
+ - https://www.dataquest.io/blog/unit-tests-python/
+ - https://jestjs.io/
+ - https://learn.microsoft.com/en-us/visualstudio/javascript/unit-testing-javascript-with-visual-studio?view=vs-2022&tabs=jest
