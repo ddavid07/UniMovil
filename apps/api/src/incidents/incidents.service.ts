@@ -28,6 +28,19 @@ interface IncomingImage {
   mimetype: string;
 }
 
+function isIncomingImage(value: unknown): value is IncomingImage {
+  if (
+    typeof value !== 'object' ||
+    value === null ||
+    !('buffer' in value) ||
+    !('mimetype' in value)
+  ) {
+    return false;
+  }
+
+  return Buffer.isBuffer(value.buffer) && typeof value.mimetype === 'string';
+}
+
 interface ProcessedImage {
   buffer: Buffer;
   sha256: string;
@@ -107,7 +120,7 @@ export class IncidentsService implements OnModuleInit, OnModuleDestroy {
   async create(
     userId: string,
     form: IncidentForm,
-    files: readonly IncomingImage[],
+    files: unknown,
     idempotencyKey: string | undefined,
   ) {
     if (!idempotencyKey || !/^[A-Za-z0-9_-]{16,128}$/.test(idempotencyKey)) {
@@ -115,8 +128,13 @@ export class IncidentsService implements OnModuleInit, OnModuleDestroy {
         'El envío necesita una clave de idempotencia válida.',
       );
     }
+    if (!Array.isArray(files))
+      throw new BadRequestException('La lista de imágenes no es válida.');
     if (files.length > 3)
       throw new BadRequestException('Se permiten hasta tres imágenes.');
+    const incomingFiles = files.filter(isIncomingImage);
+    if (incomingFiles.length !== files.length)
+      throw new BadRequestException('Una de las imágenes no es válida.');
 
     let coordinates: unknown;
     try {
@@ -134,7 +152,9 @@ export class IncidentsService implements OnModuleInit, OnModuleDestroy {
       throw new BadRequestException(input.error.issues.map((issue) => issue.message));
     }
 
-    const images = await Promise.all(files.map((file) => this.processImage(file)));
+    const images = await Promise.all(
+      incomingFiles.map((file) => this.processImage(file)),
+    );
     const requestHash = createHash('sha256')
       .update(
         JSON.stringify({

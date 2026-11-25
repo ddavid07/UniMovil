@@ -13,6 +13,35 @@ const processImage = Reflect.get(service, 'processImage') as (file: {
   buffer: Buffer;
   mimetype: string;
 }) => Promise<{ buffer: Buffer; sha256: string }>;
+const validIdempotencyKey = 'idempotency-key-123456';
+
+describe('incident submission input', () => {
+  it('rejects a non-array upload value before processing the form', async () => {
+    const invalidFiles = 'unexpected string';
+
+    await assert.rejects(
+      service.create(
+        'user-id',
+        {} as Parameters<IncidentsService['create']>[1],
+        invalidFiles,
+        validIdempotencyKey,
+      ),
+      BadRequestException,
+    );
+  });
+
+  it('rejects array entries that are not uploaded image files', async () => {
+    await assert.rejects(
+      service.create(
+        'user-id',
+        {} as Parameters<IncidentsService['create']>[1],
+        [null],
+        validIdempotencyKey,
+      ),
+      BadRequestException,
+    );
+  });
+});
 
 describe('incident evidence processing', () => {
   it('decodes an image and returns normalized WebP with a content hash', async () => {
