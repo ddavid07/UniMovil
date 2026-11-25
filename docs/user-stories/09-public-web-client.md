@@ -1,0 +1,26 @@
+# HU-099 — Consultar UniMovil desde un navegador web
+
+- **Prioridad:** por acordar en el Product Backlog
+- **Estado:** implementada localmente en Sprint 3; verificación Chromium y exportación web registradas en el plan del Sprint
+- **Relación:** decisión de alcance en [ADR-0010](../adr/0010-public-web-client.md)
+
+## Historia
+
+Como estudiante o visitante, quiero consultar UniMovil desde el navegador de mi ordenador o móvil, para orientarme por el Campus de Moncloa sin instalar la aplicación.
+
+## Criterios de aceptación
+
+1. El cliente público puede abrirse en los navegadores y tamaños de ventana definidos en la matriz de compatibilidad del Sprint 3 y adapta su presentación a pantalla de escritorio y móvil.
+2. Se puede consultar el mapa del campus, buscar lugares públicos, filtrar categorías, seleccionar un resultado y consultar los resultados también como contenido textual.
+3. La consulta de información pública no exige cuenta ni permiso de ubicación.
+4. Si el producto ofrece ubicación del navegador, solo la obtiene tras una acción explícita y la autorización del navegador. Si se deniega o no está disponible, mapa, búsqueda y selección manual siguen utilizables.
+5. La información pública utiliza los contratos y fuentes de datos comunes aprobados para el producto; no expone borradores, datos personales ni funciones administrativas.
+6. La interfaz proporciona navegación por teclado, nombres accesibles, foco visible, estados comprensibles de carga, error y ausencia de resultados, y una alternativa textual a la información cartográfica.
+7. El mapa mantiene visible su atribución y las limitaciones de la fuente cartográfica, conforme a los ADR y a `docs/development/data-sources.md`.
+
+## Reglas y dependencias
+
+- La estrategia inicial de cliente, renderizador cartográfico y matriz de compatibilidad está en [ADR-0011](../adr/0011-public-web-client-and-map-renderer.md); la comprobación automatizada actual cubre Chromium de escritorio y ventana estrecha.
+- HU-099 establece el primer acceso web y el flujo base de mapa/búsqueda; las capacidades web de rutas, transporte, cuentas, incidencias y demás funciones se implementan con sus historias y Sprints respectivos.
+- La historia no implica notificaciones web, funcionamiento sin conexión del mapa, geolocalización continua ni publicación externa.
+- La aplicación administrativa no forma parte de esta experiencia pública.

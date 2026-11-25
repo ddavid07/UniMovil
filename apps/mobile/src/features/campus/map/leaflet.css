@@ -1,0 +1,83 @@
+.campus-leaflet-map {
+  height: 100%;
+  min-height: 280px;
+  width: 100%;
+  background: #e9e4dc;
+  font-family: Arial, sans-serif;
+}
+
+.campus-marker-icon,
+.campus-location-icon {
+  background: transparent;
+  border: 0;
+}
+
+.campus-marker {
+  align-items: center;
+  background: #b71234;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px #0005;
+  color: #fff;
+  display: inline-flex;
+  font-size: 13px;
+  font-weight: 700;
+  height: 30px;
+  justify-content: center;
+  width: 30px;
+}
+
+.campus-location-dot {
+  background: #1769aa;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 5px #0008;
+  display: block;
+  height: 18px;
+  width: 18px;
+}
+
+.transit-stop-icon {
+  background: transparent;
+  border: 0;
+}
+
+.transit-stop-marker {
+  align-items: center;
+  background: #1769aa;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px #0005;
+  color: #fff;
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 700;
+  height: 24px;
+  justify-content: center;
+  width: 24px;
+}
+
+.transit-stop-icon-selected .transit-stop-marker {
+  background: #70142b;
+  transform: scale(1.15);
+}
+
+.incident-marker-icon {
+  background: transparent;
+  border: 0;
+}
+
+.incident-marker {
+  align-items: center;
+  background: #9b1c31;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px #0005;
+  color: #fff;
+  display: inline-flex;
+  font-size: 17px;
+  font-weight: 900;
+  height: 30px;
+  justify-content: center;
+  width: 30px;
+}

@@ -1,0 +1,51 @@
+{
+  "expo": {
+    "name": "UniMovil",
+    "slug": "unimovil",
+    "scheme": "unimovil",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "UniMovil solo accede a las imágenes que eliges para adjuntarlas a una incidencia.",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
+      ],
+      "@maplibre/maplibre-react-native",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": false,
+          "locationAlwaysPermission": false,
+          "locationWhenInUsePermission": "UniMovil usa tu ubicación aproximada para mostrarla y centrar el mapa cuando lo solicitas.",
+          "locationFullAccuracyPermission": false,
+          "motionUsagePermission": false,
+          "isIosBackgroundLocationEnabled": false,
+          "isAndroidBackgroundLocationEnabled": false,
+          "isAndroidForegroundServiceEnabled": false
+        }
+      ]
+    ],
+    "ios": {
+      "bundleIdentifier": "es.unimovil.app",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "es.unimovil.app"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static"
+    },
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

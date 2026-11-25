@@ -1,0 +1,302 @@
+[
+  {
+    "id": "osm-node-1212072743",
+    "name": "Vicente Aleixandre",
+    "category": "transport",
+    "coordinates": {
+      "longitude": -3.7180689,
+      "latitude": 40.4465996
+    },
+    "aliases": [],
+    "source": {
+      "url": "https://www.openstreetmap.org/node/1212072743",
+      "license": "ODbL-1.0",
+      "checkedAt": "2026-11-23"
+    }
+  },
+  {
+    "id": "osm-node-13141916177",
+    "name": "Biblioteca de Enfermería",
+    "category": "service",
+    "coordinates": {
+      "longitude": -3.7247079,
+      "latitude": 40.4434838
+    },
+    "aliases": [],
+    "source": {
+      "url": "https://www.openstreetmap.org/node/13141916177",
+      "license": "ODbL-1.0",
+      "checkedAt": "2026-11-23"
+    }
+  },
+  {
+    "id": "osm-node-13141916178",
+    "name": "Biblioteca de Medicina",
+    "category": "service",
+    "coordinates": {
+      "longitude": -3.7236277,
+      "latitude": 40.4440818
+    },
+    "aliases": [],
+    "source": {
+      "url": "https://www.openstreetmap.org/node/13141916178",
+      "license": "ODbL-1.0",
+      "checkedAt": "2026-11-23"
+    }
+  },
+  {
+    "id": "osm-node-1439701481",
+    "name": "Avenida Complutense-Ciencias Información",
+    "category": "transport",
+    "coordinates": {
+      "longitude": -3.7276331,
+      "latitude": 40.4453837
+    },
+    "aliases": ["1690"],
+    "source": {
+      "url": "https://www.openstreetmap.org/node/1439701481",
+      "license": "ODbL-1.0",
+      "checkedAt": "2026-11-23"
+    }
+  },
+  {
+    "id": "osm-node-1439701495",
+    "name": "Metro Ciudad Universitaria",
+    "category": "transport",
+    "coordinates": {
+      "longitude": -3.7272528,
+      "latitude": 40.4432819
+    },
+    "aliases": ["1688"],
+    "source": {
+      "url": "https://www.openstreetmap.org/node/1439701495",
+      "license": "ODbL-1.0",
+      "checkedAt": "2026-11-23"
+    }
+  },
+  {
+    "id": "osm-node-1439701506",
+    "name": "Avenida Complutense-Jardín Botánico",
+    "category": "transport",
+    "coordinates": {
+      "longitude": -3.7280233,
+      "latitude": 40.4476696
+    },
+    "aliases": ["1692"],
+    "source": {
+      "url": "https://www.openstreetmap.org/node/1439701506",
+      "license": "ODbL-1.0",
+      "checkedAt": "2026-11-23"
+    }
+  },
+  {
+    "id": "osm-node-1439702197",
+    "name": "Gregorio del Amo",
+    "category": "transport",
+    "coordinates": {
+      "longitude": -3.7218446,
+      "latitude": 40.4457218
+    },
+    "aliases": ["3276"],
+    "source": {
+      "url": "https://www.openstreetmap.org/node/1439702197",
+      "license": "ODbL-1.0",
+      "checkedAt": "2026-11-23"
+    }
+  },
+  {
+    "id": "osm-node-1443176853",
+    "name": "bicicum",
+    "category": "bicycle",
+    "coordinates": {
+      "longitude": -3.7254537,
+      "latitude": 40.4504527
+    },
+    "aliases": [],
+    "source": {
+      "url": "https://www.openstreetmap.org/node/1443176853",
+      "license": "ODbL-1.0",
+      "checkedAt": "2026-11-23"
+    }
+  },
+  {
+    "id": "osm-node-2447359504",
+    "name": "Puerta M",
+    "category": "entrance",
+    "coordinates": {
+      "longitude": -3.7211211,
+      "latitude": 40.440354
+    },
+    "aliases": [],
+    "source": {
+      "url": "https://www.openstreetmap.org/node/2447359504",
+      "license": "ODbL-1.0",
+      "checkedAt": "2026-11-23"
+    }
+  },
+  {
+    "id": "osm-node-2448104582",
+    "name": "Puerta N",
+    "category": "entrance",
+    "coordinates": {
+      "longitude": -3.7206854,
+      "latitude": 40.4406669
+    },
+    "aliases": [],
+    "source": {
+      "url": "https://www.openstreetmap.org/node/2448104582",
+      "license": "ODbL-1.0",
+      "checkedAt": "2026-11-23"
+    }
+  },
+  {
+    "id": "osm-node-3594825866",
+    "name": "Aparcamiento Ciudad Universitaria",
+    "category": "parking",
+    "coordinates": {
+      "longitude": -3.7268452,
+      "latitude": 40.4425143
+    },
+    "aliases": [],
+    "source": {
+      "url": "https://www.openstreetmap.org/node/3594825866",
+      "license": "ODbL-1.0",
+      "checkedAt": "2026-11-23"
+    }
+  },
+  {
+    "id": "osm-node-412911553",
+    "name": "Biblioteca de Ciencias Biológicas",
+    "category": "service",
+    "coordinates": {
+      "longitude": -3.726288,
+      "latitude": 40.4488071
+    },
+    "aliases": [],
+    "source": {
+      "url": "https://www.openstreetmap.org/node/412911553",
+      "license": "ODbL-1.0",
+      "checkedAt": "2026-11-23"
+    }
+  },
+  {
+    "id": "osm-node-412911559",
+    "name": "Biblioteca de Ciencias Geológicas",
+    "category": "service",
+    "coordinates": {
+      "longitude": -3.7253639,
+      "latitude": 40.4489128
+    },
+    "aliases": [],
+    "source": {
+      "url": "https://www.openstreetmap.org/node/412911559",
+      "license": "ODbL-1.0",
+      "checkedAt": "2026-11-23"
+    }
+  },
+  {
+    "id": "osm-node-828772147",
+    "name": "Parking de la Facultad de Bellas Artes",
+    "category": "parking",
+    "coordinates": {
+      "longitude": -3.7335048,
+      "latitude": 40.4392759
+    },
+    "aliases": [],
+    "source": {
+      "url": "https://www.openstreetmap.org/node/828772147",
+      "license": "ODbL-1.0",
+      "checkedAt": "2026-11-23"
+    }
+  },
+  {
+    "id": "osm-way-15431473",
+    "name": "Facultad de Ciencias Biológicas y Ciencias Geológicas",
+    "category": "building",
+    "coordinates": {
+      "longitude": -3.7259581,
+      "latitude": 40.4489356
+    },
+    "aliases": [],
+    "source": {
+      "url": "https://www.openstreetmap.org/way/15431473",
+      "license": "ODbL-1.0",
+      "checkedAt": "2026-11-23"
+    }
+  },
+  {
+    "id": "osm-way-15431483",
+    "name": "Facultad de Farmacia",
+    "category": "building",
+    "coordinates": {
+      "longitude": -3.7263362,
+      "latitude": 40.4453085
+    },
+    "aliases": [],
+    "source": {
+      "url": "https://www.openstreetmap.org/way/15431483",
+      "license": "ODbL-1.0",
+      "checkedAt": "2026-11-23"
+    }
+  },
+  {
+    "id": "osm-way-15431484",
+    "name": "Facultad de Medicina",
+    "category": "building",
+    "coordinates": {
+      "longitude": -3.7241701,
+      "latitude": 40.4439831
+    },
+    "aliases": [],
+    "source": {
+      "url": "https://www.openstreetmap.org/way/15431484",
+      "license": "ODbL-1.0",
+      "checkedAt": "2026-11-23"
+    }
+  },
+  {
+    "id": "osm-way-15431485",
+    "name": "Facultad de Odontología",
+    "category": "building",
+    "coordinates": {
+      "longitude": -3.7258037,
+      "latitude": 40.4423643
+    },
+    "aliases": [],
+    "source": {
+      "url": "https://www.openstreetmap.org/way/15431485",
+      "license": "ODbL-1.0",
+      "checkedAt": "2026-11-23"
+    }
+  },
+  {
+    "id": "osm-way-30814664",
+    "name": "Aparcamiento Moncloa",
+    "category": "parking",
+    "coordinates": {
+      "longitude": -3.7327014,
+      "latitude": 40.4428341
+    },
+    "aliases": [],
+    "source": {
+      "url": "https://www.openstreetmap.org/way/30814664",
+      "license": "ODbL-1.0",
+      "checkedAt": "2026-11-23"
+    }
+  },
+  {
+    "id": "osm-way-56185388",
+    "name": "Aparcamiento de profesores ETSAM",
+    "category": "parking",
+    "coordinates": {
+      "longitude": -3.7308969,
+      "latitude": 40.4393587
+    },
+    "aliases": [],
+    "source": {
+      "url": "https://www.openstreetmap.org/way/56185388",
+      "license": "ODbL-1.0",
+      "checkedAt": "2026-11-23"
+    }
+  }
+]
