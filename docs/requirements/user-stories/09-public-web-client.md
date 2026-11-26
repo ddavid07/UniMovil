@@ -10,13 +10,13 @@ Como estudiante o visitante, quiero consultar UniMovil desde el navegador de mi 
 
 ## Criterios de aceptación
 
-- **CA-099.1** El cliente público puede abrirse en los navegadores y tamaños de ventana definidos en la matriz de compatibilidad del Sprint 3 y adapta su presentación a pantalla de escritorio y móvil.
-- **CA-099.2** Se puede consultar el mapa del campus, buscar lugares públicos, filtrar categorías, seleccionar un resultado y consultar los resultados también como contenido textual.
-- **CA-099.3** La consulta de información pública no exige cuenta ni permiso de ubicación.
-- **CA-099.4** Si el producto ofrece ubicación del navegador, solo la obtiene tras una acción explícita y la autorización del navegador. Si se deniega o no está disponible, mapa, búsqueda y selección manual siguen utilizables.
-- **CA-099.5** La información pública utiliza los contratos y fuentes de datos comunes aprobados para el producto; no expone borradores, datos personales ni funciones administrativas.
-- **CA-099.6** La interfaz proporciona navegación por teclado, nombres accesibles, foco visible, estados comprensibles de carga, error y ausencia de resultados, y una alternativa textual a la información cartográfica.
-- **CA-099.7** El mapa mantiene visible su atribución y las limitaciones de la fuente cartográfica, conforme a los ADR y a `docs/development/data-sources.md`.
+- **HU-099.1** El cliente público puede abrirse en los navegadores y tamaños de ventana definidos en la matriz de compatibilidad del Sprint 3 y adapta su presentación a pantalla de escritorio y móvil.
+- **HU-099.2** Se puede consultar el mapa del campus, buscar lugares públicos, filtrar categorías, seleccionar un resultado y consultar los resultados también como contenido textual.
+- **HU-099.3** La consulta de información pública no exige cuenta ni permiso de ubicación.
+- **HU-099.4** Si el producto ofrece ubicación del navegador, solo la obtiene tras una acción explícita y la autorización del navegador. Si se deniega o no está disponible, mapa, búsqueda y selección manual siguen utilizables.
+- **HU-099.5** La información pública utiliza los contratos y fuentes de datos comunes aprobados para el producto; no expone borradores, datos personales ni funciones administrativas.
+- **HU-099.6** La interfaz proporciona navegación por teclado, nombres accesibles, foco visible, estados comprensibles de carga, error y ausencia de resultados, y una alternativa textual a la información cartográfica.
+- **HU-099.7** El mapa mantiene visible su atribución y las limitaciones de la fuente cartográfica, conforme a los ADR y a `docs/development/data-sources.md`.
 
 ## Reglas y dependencias
 
