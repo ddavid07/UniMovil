@@ -34,7 +34,7 @@ HU-050–053 separan la comunicación privada de una incidencia de su consulta p
 
 ## Referencias
 
-- [HU-050–053: comunicación y consulta de incidencias](../user-stories/05-incidents-and-notices.md)
-- [HU-054–056: gestión y seguimiento de incidencias](../user-stories/05-incidents-and-notices.md)
+- [HU-050–053: comunicación y consulta de incidencias](../requirements/user-stories/05-incidents-and-notices.md)
+- [HU-054–056: gestión y seguimiento de incidencias](../requirements/user-stories/05-incidents-and-notices.md)
 - [Sprint 7](../iterations/sprint-07/README.md)
 - [Sprint 8](../iterations/sprint-08/README.md)

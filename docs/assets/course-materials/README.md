@@ -1,10 +1,8 @@
-# Course Materials
+# Materiales del curso
 
-Engineering Software I, academic year 2026-2027.
-The PDFs were supplied from the course notes folder. Their content is unchanged; filenames are in English.
-The original links list is preserved in [course-links.txt](course-links.txt).
+Asignatura Ingeniería del Software I, curso académico 2026–2027. Los archivos PDF proceden de la carpeta de apuntes de la asignatura y se conservan sin modificaciones; los nombres de archivo están en inglés. La lista original de enlaces se conserva en [course-links.txt](course-links.txt).
 
-## Lecture notes
+## Apuntes
 
 - [ieee-830-1998-software-requirements-specification.pdf](lecture-notes/ieee-830-1998-software-requirements-specification.pdf)
 - [topic-01-software-engineering.pdf](lecture-notes/topic-01-software-engineering.pdf)
@@ -28,7 +26,6 @@ The original links list is preserved in [course-links.txt](course-links.txt).
 - [topic-07-9-1-project-planning-exercises.pdf](lecture-notes/topic-07-9-1-project-planning-exercises.pdf)
 - [topic-07-9-project-planning-rup-ieee-1058.pdf](lecture-notes/topic-07-9-project-planning-rup-ieee-1058.pdf)
 
-## Source and distribution
+## Procedencia
 
-Source: course materials supplied by a project contributor.
-The source files identify IEEE and ISO standards among the materials. Public redistribution rights have not been confirmed; do not publish these files until permitted by their rights holders.
+Los materiales fueron proporcionados por una persona colaboradora del proyecto. Entre los documentos se incluyen referencias a estándares IEEE e ISO.

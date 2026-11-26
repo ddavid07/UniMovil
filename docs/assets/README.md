@@ -2,9 +2,9 @@
 
 Guarda aquí imágenes, capturas, diagramas y recursos documentales con su fuente, licencia, atribución y contexto. No incluyas secretos, datos personales ni capturas de sistemas privados.
 
-## Course materials
+## Materiales del curso
 
-- [Course materials and lecture notes](course-materials/README.md)
+- [Materiales y apuntes de la asignatura](course-materials/README.md)
 
 ## Marca de la aplicación
 

@@ -3,6 +3,7 @@
 - **Estado:** Aceptada
 - **Fecha:** 2026-11-23
 - **Decisores:** Equipo UniMovil
+- **Nota de vigencia:** la selección de Supabase como plataforma gestionada sustituye la decisión provisional sobre el proveedor descrita aquí; véase [ADR-0014](0014-supabase-managed-platform.md). PostgreSQL/PostGIS, NestJS y Drizzle siguen vigentes.
 
 ## Contexto
 
@@ -14,7 +15,7 @@ El producto contiene lugares, coordenadas, accesos, rutas e incidencias. Esos da
 - Cuando exista un caso de uso que requiera servidor, NestJS expondrá una API REST documentada con OpenAPI. La aplicación móvil no tendrá acceso directo a la base de datos.
 - Se usará Drizzle para el esquema y las migraciones, con SQL explícito para las operaciones PostGIS que el ORM no represente con claridad.
 - El Sprint 1 usará un pequeño catálogo local con procedencia por registro; no se introducirá una base de datos vacía como infraestructura sin uso.
-- El proveedor de alojamiento de PostgreSQL no queda elegido. Supabase se conserva como candidato, sujeto a verificar plan, límites, privacidad, titularidad institucional de la cuenta, backups y coste antes de crear un entorno.
+- En la fecha de esta decisión no se seleccionó un proveedor de alojamiento de PostgreSQL; Supabase se conservó como candidato. La elección posterior de Supabase está documentada en ADR-0014 y mantiene pendiente la aprobación operativa antes de tratar datos reales.
 - Autenticación, almacenamiento de imágenes y proveedor de rutas se decidirán en ADR separados cuando entren en el backlog refinado.
 
 ## Alternativas consideradas
@@ -33,4 +34,4 @@ El producto contiene lugares, coordenadas, accesos, rutas e incidencias. Esos da
 ## Referencias
 
 - [Supabase: PostGIS y consultas geográficas](https://supabase.com/docs/guides/database/extensions/postgis)
-- [Historias de usuario de administración y datos](../user-stories/07-administration-and-data.md)
+- [Historias de usuario de administración y datos](../requirements/user-stories/07-administration-and-data.md)

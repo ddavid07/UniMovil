@@ -6,7 +6,7 @@ Este catálogo describe las necesidades funcionales de UniMovil desde la perspec
 
 Los nombres de carpetas y archivos siguen la convención en inglés; el contenido de la documentación está en español. Se han aclarado algunas historias y dependencias para que no se confundan responsabilidades distintas.
 
-Las 69 historias están agrupadas por área funcional. Esta agrupación no define el orden global del Product Backlog. Las capacidades públicas planificadas para los Sprints 3–13 deben ofrecerse también en navegador, conforme a [ADR-0010](../adr/0010-public-web-client.md); HU-099 cubre la incorporación inicial del cliente web y no declara implementadas las funciones aún pendientes. Los Sprints 5–7 incorporan recursos de movilidad, cuentas e incidencias en los clientes disponibles; el backlog registra su estado local y los límites de validación.
+Las 69 historias están agrupadas por área funcional. Esta agrupación no define el orden global del Product Backlog. Las capacidades públicas planificadas para los Sprints 3–13 deben ofrecerse también en navegador, conforme a [ADR-0010](../../adr/0010-public-web-client.md); HU-099 cubre la incorporación inicial del cliente web y no declara implementadas las funciones aún pendientes. Los Sprints 5–7 incorporan recursos de movilidad, cuentas e incidencias en los clientes disponibles; el backlog registra su estado local y los límites de validación.
 
 ## Roles
 
@@ -70,7 +70,7 @@ Las prioridades y dependencias orientan la ordenación inicial del backlog y se 
 
 ## Criterios de aceptación y definición de terminado
 
-Los criterios de aceptación son propios de cada historia y describen su comportamiento esperado. La **definición de terminado** es compartida por el equipo y se aplica además de esos criterios; no reemplaza ni duplica su comprobación.
+Los criterios de aceptación son propios de cada historia y describen su comportamiento esperado. La [**definición de terminado**](../../methodology/definition-of-done.md) es compartida por el equipo y se aplica además de esos criterios; no reemplaza ni duplica su comprobación.
 
 Cuando corresponda a la historia, una entrega se considera terminada cuando:
 
@@ -85,11 +85,11 @@ Cuando corresponda a la historia, una entrega se considera terminada cuando:
 
 ## Trazabilidad
 
-Los identificadores HU permiten relacionar requisitos, decisiones, implementación y pruebas. El [Product Backlog](../backlog/product-backlog.md) contiene el inventario inicial para su refinamiento y planificación.
+Los identificadores HU permiten relacionar requisitos, decisiones, implementación y pruebas. El [Product Backlog](../../backlog/product-backlog.md) contiene el inventario inicial para su refinamiento y planificación.
 
 ## Referencias metodológicas
 
-- Apuntes y enlaces del curso de Ingeniería del Software: [material docente](../assets/course-materials/README.md).
+- Apuntes y enlaces del curso de Ingeniería del Software: [material docente](../../assets/course-materials/README.md).
 - Requisitos y calidad de una especificación: IEEE 830-1998, incluido en los apuntes del curso.
 - Tarjeta, conversación y confirmación: [Ron Jeffries](https://ronjeffries.com/xprog/articles/expcardconversationconfirmation/).
 - Criterios INVEST: [Bill Wake](https://xp123.com/invest-in-good-stories-and-smart-tasks/) y [Visual Paradigm](https://www.visual-paradigm.com/scrum/3c-and-invest-guide/).

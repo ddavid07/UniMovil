@@ -37,7 +37,7 @@ El producto debe ofrecer los flujos públicos en web y en las aplicaciones nativ
 ## Referencias
 
 - [ADR-0010: cliente público web](0010-public-web-client.md)
-- [HU-099: consultar UniMovil desde un navegador](../user-stories/09-public-web-client.md)
+- [HU-099: consultar UniMovil desde un navegador](../requirements/user-stories/09-public-web-client.md)
 - [React Native Web](https://necolas.github.io/react-native-web/)
 - [Leaflet](https://leafletjs.com/)
 - [Política de uso de teselas de OpenStreetMap](https://operations.osmfoundation.org/policies/tiles/)

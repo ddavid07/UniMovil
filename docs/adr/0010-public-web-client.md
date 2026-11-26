@@ -21,7 +21,7 @@ ADR-0001 estableció aplicaciones nativas Android/iOS y excluyó una web públic
 
 - **Mantener solo Android/iOS:** rechazada porque no cumple el nuevo alcance solicitado de acceso desde navegador.
 - **Tratar la web administrativa como cliente público:** rechazada porque sus permisos, datos y tareas son distintos.
-- **Compartir o separar la implementación de interfaz web:** pendiente de comparación en el Sprint 3, incluyendo Expo Web, componentes web específicos o una aplicación pública separada. Esta ADR no anticipa el resultado.
+- **Compartir o separar la implementación de interfaz web:** la comparación prevista se resolvió en [ADR-0011](0011-public-web-client-and-map-renderer.md): se mantiene un proyecto Expo compartido y se usan componentes web específicos cuando los renderizadores lo requieren.
 
 ## Consecuencias
 
@@ -34,5 +34,5 @@ ADR-0001 estableció aplicaciones nativas Android/iOS y excluyó una web públic
 ## Referencias
 
 - [ADR-0001: plataformas y alcance de producto](0001-product-platform-and-scope.md)
-- [HU-099: consultar UniMovil desde un navegador web](../user-stories/09-public-web-client.md)
+- [HU-099: consultar UniMovil desde un navegador web](../requirements/user-stories/09-public-web-client.md)
 - [Plan del Sprint 3](../iterations/sprint-03/README.md)

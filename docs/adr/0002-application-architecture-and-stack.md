@@ -16,7 +16,7 @@ Se adopta un monorepo TypeScript con npm workspaces y estas aplicaciones, incorp
 | ----------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------- |
 | Aplicación móvil        | React Native 0.88.1, Expo SDK 58.0.26, Expo Router 58.0.32 y TypeScript 6.0.3 | Sprint 1                                            |
 | Motor de mapas móvil    | `@maplibre/maplibre-react-native` 11.5.1                                      | Sprint 1                                            |
-| Cliente público web     | Tecnología y renderizador pendientes de ADR técnico                           | Planificado para Sprint 3 según ADR-0010            |
+| Cliente público web     | Expo Web, React Native Web y Leaflet/React Leaflet en navegador               | Decisión técnica aceptada en ADR-0011; Sprint 3     |
 | API                     | NestJS sobre Node.js, API REST documentada con OpenAPI                        | Cuando haya datos o casos de uso de servidor        |
 | Cliente administrativo  | React, Vite y TypeScript                                                      | Cuando se refine el primer flujo administrativo     |
 | Persistencia geográfica | PostgreSQL con PostGIS                                                        | Cuando el producto necesite persistencia compartida |
@@ -35,7 +35,7 @@ MapLibre requiere una compilación nativa. La aplicación se probará con un dev
 ## Consecuencias
 
 - El equipo necesita conocer TypeScript y la compilación nativa de Android/iOS.
-- La tecnología del cliente web público no queda decidida por esta ADR; el Sprint 3 comparará alternativas antes de añadir dependencias y fijar su matriz de navegadores.
+- La implementación web pública y el renderizador cartográfico se concretan en [ADR-0011](0011-public-web-client-and-map-renderer.md): Expo Web y React Native Web, con Leaflet en navegador y MapLibre en móvil. La matriz inicial se limita a Chromium de escritorio y ventana estrecha.
 - El coste de los módulos nativos se debe medir en el spike del Sprint 1.
 - NestJS, la aplicación administrativa y PostgreSQL/PostGIS quedan definidos como stack objetivo, pero no se implementan hasta que una historia los necesite.
 - Las versiones exactas de Expo, Expo Router, React Native y MapLibre se conservan en el workspace móvil y en el lockfile.

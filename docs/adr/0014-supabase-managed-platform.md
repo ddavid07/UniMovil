@@ -7,7 +7,7 @@
 
 ## Contexto
 
-Los Sprints 6 y 7 necesitan identidad, persistencia compartida y almacenamiento de evidencias. ADR-0003 ya fija PostgreSQL/PostGIS, NestJS y Drizzle, pero mantenía Supabase como candidato. La persona responsable del proyecto ha elegido Supabase.
+Los Sprints 6 y 7 necesitan identidad, persistencia compartida y almacenamiento de evidencias. ADR-0003 fija PostgreSQL/PostGIS, NestJS y Drizzle, pero dejaba pendiente el proveedor gestionado. Supabase se ha seleccionado como plataforma para cubrir esa necesidad.
 
 ## Decisión
 

@@ -59,7 +59,7 @@ No inventes requisitos, decisiones aprobadas, reuniones, integrantes responsable
 ## 7. Documentación de referencia
 
 - `docs/README.md`: índice principal.
-- `docs/user-stories/`: requisitos y criterios de aceptación.
+- `docs/requirements/user-stories/`: requisitos y criterios de aceptación.
 - `docs/backlog/`: prioridades y estado del Product Backlog.
 - `docs/methodology/`: proceso de trabajo.
 - `docs/iterations/`: plan y resultados de cada Sprint; consulta especialmente el Sprint activo.

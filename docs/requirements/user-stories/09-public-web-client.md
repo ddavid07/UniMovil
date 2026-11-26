@@ -2,7 +2,7 @@
 
 - **Prioridad:** por acordar en el Product Backlog
 - **Estado:** implementada localmente en Sprint 3; verificación Chromium y exportación web registradas en el plan del Sprint
-- **Relación:** decisión de alcance en [ADR-0010](../adr/0010-public-web-client.md)
+- **Relación:** decisión de alcance en [ADR-0010](../../adr/0010-public-web-client.md)
 
 ## Historia
 
@@ -20,7 +20,7 @@ Como estudiante o visitante, quiero consultar UniMovil desde el navegador de mi 
 
 ## Reglas y dependencias
 
-- La estrategia inicial de cliente, renderizador cartográfico y matriz de compatibilidad está en [ADR-0011](../adr/0011-public-web-client-and-map-renderer.md); la comprobación automatizada actual cubre Chromium de escritorio y ventana estrecha.
+- La estrategia inicial de cliente, renderizador cartográfico y matriz de compatibilidad está en [ADR-0011](../../adr/0011-public-web-client-and-map-renderer.md); la comprobación automatizada actual cubre Chromium de escritorio y ventana estrecha.
 - HU-099 establece el primer acceso web y el flujo base de mapa/búsqueda; las capacidades web de rutas, transporte, cuentas, incidencias y demás funciones se implementan con sus historias y Sprints respectivos.
 - La historia no implica notificaciones web, funcionamiento sin conexión del mapa, geolocalización continua ni publicación externa.
 - La aplicación administrativa no forma parte de esta experiencia pública.
