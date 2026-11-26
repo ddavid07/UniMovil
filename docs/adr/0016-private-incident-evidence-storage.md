@@ -35,8 +35,8 @@ HU-051 permite adjuntar fotografías a incidencias. Las imágenes pueden contene
 
 ## Referencias
 
-- [HU-051: adjuntar evidencias](../user-stories/05-incidents-and-notices.md)
-- [HU-090: proteger datos de cuenta](../user-stories/08-security-privacy-and-quality.md)
+- [HU-051: adjuntar evidencias](../requirements/user-stories/05-incidents-and-notices.md)
+- [HU-090: proteger datos de cuenta](../requirements/user-stories/08-security-privacy-and-quality.md)
 - [Supabase Storage: control de acceso](https://supabase.com/docs/guides/storage/security/access-control)
 - [Supabase Storage: buckets y URLs firmadas](https://supabase.com/docs/guides/storage/buckets/fundamentals)
 - [Supabase Storage: servir objetos privados](https://supabase.com/docs/guides/storage/serving/downloads)

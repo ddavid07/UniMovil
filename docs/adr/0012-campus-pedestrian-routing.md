@@ -34,7 +34,7 @@ HU-020, HU-021 y HU-023 requieren elegir extremos, calcular un camino, mostrar u
 
 ## Referencias
 
-- [HU-020, HU-021 y HU-023](../user-stories/03-routes-and-transit.md)
+- [HU-020, HU-021 y HU-023](../requirements/user-stories/03-routes-and-transit.md)
 - [Fuentes de datos y atribuciones](../development/data-sources.md)
 - [OpenStreetMap API 0.6](https://wiki.openstreetmap.org/wiki/API_v0.6)
 - [ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/)

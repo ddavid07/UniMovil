@@ -1,26 +1,32 @@
 # Sprint 5 — accesibilidad y recursos de movilidad
 
-> **Estado:** incremento implementado y comprobado localmente. ADR-0017 está aceptado. HU-024 conserva el comportamiento seguro de no disponibilidad, pero seguirá abierta mientras no exista una ruta real respaldada por atributos confirmados.
+- **Estado:** Cerrado. El incremento se integró en [PR #50](https://github.com/ddavid07/UniMovil/pull/50); este documento conserva la evidencia y las limitaciones del Sprint.
 
-## Sprint Goal
+## Sprint Goal y valor
+
+### Sprint Goal
 
 La persona puede descubrir recursos de movilidad del campus, conocer qué información está confirmada y aplicar preferencias personales a una ruta solo cuando los datos permiten hacerlo sin presentar incertidumbre como accesibilidad.
 
-## Historias seleccionadas para el plan
+## Sprint Backlog
 
-| ID     | Historia                                                                                                        | Resultado verificable                                                                                                                |
-| ------ | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| HU-024 | [Consultar una ruta accesible](../../user-stories/03-routes-and-transit.md)                                     | Ruta accesible solo si todos los atributos críticos del recorrido están confirmados; en otro caso, explicación de no disponibilidad. |
-| HU-040 | [Configurar preferencias de accesibilidad](../../user-stories/04-accessibility-and-mobility-resources.md)       | Preferencias de sesión que se pueden cambiar y borrar, aplicadas al filtro de rutas.                                                 |
-| HU-041 | [Consultar accesos y servicios adaptados](../../user-stories/04-accessibility-and-mobility-resources.md)        | Accesos, rampas, ascensores y servicios mostrados con procedencia, fecha y certeza.                                                  |
-| HU-042 | [Consultar aparcamientos](../../user-stories/04-accessibility-and-mobility-resources.md)                        | Aparcamientos y condiciones conocidas; disponibilidad desconocida salvo fuente confirmada.                                           |
-| HU-043 | [Consultar recursos para bicicletas y patinetes](../../user-stories/04-accessibility-and-mobility-resources.md) | Recursos diferenciados y regulación presentada solo con fuente confirmada.                                                           |
-| HU-044 | [Consultar puntos de carga y mantenimiento](../../user-stories/04-accessibility-and-mobility-resources.md)      | Puntos y condiciones verificables sin inferir disponibilidad ni operación.                                                           |
-| HU-045 | [Consultar recursos cercanos por categoría](../../user-stories/04-accessibility-and-mobility-resources.md)      | Recursos ordenados por distancia desde una ubicación elegida y enlazados a ficha, mapa y ruta.                                       |
+### Historias seleccionadas para el plan
+
+| ID     | Historia                                                                                                                     | Resultado verificable                                                                                                                |
+| ------ | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| HU-024 | [Consultar una ruta accesible](../../requirements/user-stories/03-routes-and-transit.md)                                     | Ruta accesible solo si todos los atributos críticos del recorrido están confirmados; en otro caso, explicación de no disponibilidad. |
+| HU-040 | [Configurar preferencias de accesibilidad](../../requirements/user-stories/04-accessibility-and-mobility-resources.md)       | Preferencias de sesión que se pueden cambiar y borrar, aplicadas al filtro de rutas.                                                 |
+| HU-041 | [Consultar accesos y servicios adaptados](../../requirements/user-stories/04-accessibility-and-mobility-resources.md)        | Accesos, rampas, ascensores y servicios mostrados con procedencia, fecha y certeza.                                                  |
+| HU-042 | [Consultar aparcamientos](../../requirements/user-stories/04-accessibility-and-mobility-resources.md)                        | Aparcamientos y condiciones conocidas; disponibilidad desconocida salvo fuente confirmada.                                           |
+| HU-043 | [Consultar recursos para bicicletas y patinetes](../../requirements/user-stories/04-accessibility-and-mobility-resources.md) | Recursos diferenciados y regulación presentada solo con fuente confirmada.                                                           |
+| HU-044 | [Consultar puntos de carga y mantenimiento](../../requirements/user-stories/04-accessibility-and-mobility-resources.md)      | Puntos y condiciones verificables sin inferir disponibilidad ni operación.                                                           |
+| HU-045 | [Consultar recursos cercanos por categoría](../../requirements/user-stories/04-accessibility-and-mobility-resources.md)      | Recursos ordenados por distancia desde una ubicación elegida y enlazados a ficha, mapa y ruta.                                       |
 
 HU-095 se mantiene como criterio transversal; su validación completa continúa en Sprint 13.
 
-## Decisiones y límites de producto
+## Alcance, decisiones y dependencias
+
+### Decisiones y límites de producto
 
 - Aplicar [ADR-0017](../../adr/0017-accessibility-data-confidence.md): cada afirmación incluye fuente, licencia, fecha, ámbito y responsable de validación. Estados permitidos: `confirmed`, `unknown`, `unavailable` y `affected`.
 - Una etiqueta de OSM es una pista de investigación, no validación institucional. No se infieren accesos, horarios, superficies transitables ni disponibilidad desde puntos o geometrías.
@@ -30,7 +36,19 @@ HU-095 se mantiene como criterio transversal; su validación completa continúa 
 - Los datos reportados por usuarios, si se admiten en incrementos futuros, quedan separados de los datos confirmados hasta revisión autorizada.
 - Si no hay fuente confirmada o cobertura suficiente, la aplicación muestra “información no disponible” y no afirma que la ruta o recurso sea accesible. El trabajo local continúa con hechos desconocidos; la falta de validación externa se acepta como riesgo y no bloquea el Sprint. HU-024 no se cierra sin al menos un recorrido real respaldado por atributos confirmados.
 
-## Trabajo y secuencia
+## Responsabilidades por rol
+
+| Rol           | Responsabilidades en el Sprint                                                                 |
+| ------------- | ---------------------------------------------------------------------------------------------- |
+| Product Owner | Aclarar el valor de cada recurso y confirmar qué fuentes pueden respaldar información pública. |
+| Scrum Master  | Hacer visibles dependencias de validación y facilitar adaptación del Sprint Backlog.           |
+| Developers    | Implementar el modelo de certeza y mantener trazabilidad, sin completar huecos por inferencia. |
+| Developers    | Integrar las preferencias y recursos en mapas y listas de Android/web con alternativa textual. |
+| Developers    | Verificar cálculo, casos desconocidos y accesibilidad de interacción.                          |
+
+## Plan inicial y seguimiento
+
+### Trabajo y secuencia
 
 | ID  | Actividad y entregable                                                                                                                                    | Dependencia                | Área funcional          |
 | --- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- | ----------------------- |
@@ -43,32 +61,15 @@ HU-095 se mantiene como criterio transversal; su validación completa continúa 
 | T7  | Comprobar permisos, teclado, lector de pantalla, ampliación de texto, alternativa textual y estados de carga/error/vacío en web y Android.                | T5–T6                      | Accesibilidad y calidad |
 | T8  | Actualizar datos, historias, backlog, fuentes, guía, ADR y casos de prueba junto con los cambios; revisar el incremento y registrar solo evidencia real.  | T1–T7                      | Calidad y documentación |
 
-## Responsabilidades funcionales
-
-| Responsabilidad               | Trabajo                                                                                        |
-| ----------------------------- | ---------------------------------------------------------------------------------------------- |
-| Product Owner                 | Aclarar el valor de cada recurso y confirmar qué fuentes pueden respaldar información pública. |
-| Scrum Master                  | Hacer visibles dependencias de validación y facilitar adaptación del Sprint Backlog.           |
-| Developers — datos y dominio  | Implementar el modelo de certeza y mantener trazabilidad, sin completar huecos por inferencia. |
-| Developers — rutas y clientes | Integrar las preferencias y recursos en mapas y listas de Android/web con alternativa textual. |
-| Developers — calidad          | Verificar cálculo, casos desconocidos y accesibilidad de interacción.                          |
-
-## Archivos y documentación afectados
+### Archivos y documentación afectados
 
 Código previsto en `apps/mobile/src/features/campus/` y sus adaptadores de mapa; pruebas en los dominios y componentes afectados. Los datos se mantienen versionados en el catálogo del campus con metadatos por hecho; no se requiere API ni base de datos para este Sprint.
 
 Actualizar HU-024 y HU-040–045; el Product Backlog; `docs/development/data-sources.md` y `docs/development/README.md`; ADR-0017 solo si una nueva evidencia obliga a cambiar la decisión aceptada. Mantener `README.md` y las instrucciones de interfaz al día si cambian los flujos.
 
-## Verificación y Definition of Done
+## Riesgos y respuestas
 
-- Pruebas unitarias: cada estado de certeza, filtros de preferencias, segmento incompatible, atributo crítico desconocido, fuente vencida según la vigencia que esta declare y ausencia de ruta.
-- Pruebas de integración de datos: cada hecho mostrado tiene fuente, licencia, fecha y ámbito; un dato sin esos metadatos no puede publicarse como confirmado.
-- Pruebas de interfaz en móvil/web: listado y mapa, filtros, detalle, selección como destino, distancia aproximada diferenciada de distancia de ruta, carga/error/vacío, preferencias editables y reinicio de sesión.
-- E2E web: buscar un recurso, filtrar categoría, seleccionar ubicación, ver estado de certeza e intentar ruta accesible tanto con fixture confirmado como con cobertura desconocida.
-- Checks del proyecto: formato, lint, TypeScript, pruebas, export web, navegador y build/ejecución Android. La exportación iOS no se presentará como validación nativa; iOS nativo continúa sin entorno disponible.
-- Una ruta solo se presenta como accesible si cumple ADR-0017. Si no hay cobertura confirmada suficiente, documentar esa limitación técnica y dejar HU-024 abierta en backlog; no declarar completa la historia.
-
-## Riesgos y respuesta
+### Riesgos y respuesta
 
 | Riesgo                                                  | Respuesta                                                                                                                                             |
 | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -77,11 +78,18 @@ Actualizar HU-024 y HU-040–045; el Product Backlog; `docs/development/data-sou
 | Un estado temporal deja de ser válido                   | Aplicar vigencia que declare la fuente; sin evidencia actual, volver a `unknown`.                                                                     |
 | Preferencias revelan información sensible               | Mantenerlas solo en memoria y no asociarlas a cuenta ni telemetría.                                                                                   |
 
-## Ceremonias y resultado
+## Verificación, documentación y Definition of Done
 
-El equipo realiza los eventos Scrum según metodología. El plan no constituye un acta. Al finalizar, registrar resultados y criterios con evidencia; crear actas únicamente si los eventos se celebran.
+### Verificación y Definition of Done
 
-## Resultado de implementación local
+- Pruebas unitarias: cada estado de certeza, filtros de preferencias, segmento incompatible, atributo crítico desconocido, fuente vencida según la vigencia que esta declare y ausencia de ruta.
+- Pruebas de integración de datos: cada hecho mostrado tiene fuente, licencia, fecha y ámbito; un dato sin esos metadatos no puede publicarse como confirmado.
+- Pruebas de interfaz en móvil/web: listado y mapa, filtros, detalle, selección como destino, distancia aproximada diferenciada de distancia de ruta, carga/error/vacío, preferencias editables y reinicio de sesión.
+- E2E web: buscar un recurso, filtrar categoría, seleccionar ubicación, ver estado de certeza e intentar ruta accesible tanto con fixture confirmado como con cobertura desconocida.
+- Checks del proyecto: formato, lint, TypeScript, pruebas, export web, navegador y build/ejecución Android. La exportación iOS no se presentará como validación nativa; iOS nativo continúa sin entorno disponible.
+- Una ruta solo se presenta como accesible si cumple ADR-0017. Si no hay cobertura confirmada suficiente, documentar esa limitación técnica y dejar HU-024 abierta en backlog; no declarar completa la historia.
+
+## Incremento y cierre
 
 - Se añadieron recursos de movilidad con estados de evidencia, fuente, licencia, fecha y ámbito; OSM no se presenta como certificación de accesibilidad u operación.
 - El panel permite filtrar por categoría, seleccionar origen manual o ubicación ya autorizada, ordenar por distancia geográfica aproximada, abrir la fuente, centrar el recurso en el mapa e iniciar una ruta.

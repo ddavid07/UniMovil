@@ -33,5 +33,5 @@ UniMovil debe ayudar a estudiantes y visitantes a orientarse y desplazarse por e
 
 ## Referencias
 
-- [Historias de usuario: mapa, búsqueda y lugares](../user-stories/02-campus-map-search-and-places.md)
+- [Historias de usuario: mapa, búsqueda y lugares](../requirements/user-stories/02-campus-map-search-and-places.md)
 - [Plan del Sprint 1](../iterations/sprint-01/README.md)

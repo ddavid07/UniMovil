@@ -42,8 +42,8 @@ La configuración generada declara `ACCESS_COARSE_LOCATION` y `ACCESS_FINE_LOCAT
 
 ## Referencias
 
-- [HU-011: Mostrar la ubicación actual](../user-stories/02-campus-map-search-and-places.md)
-- [HU-001: Consultar información pública sin registrarse](../user-stories/01-account-access.md)
-- [HU-007: Gestionar permisos del dispositivo](../user-stories/01-account-access.md)
+- [HU-011: Mostrar la ubicación actual](../requirements/user-stories/02-campus-map-search-and-places.md)
+- [HU-001: Consultar información pública sin registrarse](../requirements/user-stories/01-account-access.md)
+- [HU-007: Gestionar permisos del dispositivo](../requirements/user-stories/01-account-access.md)
 - [Expo SDK 58: Location](https://docs.expo.dev/versions/v58.0.0/sdk/location/)
 - [Expo: permisos en aplicaciones nativas](https://docs.expo.dev/guides/permissions/)

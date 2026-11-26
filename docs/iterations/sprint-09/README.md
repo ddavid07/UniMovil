@@ -1,21 +1,27 @@
 # Sprint 9 — avisos y restricciones del campus
 
-> **Estado:** plan futuro propuesto; requiere refinamiento y selección antes de comprometerlo.
+- **Estado:** Plan futuro propuesto, pendiente de refinamiento y selección.
 
-## Sprint Goal
+## Sprint Goal y valor
+
+### Sprint Goal
 
 El público puede consultar avisos vigentes sobre el campus y ver sus zonas afectadas; un gestor autorizado puede redactarlos, programarlos, publicarlos, modificarlos o retirarlos con una caducidad y trazabilidad claras.
 
-## Historias candidatas
+## Sprint Backlog
 
-| ID     | Historia                                                                                              | Resultado esperado                                                                                    |
-| ------ | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| HU-016 | [Consultar cierres y restricciones en el mapa](../../user-stories/02-campus-map-search-and-places.md) | Zonas, motivo, periodo, actualización y efecto en nuevas rutas cuando el dato y el motor lo permiten. |
-| HU-057 | [Publicar un aviso](../../user-stories/05-incidents-and-notices.md)                                   | Borrador/publicación vinculados a zona o recurso, con autor y fecha.                                  |
-| HU-058 | [Consultar avisos](../../user-stories/05-incidents-and-notices.md)                                    | Avisos activos filtrables, detalle de vigencia y enlaces a mapa/ruta.                                 |
-| HU-059 | [Administrar un aviso](../../user-stories/05-incidents-and-notices.md)                                | Edición, programación y retirada con historial.                                                       |
+### Historias candidatas
 
-## Entrada, alcance y límites
+| ID     | Historia                                                                                                           | Resultado esperado                                                                                    |
+| ------ | ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| HU-016 | [Consultar cierres y restricciones en el mapa](../../requirements/user-stories/02-campus-map-search-and-places.md) | Zonas, motivo, periodo, actualización y efecto en nuevas rutas cuando el dato y el motor lo permiten. |
+| HU-057 | [Publicar un aviso](../../requirements/user-stories/05-incidents-and-notices.md)                                   | Borrador/publicación vinculados a zona o recurso, con autor y fecha.                                  |
+| HU-058 | [Consultar avisos](../../requirements/user-stories/05-incidents-and-notices.md)                                    | Avisos activos filtrables, detalle de vigencia y enlaces a mapa/ruta.                                 |
+| HU-059 | [Administrar un aviso](../../requirements/user-stories/05-incidents-and-notices.md)                                | Edición, programación y retirada con historial.                                                       |
+
+## Alcance, decisiones y dependencias
+
+### Entrada, alcance y límites
 
 - Deben existir autorización administrativa, persistencia, auditoría y API integrada desde Sprints 6–8.
 - Refinar tipos de aviso, fuente autorizada, prioridad, zonas, horario/uso horario, fecha de inicio, caducidad, publicación y retirada; definir quién confirma que una restricción física es cierta.
@@ -23,11 +29,23 @@ El público puede consultar avisos vigentes sobre el campus y ver sus zonas afec
 - Solo se cambian rutas frente a restricciones activas si la restricción está confirmada, geográficamente bien delimitada y el motor puede recalcularla con seguridad. En otro caso, se muestra aviso sin afirmar desvío seguro.
 - Notificaciones push, programación masiva, comunicación fuera de app y publicación en canales institucionales quedan fuera; se abordan como HU-063/064 en Sprint 12.
 
-## Cliente público web
+### Cliente público web
 
 HU-016 y HU-058 deben mostrar avisos, vigencia y zonas afectadas también en el navegador, tanto en mapa como en lista accesible. Solo datos publicados por la API aparecen en el cliente público; redacción, programación y retirada permanecen en la aplicación administrativa.
 
-## Plan de trabajo y dependencias
+## Responsabilidades por rol
+
+| Rol           | Responsabilidades en el Sprint                                                            |
+| ------------- | ----------------------------------------------------------------------------------------- |
+| Product Owner | Aclarar qué constituye aviso oficial y aceptar texto, prioridad, vigencia y visibilidad.  |
+| Scrum Master  | Facilitar la adaptación ante falta de fuente o autoridad de publicación.                  |
+| Developers    | Implementar ciclo de vida, permisos, vista de gestión y trazabilidad.                     |
+| Developers    | Presentar en web y móvil avisos y restricciones sin inducir a confiar en datos caducados. |
+| Developers    | Validar geometría/fechas, probar límites y conservar fuentes.                             |
+
+## Plan inicial y seguimiento
+
+### Plan de trabajo y dependencias
 
 | ID  | Actividad y entregable                                                                                                                               | Depende de            | Área funcional        |
 | --- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- | --------------------- |
@@ -41,15 +59,7 @@ HU-016 y HU-058 deben mostrar avisos, vigencia y zonas afectadas también en el 
 | T8  | Probar caducidad, zona, fecha límite, rol, retirada, cambio de contenido, fuente, cliente web/móvil y no duplicación.                                | T4–T7                 | Calidad               |
 | T9  | Actualizar historias, riesgos, OpenAPI, manual de publicación y guía de datos; validar CI, build web y builds nativos.                               | T8                    | Documentación/calidad |
 
-| Responsabilidad                  | Aportación                                                                                |
-| -------------------------------- | ----------------------------------------------------------------------------------------- |
-| Product Owner                    | Aclarar qué constituye aviso oficial y aceptar texto, prioridad, vigencia y visibilidad.  |
-| Scrum Master                     | Facilitar la adaptación ante falta de fuente o autoridad de publicación.                  |
-| Developers — API/admin           | Implementar ciclo de vida, permisos, vista de gestión y trazabilidad.                     |
-| Developers — clientes/mapa/rutas | Presentar en web y móvil avisos y restricciones sin inducir a confiar en datos caducados. |
-| Developers — datos/calidad       | Validar geometría/fechas, probar límites y conservar fuentes.                             |
-
-## Archivos previstos
+### Archivos previstos
 
 `apps/api/src/`, `apps/admin/src/`, `apps/mobile/src/features/campus/` y/o `features/notices/`, cliente público web definido en el Sprint 3, `packages/contracts/`, migraciones y pruebas. Actualizar historias 02/05, Product Backlog, ADR que cambien, `data-sources.md`, OpenAPI y guía de administración.
 
@@ -62,12 +72,10 @@ HU-016 y HU-058 deben mostrar avisos, vigencia y zonas afectadas también en el 
 | Geometría incompleta bloquea o deja libre un área errónea | Media / Alta           | Validar polígono en mapa y casos de borde; si no hay geometría fiable, publicar aviso textual sin bloqueo de ruta. | Datos + QA  |
 | La vista pública expone borradores o notas internas       | Baja / Crítica         | Endpoints separados, autorización negativa y contratos mínimos; probar usuario anónimo.                            | Seguridad   |
 
-## Verificación y Definition of Done
+## Verificación, documentación y Definition of Done
+
+### Verificación y Definition of Done
 
 Pruebas de dominio cubren estado/vigencia y conflicto de fechas; tests API comprueban roles, publicación, retirada y aislamiento de borradores; tests de integración comprueban mapa y ruta restringida; pruebas de interfaz cubren estado vacío, zona, actualización y texto accesible. No usar los datos anecdóticos de `initial-data.ts` como eventos reales.
 
 La documentación describe cómo verificar una fuente, publicar/retirar y resolver caducidad. DoD requiere evidencia, CI, documentación, aprobación de producto, atribuciones, build web y validación nativa Android/iOS. Si una restricción no es fiable, queda visible como aviso informativo o pendiente; no se da por completado el desvío automático.
-
-## Ceremonias
-
-Se contemplan los eventos Scrum según la metodología. Las actas solo se generan cuando ocurren y el cierre refleja datos, pruebas y aceptación realmente observados.

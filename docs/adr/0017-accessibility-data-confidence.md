@@ -33,7 +33,7 @@ HU-024 y HU-040–045 requieren preferencias de movilidad, información de acces
 
 ## Referencias
 
-- [HU-024](../user-stories/03-routes-and-transit.md)
-- [HU-040–045](../user-stories/04-accessibility-and-mobility-resources.md)
+- [HU-024](../requirements/user-stories/03-routes-and-transit.md)
+- [HU-040–045](../requirements/user-stories/04-accessibility-and-mobility-resources.md)
 - [Fuentes de datos y atribuciones](../development/data-sources.md)
 - [ADR-0012: cálculo local de rutas peatonales](0012-campus-pedestrian-routing.md)

@@ -40,4 +40,4 @@ HU-022, HU-025, HU-026 y HU-027 requieren comparar modos y consultar líneas, pa
 - [Incidencias y alteraciones de servicio EMT](https://datos.emtmadrid.es/dataset/incidencias-o-alteraciones-del-servicio-de-emt)
 - [Página oficial de incidencias EMT](https://www.emtmadrid.es/EMTBUS/Incidencias.aspx)
 - [Open Data Commons Attribution License](https://opendatacommons.org/licenses/by/1-0/)
-- [HU-022, HU-025, HU-026 y HU-027](../user-stories/03-routes-and-transit.md)
+- [HU-022, HU-025, HU-026 y HU-027](../requirements/user-stories/03-routes-and-transit.md)

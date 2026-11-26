@@ -27,9 +27,11 @@ El refinamiento del Product Backlog es una actividad continua, no un evento Scru
 
 ## Artefactos y calidad
 
-- **Product Backlog:** lista ordenada y evolutiva del trabajo del producto. Su índice actual es el [backlog](../backlog/product-backlog.md); las historias completas están en [user-stories/](../user-stories/README.md).
+- **Product Backlog:** lista ordenada y evolutiva del trabajo del producto. Su índice actual es el [backlog](../backlog/product-backlog.md); las historias completas están en [user-stories/](../requirements/user-stories/README.md).
 - **Sprint Backlog:** Sprint Goal, elementos seleccionados y plan de trabajo actualizado por los Developers.
 - **Increment:** resultado usable que cumple la Definition of Done acordada por el equipo.
+
+La [Definición de Terminado](definition-of-done.md) establece los criterios comunes de calidad para historias e incrementos. Cada Sprint enlaza este documento y añade verificaciones específicas de su alcance; los criterios de aceptación de las historias siguen siendo obligatorios.
 
 Para las capacidades públicas, los criterios se comprueban en las plataformas afectadas. Desde el alcance de [ADR-0010](../adr/0010-public-web-client.md), los nuevos incrementos funcionales incluyen su experiencia web; la matriz de navegadores y ventanas compatibles se define en el Sprint 3 y se usa para verificar el diseño adaptable. La web administrativa permanece separada.
 
@@ -45,4 +47,4 @@ El equipo ordena los elementos refinados considerando su valor, riesgo, dependen
 
 Las historias conservan sus identificadores HU para enlazar necesidades, cambios de código y pruebas. Las decisiones arquitectónicas nuevas se registran en [adr/](../adr/). Los acuerdos de una reunión y los resultados de cada Sprint se documentan una sola vez y se enlazan cuando sea necesario.
 
-El feedback, los riesgos y los cambios de alcance se incorporan al backlog con su contexto. El equipo revisa esta metodología cuando obtiene evidencia que justifica cambiarla y registra los acuerdos relevantes mediante Git.
+El feedback y los cambios de alcance se incorporan al backlog con su contexto. Los riesgos transversales se mantienen en el [plan de riesgos](../risks/risk-management-plan.md), mientras que cada plan de Sprint registra los riesgos específicos de su incremento. El equipo revisa esta metodología cuando obtiene evidencia que justifica cambiarla y registra los acuerdos relevantes mediante Git.

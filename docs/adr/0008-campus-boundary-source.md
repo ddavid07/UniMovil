@@ -12,7 +12,7 @@ La cartografía institucional consultada de la UCM sirve para orientación y con
 
 ## Decisión
 
-- Utilizar como delimitación visual el polígono del [objeto OpenStreetMap way 30648317](https://www.openstreetmap.org/way/30648317), guardado en `apps/mobile/src/features/campus/data/campus-boundary.json`.
+- Utilizar como delimitación visual el polígono del [objeto OpenStreetMap way 30648317](https://www.openstreetmap.org/way/30648317), guardado en `packages/contracts/data/campus-boundary.json`.
 - Conservar en el GeoJSON el identificador de fuente, licencia ODbL 1.0, versión del objeto y fechas de última edición y comprobación. Derivar del anillo exterior la envolvente para la cámara; dibujar el polígono con relleno y contorno UCM.
 - Mantener visible la atribución a OpenStreetMap y el enlace a sus derechos y licencia, además de registrar fuente y alcance en la documentación del proyecto.
 - Tratar esta geometría como representación cartográfica comunitaria; no presentarla como linde catastral, titularidad, límite administrativo ni perímetro oficial de propiedades UCM.
@@ -32,7 +32,7 @@ La cartografía institucional consultada de la UCM sirve para orientación y con
 
 ## Referencias
 
-- [HU-010: Consultar el mapa del campus](../user-stories/02-campus-map-search-and-places.md)
+- [HU-010: Consultar el mapa del campus](../requirements/user-stories/02-campus-map-search-and-places.md)
 - [Objeto OpenStreetMap way 30648317](https://www.openstreetmap.org/way/30648317)
 - [Derechos de autor y licencia de OpenStreetMap](https://www.openstreetmap.org/copyright)
 - [Licencia ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/)

@@ -109,12 +109,16 @@ npm run test:web
 ## Estructura
 
 ```text
-apps/mobile/          Aplicación Expo
-docs/                 Historias, backlog, planes, ADR y guía de desarrollo
+apps/mobile/          Aplicación Expo para Android, iOS y web
+apps/api/             API REST NestJS
+packages/contracts/   Contratos y esquemas compartidos
+supabase/             Configuración del entorno local de Supabase
+scripts/              Importación de datos y comprobaciones locales
+docs/                 Requisitos, backlog, planes, ADR y guías
 .github/              Workflows y configuración de automatización
 ```
 
-Consulta la [guía de desarrollo](docs/development/README.md), el [índice de documentación](docs/README.md), las [historias de usuario](docs/user-stories/README.md) y las [decisiones de arquitectura](docs/adr/README.md).
+Consulta la [guía para contribuir](CONTRIBUTING.md), la [guía de desarrollo](docs/development/README.md), el [índice de documentación](docs/README.md), las [historias de usuario](docs/requirements/user-stories/README.md) y las [decisiones de arquitectura](docs/adr/README.md).
 
 ## Licencias y recursos
 

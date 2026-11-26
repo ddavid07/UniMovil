@@ -35,9 +35,9 @@ HU-002–006 y HU-060 requieren registro, inicio y cierre de sesión, recuperaci
 
 ## Referencias
 
-- [HU-002–006](../user-stories/01-account-access.md)
-- [HU-060](../user-stories/06-personalization-and-notifications.md)
-- [HU-090–093](../user-stories/08-security-privacy-and-quality.md)
+- [HU-002–006](../requirements/user-stories/01-account-access.md)
+- [HU-060](../requirements/user-stories/06-personalization-and-notifications.md)
+- [HU-090–093](../requirements/user-stories/08-security-privacy-and-quality.md)
 - [Supabase Auth con Expo](https://supabase.com/docs/guides/getting-started/quickstarts/expo-react-native)
 - [Supabase: elegir paquete de servidor](https://supabase.com/docs/guides/auth/choosing-a-server-package)
 - [Supabase: JWT](https://supabase.com/docs/guides/auth/jwts)

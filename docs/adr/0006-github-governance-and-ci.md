@@ -3,10 +3,11 @@
 - **Estado:** Aceptada
 - **Fecha:** 2026-11-23
 - **Decisores:** Equipo UniMovil
+- **Última verificación de configuración remota:** 2026-11-26
 
 ## Contexto
 
-El repositorio es público y contiene código bajo Apache-2.0. Las reglas descritas en documentación antigua no bastan para confirmar qué controles están realmente habilitados. La lectura disponible confirma que no se devuelven rulesets; el endpoint de protección de `main` no fue accesible, por lo que su estado no se puede afirmar.
+El repositorio es público y contiene código bajo Apache-2.0. Las reglas descritas en documentación no bastan por sí solas para confirmar qué controles están habilitados; por eso se comprueba la configuración efectiva de GitHub por separado. En la fecha de esta última revisión se pudo consultar la protección de `main` y no había rulesets configurados.
 
 ## Decisión
 
@@ -30,7 +31,17 @@ El repositorio es público y contiene código bajo Apache-2.0. Las reglas descri
 
 ### Aplicación de la configuración remota
 
-Los archivos versionados describirán workflows, Dependabot y plantillas. Las reglas de rama y controles que viven en Settings son una operación separada: se deberán verificar y aplicar desde GitHub por una persona con permisos antes del primer merge. La regla requerirá PR y CI en verde, fijará **cero aprobaciones obligatorias** y habilitará auto-merge con squash. Esta decisión no afirma que ya estén activos ni los modifica.
+Los archivos versionados describen workflows, Dependabot y plantillas. Las reglas de rama y los controles que viven en Settings se verifican por separado. En la comprobación de solo lectura del **26 de noviembre de 2026** se observó:
+
+- `main` tiene protección clásica con checks estrictos y requiere una pull request.
+- Los tres checks requeridos son `Quality, platform bundles and web smoke test`, `Analyze TypeScript` y `Review dependency changes`.
+- El número de aprobaciones obligatorias es **cero**; se aplica la regla también a administradores.
+- No se permiten force-push ni borrado de `main`.
+- Auto-merge está habilitado. Squash está permitido; merge commits y rebase merge están deshabilitados. No se encontraron rulesets.
+- Dependabot security updates, secret scanning y secret scanning push protection están habilitados. La detección de patrones de secretos que no son de proveedores está deshabilitada.
+- CodeQL se ejecuta mediante el workflow versionado y su check es requerido; GitHub code scanning default setup figura como `not-configured`.
+
+Esta comprobación describe el estado observado en esa fecha; debe repetirse si cambia la configuración o los workflows. No se modificaron Settings durante la revisión.
 
 ## Alternativas consideradas
 
@@ -41,7 +52,7 @@ Los archivos versionados describirán workflows, Dependabot y plantillas. Las re
 
 ## Consecuencias
 
-- La protección de `main` debe comprobarse manualmente; la lectura de GitHub disponible no verificó la protección existente.
+- La comprobación remota más reciente confirma que `main` y los checks requeridos coinciden con esta política. La configuración puede cambiar y debe verificarse de nuevo cuando se modifique.
 - No se requiere disponibilidad de otra persona para fusionar un cambio que haya pasado los checks. El autor es responsable de leer el resultado de CI y de activar o completar la fusión.
 - Al no ser obligatoria la revisión humana, se reduce una barrera de colaboración, pero también una oportunidad de detectar problemas. CI, pruebas, PRs pequeños y revisión voluntaria siguen disponibles como medidas complementarias.
 - El CI inicial solo hará obligatorios checks reproducibles que el workspace implemente.
