@@ -18,7 +18,7 @@
     "@nestjs/swagger": "12.1.2",
     "@supabase/supabase-js": "2.119.2",
     "@unimovil/contracts": "0.1.0",
-    "cookie": "1.0.2",
+    "cookie": "2.0.2",
     "dotenv": "17.3.1",
     "drizzle-orm": "0.45.4",
     "helmet": "8.1.0",
