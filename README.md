@@ -80,6 +80,8 @@ npm run export:web
 npx playwright install chromium
 npm run test:web
 npm run api:test
+npm run admin:test
+npm run admin:build
 npm run test:local-supabase
 ```
 
@@ -110,6 +112,7 @@ npm run test:web
 
 ```text
 apps/mobile/          Aplicación Expo para Android, iOS y web
+apps/admin/           Aplicación administrativa React/Vite (cola de incidencias y auditoría)
 apps/api/             API REST NestJS
 packages/contracts/   Contratos y esquemas compartidos
 supabase/             Configuración del entorno local de Supabase

@@ -57,6 +57,8 @@ Ejecuta las comprobaciones que correspondan a las capas y plataformas afectadas.
 | TypeScript                               | `npm run typecheck`                             |
 | Pruebas del workspace                    | `npm run test:ci`                               |
 | Pruebas unitarias del API                | `npm run api:test`                              |
+| Pruebas unitarias del panel admin        | `npm run admin:test`                            |
+| Build del panel administrativo           | `npm run admin:build`                           |
 | Compatibilidad de dependencias Expo      | `npm run check:expo`                            |
 | Integración local con Supabase           | `npm run test:local-supabase`                   |
 | Exportación de web y prueba de navegador | `npm run export:web` y `npm run test:web`       |

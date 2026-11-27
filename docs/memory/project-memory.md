@@ -69,7 +69,7 @@ El proyecto busca:
 
 El producto público tiene como plataformas objetivo Android, iOS y navegador web. El incremento publicado de los Sprints 1–7 incluye mapa y búsqueda, consulta puntual de ubicación, filtros, cliente web, servicios cercanos, rutas peatonales, información estática de EMT, recursos de movilidad, cuentas, favoritos e incidencias.
 
-La administración es una aplicación separada y todavía no forma parte del código implementado. Su primer alcance está propuesto para el Sprint 10; la gestión de incidencias y auditoría está propuesta para el Sprint 8.
+La administración es una aplicación separada (`apps/admin/`). El corte de gestión de incidencias y auditoría del Sprint 8 está en curso en rama local (API, roles, transiciones, auditoría y `apps/admin`); la gestión de catálogo está propuesta para el Sprint 10.
 
 Quedan fuera de las capacidades actuales la llegada de autobuses en tiempo real, una red ciclista verificada, una ruta que pueda afirmarse accesible sin atributos confirmados, la publicación de incidencias reales desde el entorno de desarrollo, un servicio Supabase de producción y la navegación en interiores. El Product Backlog y los planes de Sprint registran el trabajo futuro y sus dependencias.
 
@@ -183,7 +183,7 @@ El repositorio utiliza npm Workspaces y mantiene estos componentes:
 | apps/api/           | API NestJS para salud, identidad, cuentas e incidencias.                                          |
 | packages/contracts/ | Esquemas Zod, tipos compartidos y validación de cobertura aproximada del campus.                  |
 | supabase/           | Configuración reproducible del stack local de Supabase.                                           |
-| apps/admin/         | Aplicación administrativa prevista en la arquitectura y los planes; no está implementada todavía. |
+| apps/admin/         | Aplicación administrativa React/Vite (cola de incidencias y auditoría en rama de Sprint 8; sin catálogo todavía). |
 
 Las migraciones de PostgreSQL se mantienen con Drizzle en apps/api/drizzle/. El cliente y el API comparten los contratos disponibles desde packages/contracts/.
 
@@ -235,7 +235,7 @@ Las decisiones de arquitectura y configuración aceptadas se encuentran en los [
 | [5 — accesibilidad y recursos](../iterations/sprint-05/README.md)                 | Recursos con fuente y estado de certeza, preferencias de sesión y prevención de afirmaciones no verificadas. HU-024 continúa abierta.                                                              |
 | [6 — cuentas y favoritos](../iterations/sprint-06/README.md)                      | API, Auth, perfil, favoritos privados y sesiones web seguras, comprobados con Supabase local y cuentas sintéticas. No se habilitó servicio alojado ni SMTP gestionado.                             |
 | [7 — incidencias](../iterations/sprint-07/README.md)                              | Envío privado, evidencias protegidas e historial propio; la consulta pública se comprobó con datos sintéticos. No se implementaron el panel de moderación ni la publicación de incidencias reales. |
-| [8 — gestión de incidencias y auditoría](../iterations/sprint-08/README.md)       | Plan propuesto; incluye cola de revisión, transiciones autorizadas y auditoría.                                                                                                                    |
+| [8 — gestión de incidencias y auditoría](../iterations/sprint-08/README.md)       | En curso en rama local: roles, máquina de estados, auditoría, protección de evidencias y `apps/admin`; pendiente UI móvil/web y verificación completa.                                             |
 | [9 — avisos y restricciones](../iterations/sprint-09/README.md)                   | Plan propuesto; incluye vigencia, zonas afectadas y ciclo de publicación.                                                                                                                          |
 | [10 — administración de catálogo](../iterations/sprint-10/README.md)              | Plan propuesto; incluye gestión de lugares, categorías, accesibilidad y permisos.                                                                                                                  |
 | [11 — importación y salud de fuentes](../iterations/sprint-11/README.md)          | Plan propuesto; incluye importación validada, reconciliación y detección de datos caducados.                                                                                                       |
