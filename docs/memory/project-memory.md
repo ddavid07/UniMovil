@@ -145,9 +145,9 @@ La relación de una persona con la UCM es un dato opcional de perfil y no conced
 
 ### 4.2. Organización y prioridades
 
-El catálogo vigente contiene **69 historias de usuario y 344 criterios de aceptación**, organizados en nueve áreas: cuentas; mapa, búsqueda y lugares; rutas y transporte; accesibilidad y recursos; incidencias y avisos; personalización y notificaciones; administración y datos; seguridad, privacidad y calidad; y cliente público web.
+El catálogo vigente contiene **69 historias de usuario y 354 criterios de aceptación**, organizados en nueve áreas: cuentas; mapa, búsqueda y lugares; rutas y transporte; accesibilidad y recursos; incidencias y avisos; personalización y notificaciones; administración y datos; seguridad, privacidad y calidad; y cliente público web.
 
-Los Sprints 1–7 están registrados como incrementos publicados mediante [PR #50](https://github.com/ddavid07/UniMovil/pull/50). Las historias pendientes se ordenan por prioridad y por el orden del Product Owner. Los Sprints 8–13 son propuestas de trabajo sujetas a refinamiento y selección; su inclusión en un plan futuro no equivale a un compromiso de Sprint.
+Los Sprints 1–7 están registrados como incrementos publicados mediante [PR #50](https://github.com/ddavid07/UniMovil/pull/50). Las historias pendientes se ordenan por prioridad y por el orden del Product Owner. El Sprint 8 tiene refinamiento funcional del Product Owner registrado, pero sigue pendiente de Sprint Planning y selección. Los Sprints 9–13 continúan como propuestas sujetas a refinamiento y selección; su inclusión en un plan futuro no equivale a un compromiso de Sprint.
 
 El backlog mantiene HU-024 abierta porque todavía no se puede demostrar una ruta accesible respaldada por atributos confirmados. HU-099 tiene prioridad por acordar. Los detalles y estados por historia figuran en el [Product Backlog](../backlog/product-backlog.md).
 

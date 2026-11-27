@@ -14,7 +14,7 @@ No se duplican aquí los criterios completos: cada elemento enlaza con su ficha.
 
 - La primera sección conserva las historias trabajadas en los Sprints 1–7 para mantener su trazabilidad. El trabajo futuro se encuentra en las secciones de prioridad Alta, Media y Baja.
 - Los números expresan la ordenación del backlog. La prioridad orienta la importancia funcional, pero no reemplaza el orden que mantiene el Product Owner.
-- Los Sprints 8–13 son propuestas pendientes de refinamiento. La mención de una historia en un plan futuro no equivale a su selección definitiva.
+- El Sprint 8 tiene un refinamiento funcional del Product Owner registrado; sus historias siguen pendientes de selección en Sprint Planning. Los Sprints 9–13 siguen pendientes de refinamiento y selección. La mención de una historia en un plan futuro no equivale a su selección definitiva.
 - La columna Puntos usa un guion cuando el repositorio no registra un valor vigente para esa historia. No se heredan valores de un backlog anterior.
 
 ## Estados y evidencia

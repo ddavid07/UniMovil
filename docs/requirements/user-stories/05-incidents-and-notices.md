@@ -93,62 +93,93 @@
 - **Prioridad:** Alta
 - **Historia:** Como gestor, quiero revisar y clasificar incidencias, para organizar su resolución.
 - **Criterios de aceptación:**
-  - **HU-054.1** El gestor puede consultar las incidencias pendientes.
-  - **HU-054.2** Puede corregir la categoría y la prioridad de la incidencia.
-  - **HU-054.3** Puede asignar la incidencia a un responsable.
-  - **HU-054.4** Puede marcarla como duplicada o descartar comunicaciones inválidas indicando un motivo.
-  - **HU-054.5** Cada cambio queda registrado con usuario y fecha.
-- **Reglas y dependencias:** Solo gestores y administradores pueden ejecutar estas acciones.
+  - **HU-054.1** Gestores y administradores autorizados pueden consultar una cola de incidencias y abrir su detalle.
+  - **HU-054.2** La cola permite filtrar por estado, categoría y asignación; por defecto ordena los casos activos desde la fecha de actualización más antigua hasta la más reciente, sin presentarlo como un SLA.
+  - **HU-054.3** El detalle muestra los datos necesarios para la revisión, la prioridad percibida, la prioridad de gestión, la persona responsable y las confirmaciones vigentes; no muestra el correo ni la identidad del informante.
+  - **HU-054.4** La persona gestora o administradora puede corregir la categoría y establecer una prioridad de gestión sin sobrescribir la prioridad percibida original.
+  - **HU-054.5** Puede asignar o reasignar la incidencia a una cuenta con rol de gestor. Una incidencia no pasa a en proceso sin responsable asignado.
+  - **HU-054.6** Puede marcar un reporte como duplicado y vincularlo a la incidencia principal, o descartarlo como inválido con un motivo comprensible para el informante. En ambos casos se registra el cierre con su razón.
+  - **HU-054.7** Puede publicar o retirar explícitamente una incidencia revisada. Publicar requiere aprobar una proyección pública segura; si no puede prepararse, la incidencia permanece privada.
+  - **HU-054.8** Cada acción administrativa y cada acceso autorizado a evidencias privadas registra actor y fecha.
+- **Refinamiento del Product Owner — Sprint 8 (27-11-2026):**
+  - Los estados activos de la cola son recibida, en revisión y en proceso; las resueltas y cerradas se consultan al filtrar por esos estados.
+  - La prioridad percibida conserva su valor y procedencia. La prioridad de gestión es independiente y utiliza low (baja), normal y high (alta).
+  - El administrador puede tramitar incidencias y consultar auditoría; la asignación operativa se realiza a una cuenta con rol de gestor.
+  - El resumen público se redacta o revisa para su publicación y no sustituye la descripción original privada. La publicación no se deduce de un cambio de estado ni expone informante, correo, adjuntos, respuestas privadas o ubicación precisa.
+  - La proyección publicada se limita a identificador público opaco, categoría, zona aproximada, resumen aprobado, estado público y fecha de actualización, según ADR-0018. Retirar la publicación no altera el estado operativo.
+- **Reglas y dependencias:** Los permisos se conceden desde el servidor conforme a ADR-0015; la afiliación declarada a UCM no concede rol. Los roles de desarrollo serán sintéticos y locales. No se procesarán ni publicarán incidencias reales sin autoridad de moderación y política operativa aprobadas.
 
 **Análisis INVEST:**
 
 - **I · Independiente.** Depende de las incidencias persistidas en Sprint 7 y de la autorización por roles; se separa claramente de avisos oficiales.
-- **N · Negociable.** Se pueden acordar los filtros iniciales de la cola de revisión y si la asignación permite lista de gestores o identificador interno.
+- **N · Negociable.** Se puede ajustar la presentación de la cola y el detalle sin cambiar filtros, orden ni campos acordados.
 - **V · Valiosa.** Permite ordenar y depurar el volumen de incidencias recibidas antes de publicarlas o resolverlas.
-- **E · Estimable.** Cola filtrable, reclasificación, motivo de descarte/duplicado y registro de auditoría acotan bien el trabajo de Sprint 8.
-- **S · Pequeña.** Conviene separar el API con autorización en servidor de la vista de cola y detalle en el panel administrativo.
-- **T · Comprobable.** Intentar reclasificar o descartar con cuenta ordinaria esperando 403; hacerlo como gestor y verificar auditoría con autor, fecha y motivo.
+- **E · Estimable.** Cola filtrable, clasificación diferenciada, asignación, moderación, motivos y trazabilidad acotan el resultado esperado.
+- **S · Pequeña.** Es una historia amplia de gestión; el equipo comprobará capacidad y dependencias antes de seleccionarla y podrá dividirla en cortes con valor de usuario.
+- **T · Comprobable.** Consultar y filtrar como gestor, actualizar una incidencia, publicar solo una proyección aprobada y verificar actor/fecha; comprobar denegación con cuenta ordinaria.
 
 ## HU-055 — Actualizar el estado de una incidencia
 
 - **Prioridad:** Alta
 - **Historia:** Como gestor, quiero actualizar el estado de una incidencia, para informar de su progreso.
 - **Criterios de aceptación:**
-  - **HU-055.1** Los estados disponibles son recibida, en revisión, en proceso, resuelta y cerrada.
-  - **HU-055.2** El sistema impide transiciones incoherentes.
-  - **HU-055.3** El gestor puede añadir una respuesta visible al usuario.
-  - **HU-055.4** El usuario autor de la incidencia recibe una actualización cuando corresponda.
-  - **HU-055.5** El historial conserva los estados anteriores.
-- **Reglas y dependencias:** Una incidencia resuelta puede reabrirse si el problema vuelve a existir.
+  - **HU-055.1** Los estados disponibles son recibida, en revisión, en proceso, resuelta y cerrada, con los significados y transiciones del refinamiento de Sprint 8.
+  - **HU-055.2** Solo un gestor o administrador autorizado puede cambiar el estado; el servidor rechaza transiciones no permitidas sin alterar estado ni publicación.
+  - **HU-055.3** Cada transición conserva estado anterior y nuevo, actor, fecha y motivo cuando corresponda.
+  - **HU-055.4** La respuesta visible al informante se distingue de los datos internos. Resolver, reabrir o cerrar requiere una explicación comprensible; cerrar por duplicidad o invalidez debe explicar también esa razón.
+  - **HU-055.5** La persona informante consulta el historial y las respuestas destinadas a ella en el detalle privado de su incidencia.
+  - **HU-055.6** En una incidencia publicada puede mostrarse el estado permitido; cambiar el estado no publica una incidencia privada ni altera por sí solo su publicación.
+  - **HU-055.7** El historial privado es el canal de actualización incluido; no se envían notificaciones push ni correo en este alcance.
+- **Refinamiento del Product Owner — Sprint 8 (27-11-2026):**
+
+  | Estado actual              | Transición permitida       | Condición de producto                                                                                                                                                    |
+  | -------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+  | received (recibida)        | under_review (en revisión) | Un gestor inicia la revisión.                                                                                                                                            |
+  | received (recibida)        | closed (cerrada)           | Solo por duplicado o invalidez; exige motivo y, si es duplicada, vínculo a la incidencia principal.                                                                      |
+  | under_review (en revisión) | in_progress (en proceso)   | Debe haber una persona gestora asignada.                                                                                                                                 |
+  | under_review (en revisión) | resolved (resuelta)        | La revisión confirma que el problema ya está solucionado; exige respuesta al informante.                                                                                 |
+  | under_review (en revisión) | closed (cerrada)           | Solo por duplicado o invalidez; exige motivo.                                                                                                                            |
+  | in_progress (en proceso)   | resolved (resuelta)        | La persona gestora o administradora confirma que el problema está solucionado; exige respuesta al informante.                                                            |
+  | in_progress (en proceso)   | closed (cerrada)           | Solo si se determina que el reporte es duplicado o inválido; exige motivo.                                                                                               |
+  | resolved (resuelta)        | under_review (en revisión) | Una persona gestora o administradora reabre el caso ante una confirmación vigente de que el problema continúa o nueva evidencia; exige motivo y respuesta al informante. |
+  | resolved (resuelta)        | closed (cerrada)           | La persona gestora o administradora finaliza un caso resuelto; exige una respuesta que indique que la gestión ha terminado.                                              |
+  | closed (cerrada)           | —                          | Es terminal. Si el problema reaparece, se comunica una nueva incidencia.                                                                                                 |
+
+  Recibida significa que el reporte espera revisión; en revisión significa que gestión comenzó a evaluarlo; en proceso requiere responsable; resuelta significa que gestión considera atendido el problema y aún puede reabrirlo; cerrada finaliza el trámite. Los casos resueltos o cerrados dejan de aparecer en el feed de incidencias activas, sin cambiar su estado de publicación. No hay cambios automáticos ni SLA.
+
+- **Reglas y dependencias:** El estado operativo y la visibilidad pública son independientes, según ADR-0018. Las fechas se presentan en la zona horaria local y se conservan como instantes UTC.
 
 **Análisis INVEST:**
 
 - **I · Independiente.** Requiere el ciclo de vida acordado y control transaccional en servidor; la notificación externa puede conectarse después en Sprint 12.
-- **N · Negociable.** Puede afinarse la matriz exacta de transiciones permitidas y cómo se distingue respuesta visible de nota interna.
+- **N · Negociable.** Se puede ajustar la redacción de las respuestas y su presentación sin cambiar la matriz de transiciones acordada.
 - **V · Valiosa.** Mantiene informado al informante y aporta trazabilidad real de principio a cierre.
 - **E · Estimable.** Máquina de estados, historial inmutable y validación de rol en servidor permiten estimar el corte con exactitud.
-- **S · Pequeña.** Transiciones válidas/inválidas y respuesta visible al informante caben en una entrega enfocada de Sprint 8.
-- **T · Comprobable.** Ejecutar transición válida verificando historial previo y mensaje visible; intentar transición inválida esperando rechazo controlado.
+- **S · Pequeña.** Las transiciones y respuestas se mantienen como un flujo verificable; el equipo confirmará su selección según capacidad y dependencias de auditoría.
+- **T · Comprobable.** Probar cada transición permitida y rechazada, comprobar historial/actor/motivo y verificar el detalle privado del informante.
 
 ## HU-056 — Confirmar que una incidencia sigue activa
 
 - **Prioridad:** Media
 - **Historia:** Como usuario registrado, quiero indicar si una incidencia sigue presente, para mejorar la calidad de su seguimiento.
 - **Criterios de aceptación:**
-  - **HU-056.1** El usuario puede confirmar que el problema continúa o que está solucionado.
-  - **HU-056.2** La aplicación registra la fecha y la cuenta que aporta la confirmación.
-  - **HU-056.3** Una confirmación no modifica automáticamente el estado oficial sin revisión.
-  - **HU-056.4** El gestor puede consultar estas confirmaciones para decidir si reabre la incidencia.
-- **Reglas y dependencias:** La participación del usuario no revela sus datos públicamente. La reapertura oficial corresponde a un gestor, conforme a HU-055.
+  - **HU-056.1** Una persona registrada puede indicar si el problema continúa o está solucionado en una incidencia publicada que pueda consultar; la persona propietaria también puede hacerlo en su incidencia privada.
+  - **HU-056.2** El servidor asocia la respuesta a la cuenta autenticada y registra su fecha. Cada cuenta mantiene una única respuesta vigente por incidencia y puede actualizarla.
+  - **HU-056.3** La respuesta vigente caduca a los 30 días naturales de su última actualización; actualizarla inicia de nuevo el periodo y las caducadas no cuentan en el resumen de gestión.
+  - **HU-056.4** El gestor consulta el número de respuestas vigentes por opción y la fecha de la última aportación, sin ver la identidad de quienes respondieron en la interfaz ordinaria.
+  - **HU-056.5** Las confirmaciones no cambian automáticamente el estado, prioridad ni visibilidad. Gestión decide si una confirmación de persistencia justifica reabrir un caso resuelto.
+  - **HU-056.6** No se aceptan confirmaciones de incidencias cerradas.
+- **Refinamiento del Product Owner — Sprint 8 (27-11-2026):** Una incidencia received, under_review, in_progress o resolved admite confirmaciones si el usuario tiene acceso a ella; una closed no. Para reportes privados, el acceso corresponde a su propietario y a los roles de gestión autorizados. La identidad queda asociada en el servidor para asegurar una respuesta por cuenta, pero no se muestra a gestores como parte de la consulta ordinaria.
+- **Reglas y dependencias:** La reapertura oficial corresponde a una persona gestora o administradora autorizada, conforme a HU-055. Las confirmaciones son aportaciones privadas y no equivalen a una verificación institucional.
 
 **Análisis INVEST:**
 
 - **I · Independiente.** Se apoya en incidencias públicas y cuentas autenticadas sin alterar la máquina de estados oficial ni requerir notificaciones.
-- **N · Negociable.** Se puede acordar la frecuencia máxima de confirmación por usuario y el resumen agregado visible al gestor.
+- **N · Negociable.** Se puede ajustar la presentación del resumen agregado sin cambiar la respuesta por cuenta ni su caducidad.
 - **V · Valiosa.** Aporta señal comunitaria para detectar si un problema resuelto ha reaparecido sin perder control editorial.
-- **E · Estimable.** Registro de confirmación por cuenta/incidencia, agregado para gestor y preservación del estado oficial delimitan la tarea.
-- **S · Pequeña.** Endpoint autenticado de confirmación + lectura por gestor forman un corte vertical reducido.
-- **T · Comprobable.** Registrar confirmación con cuenta autenticada, comprobar que el estado oficial no cambia automáticamente y verificar el registro en gestión.
+- **E · Estimable.** Una respuesta vigente por cuenta/incidencia, fecha de caducidad, resumen agregado y preservación del estado oficial delimitan la historia.
+- **S · Pequeña.** El equipo puede seleccionar el registro de confirmaciones y su consulta como un corte independiente del flujo de gestión.
+- **T · Comprobable.** Registrar y actualizar respuestas con cuentas distintas, comprobar caducidad y agregado, y verificar que ninguna cambia automáticamente el estado.
 
 ## HU-057 — Publicar un aviso
 

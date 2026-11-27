@@ -151,21 +151,23 @@
 - **Prioridad:** Media
 - **Historia:** Como responsable del proyecto, quiero conocer qué cambios se han realizado en información sensible, para poder revisar y corregir errores.
 - **Criterios de aceptación:**
-  - **HU-097.1** Se registran cambios en lugares, rutas, horarios, accesibilidad, avisos e incidencias.
-  - **HU-097.2** Cada registro incluye autor y fecha.
-  - **HU-097.3** Los registros no contienen secretos ni contraseñas.
-  - **HU-097.4** Los administradores autorizados pueden consultar el historial.
-  - **HU-097.5** La información puede relacionarse con la versión publicada del dato.
-- **Reglas y dependencias:** Se relaciona con HU-077 y debe respetar la política de conservación de registros.
+  - **HU-097.1** Se registran cambios administrativos relevantes en los dominios cubiertos por cada incremento, incluidos lugares, rutas, horarios, accesibilidad, avisos e incidencias.
+  - **HU-097.2** Cada evento identifica al actor mediante un identificador interno estable, su fecha UTC, la acción, el elemento y la revisión del dato afectado.
+  - **HU-097.3** Para incidencias se registran cambios de categoría, prioridad de gestión, asignación, estado y publicación, además de accesos autorizados a evidencias e intentos autenticados de gestión rechazados.
+  - **HU-097.4** Los detalles se limitan a los campos necesarios; no contienen credenciales, tokens, correo, archivos, descripciones originales, respuestas privadas ni solicitudes completas.
+  - **HU-097.5** Los administradores autorizados pueden consultar los eventos mediante HU-077. La interfaz ordinaria no permite modificarlos ni borrarlos.
+  - **HU-097.6** La revisión de una proyección pública puede relacionarse con la revisión de la incidencia publicada, sin convertir la publicación en un estado operativo.
+- **Refinamiento del Product Owner — Sprint 8 (27-11-2026):** El corte candidato de Sprint 8 cubre eventos de gestión de incidencias. Cada cambio aceptado incrementa la revisión de la incidencia; una proyección publicada queda vinculada a la revisión que se aprobó. No declara completada la trazabilidad de lugares, rutas, horarios, accesibilidad o avisos; cada dominio se incorpora cuando se refine e implemente su gestión. Las respuestas de HU-056 permanecen en su registro privado y no se mezclan con la auditoría administrativa.
+- **Reglas y dependencias:** Se relaciona con HU-077 y respeta ADR-0015, ADR-0016 y ADR-0018. La duración de conservación y el borrado excepcional requieren una política aprobada; sin ella, esta definición no autoriza el tratamiento de datos reales ni una operación remota.
 
 **Análisis INVEST:**
 
-- **I · Independiente.** Define el modelo transversal de eventos auditables desde Sprint 8 y se va conectando a cada dominio en Sprints 9–11.
-- **N · Negociable.** Puede acordarse la estructura exacta de resumen de cambio y referencia a versión de conjunto de datos.
+- **I · Independiente.** La necesidad se cubre incrementalmente por dominio; el corte candidato de Sprint 8 abarca únicamente incidencias.
+- **N · Negociable.** Se puede ajustar la presentación del historial sin cambiar los campos de trazabilidad ni la cobertura del corte de incidencias.
 - **V · Valiosa.** Permite auditar cualquier alteración sobre datos sensibles de campus, accesibilidad o moderación.
 - **E · Estimable.** Servicio de auditoría reutilizable por dominio, metadatos de autor/fecha/versión y redacción de secretos acotan la tarea.
-- **S · Pequeña.** Se introduce como componente transversal en Sprint 8 para incidencias y se reutiliza en avisos, catálogo y transporte.
-- **T · Comprobable.** Ejecutar una mutación en cada dominio cubierto verificando evento persistido con autor, fecha, entidad, versión y sin secretos.
+- **S · Pequeña.** La historia permanece abierta hasta cubrir los dominios restantes; el incremento de Sprint 8 entrega solo la trazabilidad de gestión de incidencias.
+- **T · Comprobable.** Ejecutar una acción de gestión de incidencia verificando actor, fecha, entidad, revisión y ausencia de contenido sensible; comprobar la consulta autorizada.
 
 ## HU-098 — Consultar los cambios de una versión
 

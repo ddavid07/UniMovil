@@ -1,8 +1,8 @@
 # Product Backlog de UniMovil
 
 - **Product Owner:** Daniel David (@ddavid07)
-- **Última revisión:** 26 de noviembre de 2026
-- **Alcance:** 69 historias de usuario y 344 criterios de aceptación, organizados en 9 áreas funcionales.
+- **Última revisión:** 27 de noviembre de 2026
+- **Alcance:** 69 historias de usuario y 354 criterios de aceptación, organizados en 9 áreas funcionales.
 - **Implementación publicada:** Sprints 1–7 incorporados a main mediante [PR #50](https://github.com/ddavid07/UniMovil/pull/50).
 
 Las historias completas, sus criterios de aceptación y sus reglas están en el [catálogo de historias de usuario](../requirements/user-stories/README.md). Este documento consolida el orden, la prioridad indicada en cada historia, el estado del trabajo, el Sprint o corte y su evidencia principal. La prioridad de una historia orienta su importancia funcional; el orden numérico representa la ordenación del Product Owner.
@@ -56,45 +56,45 @@ La publicación del código no amplía los criterios satisfechos: HU-024 permane
 
 ## 2. Historias de prioridad Alta pendientes
 
-| Orden | HU y ficha                                                                                                               | Prioridad | Estado actual en el repositorio                      |
-| :---: | ------------------------------------------------------------------------------------------------------------------------ | :-------: | ---------------------------------------------------- |
-|  37   | [HU-054 — Gestionar una incidencia](../requirements/user-stories/05-incidents-and-notices.md)                            |   Alta    | Propuesta para Sprint 8; pendiente de refinamiento.  |
-|  38   | [HU-055 — Actualizar el estado de una incidencia](../requirements/user-stories/05-incidents-and-notices.md)              |   Alta    | Propuesta para Sprint 8; pendiente de refinamiento.  |
-|  39   | [HU-016 — Consultar cierres y restricciones en el mapa](../requirements/user-stories/02-campus-map-search-and-places.md) |   Alta    | Propuesta para Sprint 9; pendiente de refinamiento.  |
-|  40   | [HU-057 — Publicar un aviso](../requirements/user-stories/05-incidents-and-notices.md)                                   |   Alta    | Propuesta para Sprint 9; pendiente de refinamiento.  |
-|  41   | [HU-058 — Consultar avisos](../requirements/user-stories/05-incidents-and-notices.md)                                    |   Alta    | Propuesta para Sprint 9; pendiente de refinamiento.  |
-|  42   | [HU-059 — Administrar un aviso](../requirements/user-stories/05-incidents-and-notices.md)                                |   Alta    | Propuesta para Sprint 9; pendiente de refinamiento.  |
-|  43   | [HU-070 — Gestionar edificios y lugares](../requirements/user-stories/07-administration-and-data.md)                     |   Alta    | Propuesta para Sprint 10; pendiente de refinamiento. |
-|  44   | [HU-071 — Gestionar puntos y categorías](../requirements/user-stories/07-administration-and-data.md)                     |   Alta    | Propuesta para Sprint 10; pendiente de refinamiento. |
-|  45   | [HU-073 — Gestionar accesibilidad](../requirements/user-stories/07-administration-and-data.md)                           |   Alta    | Propuesta para Sprint 10; pendiente de refinamiento. |
-|  46   | [HU-075 — Consultar el estado de los datos](../requirements/user-stories/07-administration-and-data.md)                  |   Alta    | Propuesta para Sprint 10; pendiente de refinamiento. |
-|  47   | [HU-076 — Gestionar usuarios y roles](../requirements/user-stories/07-administration-and-data.md)                        |   Alta    | Propuesta para Sprint 10; pendiente de refinamiento. |
-|  48   | [HU-072 — Gestionar transporte y paradas](../requirements/user-stories/07-administration-and-data.md)                    |   Alta    | Propuesta para Sprint 11; pendiente de refinamiento. |
-|  49   | [HU-080 — Gestionar fuentes con errores](../requirements/user-stories/07-administration-and-data.md)                     |   Alta    | Propuesta para Sprint 11; pendiente de refinamiento. |
-|  50   | [HU-007 — Gestionar permisos del dispositivo](../requirements/user-stories/01-account-access.md)                         |   Alta    | Propuesta para Sprint 12; pendiente de refinamiento. |
-|  51   | [HU-064 — Recibir una notificación relevante](../requirements/user-stories/06-personalization-and-notifications.md)      |   Alta    | Propuesta para Sprint 12; pendiente de refinamiento. |
-|  52   | [HU-094 — Gestionar errores y falta de conexión](../requirements/user-stories/08-security-privacy-and-quality.md)        |   Alta    | Propuesta para Sprint 13; pendiente de refinamiento. |
-|  53   | [HU-095 — Utilizar una interfaz accesible](../requirements/user-stories/08-security-privacy-and-quality.md)              |   Alta    | Propuesta para Sprint 13; pendiente de refinamiento. |
+| Orden | HU y ficha                                                                                                               | Prioridad | Estado actual en el repositorio                                                                  |
+| :---: | ------------------------------------------------------------------------------------------------------------------------ | :-------: | ------------------------------------------------------------------------------------------------ |
+|  37   | [HU-054 — Gestionar una incidencia](../requirements/user-stories/05-incidents-and-notices.md)                            |   Alta    | Refinada por el Product Owner; candidata al Sprint 8, pendiente de selección en Sprint Planning. |
+|  38   | [HU-055 — Actualizar el estado de una incidencia](../requirements/user-stories/05-incidents-and-notices.md)              |   Alta    | Refinada por el Product Owner; candidata al Sprint 8, pendiente de selección en Sprint Planning. |
+|  39   | [HU-016 — Consultar cierres y restricciones en el mapa](../requirements/user-stories/02-campus-map-search-and-places.md) |   Alta    | Propuesta para Sprint 9; pendiente de refinamiento.                                              |
+|  40   | [HU-057 — Publicar un aviso](../requirements/user-stories/05-incidents-and-notices.md)                                   |   Alta    | Propuesta para Sprint 9; pendiente de refinamiento.                                              |
+|  41   | [HU-058 — Consultar avisos](../requirements/user-stories/05-incidents-and-notices.md)                                    |   Alta    | Propuesta para Sprint 9; pendiente de refinamiento.                                              |
+|  42   | [HU-059 — Administrar un aviso](../requirements/user-stories/05-incidents-and-notices.md)                                |   Alta    | Propuesta para Sprint 9; pendiente de refinamiento.                                              |
+|  43   | [HU-070 — Gestionar edificios y lugares](../requirements/user-stories/07-administration-and-data.md)                     |   Alta    | Propuesta para Sprint 10; pendiente de refinamiento.                                             |
+|  44   | [HU-071 — Gestionar puntos y categorías](../requirements/user-stories/07-administration-and-data.md)                     |   Alta    | Propuesta para Sprint 10; pendiente de refinamiento.                                             |
+|  45   | [HU-073 — Gestionar accesibilidad](../requirements/user-stories/07-administration-and-data.md)                           |   Alta    | Propuesta para Sprint 10; pendiente de refinamiento.                                             |
+|  46   | [HU-075 — Consultar el estado de los datos](../requirements/user-stories/07-administration-and-data.md)                  |   Alta    | Propuesta para Sprint 10; pendiente de refinamiento.                                             |
+|  47   | [HU-076 — Gestionar usuarios y roles](../requirements/user-stories/07-administration-and-data.md)                        |   Alta    | Propuesta para Sprint 10; pendiente de refinamiento.                                             |
+|  48   | [HU-072 — Gestionar transporte y paradas](../requirements/user-stories/07-administration-and-data.md)                    |   Alta    | Propuesta para Sprint 11; pendiente de refinamiento.                                             |
+|  49   | [HU-080 — Gestionar fuentes con errores](../requirements/user-stories/07-administration-and-data.md)                     |   Alta    | Propuesta para Sprint 11; pendiente de refinamiento.                                             |
+|  50   | [HU-007 — Gestionar permisos del dispositivo](../requirements/user-stories/01-account-access.md)                         |   Alta    | Propuesta para Sprint 12; pendiente de refinamiento.                                             |
+|  51   | [HU-064 — Recibir una notificación relevante](../requirements/user-stories/06-personalization-and-notifications.md)      |   Alta    | Propuesta para Sprint 12; pendiente de refinamiento.                                             |
+|  52   | [HU-094 — Gestionar errores y falta de conexión](../requirements/user-stories/08-security-privacy-and-quality.md)        |   Alta    | Propuesta para Sprint 13; pendiente de refinamiento.                                             |
+|  53   | [HU-095 — Utilizar una interfaz accesible](../requirements/user-stories/08-security-privacy-and-quality.md)              |   Alta    | Propuesta para Sprint 13; pendiente de refinamiento.                                             |
 
 ---
 
 ## 3. Historias de prioridad Media pendientes
 
-| Orden | HU y ficha                                                                                                                  | Prioridad | Estado actual en el repositorio                                               |
-| :---: | --------------------------------------------------------------------------------------------------------------------------- | :-------: | ----------------------------------------------------------------------------- |
-|  54   | [HU-056 — Confirmar que una incidencia sigue activa](../requirements/user-stories/05-incidents-and-notices.md)              |   Media   | Propuesta para Sprint 8; pendiente de refinamiento.                           |
-|  55   | [HU-077 — Consultar auditoría administrativa](../requirements/user-stories/07-administration-and-data.md)                   |   Media   | Propuesta para Sprint 8; pendiente de refinamiento.                           |
-|  56   | [HU-097 — Mantener trazabilidad de los cambios relevantes](../requirements/user-stories/08-security-privacy-and-quality.md) |   Media   | Propuesta para Sprint 8; pendiente de refinamiento.                           |
-|  57   | [HU-074 — Importar datos externos](../requirements/user-stories/07-administration-and-data.md)                              |   Media   | Propuesta para Sprint 11; pendiente de refinamiento.                          |
-|  58   | [HU-017 — Compartir un lugar o una ubicación](../requirements/user-stories/02-campus-map-search-and-places.md)              |   Media   | Propuesta para Sprint 12; pendiente de refinamiento.                          |
-|  59   | [HU-029 — Guardar rutas habituales](../requirements/user-stories/03-routes-and-transit.md)                                  |   Media   | Propuesta para Sprint 12; pendiente de refinamiento.                          |
-|  60   | [HU-061 — Consultar búsquedas y rutas recientes](../requirements/user-stories/06-personalization-and-notifications.md)      |   Media   | Propuesta para Sprint 12; pendiente de refinamiento.                          |
-|  61   | [HU-062 — Configurar preferencias de movilidad](../requirements/user-stories/06-personalization-and-notifications.md)       |   Media   | Propuesta para Sprint 12; pendiente de refinamiento.                          |
-|  62   | [HU-063 — Configurar notificaciones](../requirements/user-stories/06-personalization-and-notifications.md)                  |   Media   | Propuesta para Sprint 12; pendiente de refinamiento.                          |
-|  63   | [HU-066 — Compartir una ruta](../requirements/user-stories/06-personalization-and-notifications.md)                         |   Media   | Propuesta para Sprint 12; pendiente de refinamiento.                          |
-|  64   | [HU-096 — Consultar ayuda y soporte](../requirements/user-stories/08-security-privacy-and-quality.md)                       |   Media   | Propuesta para Sprint 13; pendiente de refinamiento.                          |
-|  65   | [HU-028 — Consultar información en tiempo real](../requirements/user-stories/03-routes-and-transit.md)                      |   Media   | Fuera del horizonte actual; requiere una fuente autorizada y validada.        |
-|  66   | [HU-078 — Consultar estadísticas de uso](../requirements/user-stories/07-administration-and-data.md)                        |   Media   | Fuera del horizonte actual; finalidad y tratamiento de privacidad pendientes. |
+| Orden | HU y ficha                                                                                                                  | Prioridad | Estado actual en el repositorio                                                                                   |
+| :---: | --------------------------------------------------------------------------------------------------------------------------- | :-------: | ----------------------------------------------------------------------------------------------------------------- |
+|  54   | [HU-056 — Confirmar que una incidencia sigue activa](../requirements/user-stories/05-incidents-and-notices.md)              |   Media   | Refinada por el Product Owner; candidata al Sprint 8, pendiente de selección en Sprint Planning.                  |
+|  55   | [HU-077 — Consultar auditoría administrativa](../requirements/user-stories/07-administration-and-data.md)                   |   Media   | Refinada por el Product Owner; política para datos reales pendiente de aprobación; selección de Sprint pendiente. |
+|  56   | [HU-097 — Mantener trazabilidad de los cambios relevantes](../requirements/user-stories/08-security-privacy-and-quality.md) |   Media   | Refinada para el corte de incidencias; la cobertura global sigue pendiente y no se declara completada.            |
+|  57   | [HU-074 — Importar datos externos](../requirements/user-stories/07-administration-and-data.md)                              |   Media   | Propuesta para Sprint 11; pendiente de refinamiento.                                                              |
+|  58   | [HU-017 — Compartir un lugar o una ubicación](../requirements/user-stories/02-campus-map-search-and-places.md)              |   Media   | Propuesta para Sprint 12; pendiente de refinamiento.                                                              |
+|  59   | [HU-029 — Guardar rutas habituales](../requirements/user-stories/03-routes-and-transit.md)                                  |   Media   | Propuesta para Sprint 12; pendiente de refinamiento.                                                              |
+|  60   | [HU-061 — Consultar búsquedas y rutas recientes](../requirements/user-stories/06-personalization-and-notifications.md)      |   Media   | Propuesta para Sprint 12; pendiente de refinamiento.                                                              |
+|  61   | [HU-062 — Configurar preferencias de movilidad](../requirements/user-stories/06-personalization-and-notifications.md)       |   Media   | Propuesta para Sprint 12; pendiente de refinamiento.                                                              |
+|  62   | [HU-063 — Configurar notificaciones](../requirements/user-stories/06-personalization-and-notifications.md)                  |   Media   | Propuesta para Sprint 12; pendiente de refinamiento.                                                              |
+|  63   | [HU-066 — Compartir una ruta](../requirements/user-stories/06-personalization-and-notifications.md)                         |   Media   | Propuesta para Sprint 12; pendiente de refinamiento.                                                              |
+|  64   | [HU-096 — Consultar ayuda y soporte](../requirements/user-stories/08-security-privacy-and-quality.md)                       |   Media   | Propuesta para Sprint 13; pendiente de refinamiento.                                                              |
+|  65   | [HU-028 — Consultar información en tiempo real](../requirements/user-stories/03-routes-and-transit.md)                      |   Media   | Fuera del horizonte actual; requiere una fuente autorizada y validada.                                            |
+|  66   | [HU-078 — Consultar estadísticas de uso](../requirements/user-stories/07-administration-and-data.md)                        |   Media   | Fuera del horizonte actual; finalidad y tratamiento de privacidad pendientes.                                     |
 
 ---
 
@@ -110,9 +110,10 @@ La publicación del código no amplía los criterios satisfechos: HU-024 permane
 
 ## 5. Registro de cambios relevantes en el backlog
 
-| Fecha      | Cambio                                                                                                           | Motivo                                                                                             | Referencia                                                                                      |
-| ---------- | ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| 26/11/2026 | Reorganizar el backlog con el catálogo actual, las prioridades de las historias y los resultados de Sprints 1–7. | Reflejar las 69 historias y distinguir implementación publicada, cortes abiertos y trabajo futuro. | [PR #50](https://github.com/ddavid07/UniMovil/pull/50) · [Iteraciones](../iterations/README.md) |
+| Fecha      | Cambio                                                                                                           | Motivo                                                                                                                                           | Referencia                                                                                      |
+| ---------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| 26/11/2026 | Reorganizar el backlog con el catálogo actual, las prioridades de las historias y los resultados de Sprints 1–7. | Reflejar las 69 historias y distinguir implementación publicada, cortes abiertos y trabajo futuro.                                               | [PR #50](https://github.com/ddavid07/UniMovil/pull/50) · [Iteraciones](../iterations/README.md) |
+| 27/11/2026 | Refinar HU-054, HU-055, HU-056, HU-077 y HU-097 para el corte candidato del Sprint 8.                            | Aclarar flujo, transiciones, privacidad, confirmaciones y auditoría; mantener pendiente la selección del Sprint y la política para datos reales. | [Plan del Sprint 8](../iterations/sprint-08/README.md)                                          |
 
 ## Criterios de ordenación
 
