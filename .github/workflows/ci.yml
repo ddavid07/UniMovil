@@ -47,6 +47,12 @@ jobs:
       - name: Run API unit tests
         run: npm run api:test
 
+      - name: Run admin unit tests
+        run: npm run admin:test
+
+      - name: Build admin application
+        run: npm run admin:build
+
       - name: Start local Supabase
         run: SUPABASE_EXPERIMENTAL_STACK=1 npx supabase start --runtime docker --eager > /dev/null
 

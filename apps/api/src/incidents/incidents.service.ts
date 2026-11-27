@@ -12,7 +12,7 @@ import {
 import { createClient } from '@supabase/supabase-js';
 import { createHash, randomUUID } from 'node:crypto';
 import sharp from 'sharp';
-import { createIncidentSchema } from '@unimovil/contracts';
+import { createIncidentSchema, type ConfirmationOutcome } from '@unimovil/contracts';
 import { DatabaseService } from '../database/database.service';
 
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
@@ -104,6 +104,7 @@ export class IncidentsService implements OnModuleInit, OnModuleDestroy {
     const result = await this.database.withRole('anon', null, (client) =>
       client.query(
         `SELECT public_id AS "publicId", category, description,
+                approximate_zone AS "approximateZone",
                 operational_status AS status, updated_at AS "updatedAt",
                 latitude::double precision, longitude::double precision
          FROM unimovil.public_incidents
@@ -115,6 +116,84 @@ export class IncidentsService implements OnModuleInit, OnModuleDestroy {
       ),
     );
     return result.rows;
+  }
+
+  async getOwnDetail(userId: string, incidentId: string) {
+    const incidentResult = await this.database.withRole(
+      'authenticated',
+      userId,
+      (client) =>
+        client.query(
+          `SELECT id, public_id AS "publicId", category, description,
+                perceived_priority AS "perceivedPriority",
+                operational_status AS status, visibility,
+                closure_reason AS "closureReason",
+                extensions.ST_Y(location::extensions.geometry) AS latitude,
+                extensions.ST_X(location::extensions.geometry) AS longitude,
+                created_at AS "createdAt", updated_at AS "updatedAt"
+         FROM unimovil.incidents
+         WHERE id = $1 AND owner_id = $2`,
+          [incidentId, userId],
+        ),
+    );
+    const incident = incidentResult.rows[0];
+    if (!incident) throw new NotFoundException('No se encontró la incidencia.');
+    const historyResult = await this.database.withRole(
+      'authenticated',
+      userId,
+      (client) =>
+        client.query(
+          `SELECT id, from_status AS "fromStatus", to_status AS "toStatus",
+                  closure_kind AS "closureKind", reason,
+                  informant_response AS "informantResponse",
+                  created_at AS "createdAt"
+           FROM unimovil.incident_status_history
+           WHERE incident_id = $1
+           ORDER BY created_at ASC, id ASC`,
+          [incidentId],
+        ),
+    );
+    return { ...incident, statusHistory: historyResult.rows };
+  }
+
+  async upsertConfirmation(
+    userId: string,
+    target: { publicId?: string; incidentId?: string },
+    outcome: ConfirmationOutcome,
+  ) {
+    return this.database.withRole('authenticated', userId, async (client) => {
+      const incidentResult = target.publicId
+        ? await client.query<{ id: string; operational_status: string }>(
+            `SELECT id, operational_status
+             FROM unimovil.incidents
+             WHERE public_id = $1 AND visibility = 'published'`,
+            [target.publicId],
+          )
+        : await client.query<{ id: string; operational_status: string }>(
+            `SELECT id, operational_status
+             FROM unimovil.incidents
+             WHERE id = $1 AND owner_id = $2`,
+            [target.incidentId, userId],
+          );
+
+      const incident = incidentResult.rows[0];
+      if (!incident) throw new NotFoundException('No se encontró la incidencia.');
+      if (incident.operational_status === 'closed') {
+        throw new BadRequestException(
+          'No se aceptan confirmaciones para incidencias cerradas.',
+        );
+      }
+
+      const saved = await client.query(
+        `INSERT INTO unimovil.incident_confirmations (incident_id, user_id, outcome)
+         VALUES ($1, $2, $3)
+         ON CONFLICT (incident_id, user_id) DO UPDATE
+         SET outcome = EXCLUDED.outcome, updated_at = now()
+         RETURNING id, outcome, updated_at AS "updatedAt"`,
+        [incident.id, userId, outcome],
+      );
+      return saved.rows[0];
+    });
   }
 
   async create(
@@ -286,7 +365,11 @@ export class IncidentsService implements OnModuleInit, OnModuleDestroy {
     );
     const path = result.rows[0]?.storage_path;
     if (!path) throw new NotFoundException('No se encontró la imagen.');
-    const { data, error } = await this.storage.download(path);
+    return this.downloadPrivateEvidenceByPath(path);
+  }
+
+  async downloadPrivateEvidenceByPath(storagePath: string): Promise<Buffer> {
+    const { data, error } = await this.storage.download(storagePath);
     if (error || !data) throw new NotFoundException('No se encontró la imagen.');
     return Buffer.from(await data.arrayBuffer());
   }
@@ -310,10 +393,13 @@ export class IncidentsService implements OnModuleInit, OnModuleDestroy {
   async seedPublicFixture(): Promise<void> {
     await this.database.runtimeQuery(
       `INSERT INTO unimovil.incidents
-         (public_id, category, description, operational_status, visibility, location)
+         (public_id, category, description, public_summary, approximate_zone,
+          operational_status, visibility, revision, published_revision, location)
        VALUES ('local-demo-access-obstruction', 'access_obstruction',
                'Ejemplo local: incidencia de prueba, sin relación con un problema real.',
-               'under_review', 'published',
+               'Ejemplo local: incidencia de prueba, sin relación con un problema real.',
+               'Entorno de Ciudad Universitaria (ejemplo sintético)',
+               'under_review', 'published', 1, 1,
                extensions.ST_SetSRID(
                  extensions.ST_MakePoint(-3.7262::double precision, 40.4486::double precision),
                  4326

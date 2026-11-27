@@ -96,6 +96,7 @@ async function run() {
           'publicId',
           'category',
           'description',
+          'approximateZone',
           'status',
           'updatedAt',
           'latitude',
@@ -397,6 +398,159 @@ async function run() {
     'incident evidence is not publicly readable',
   );
   console.log('✓ incident evidence bucket is private');
+
+  const manager = await createConfirmedAccount();
+  const administrator = await createConfirmedAccount();
+  await database.query(
+    `INSERT INTO unimovil.account_roles (user_id, role, display_label)
+     VALUES ($1, 'manager', 'Gestor sintético de pruebas'),
+            ($2, 'admin', 'Administrador sintético de pruebas')`,
+    [manager.id, administrator.id],
+  );
+
+  const userQueueAttempt = await api('/admin/incidents', {
+    headers: authHeaders(second.accessToken),
+  });
+  assert.equal(
+    userQueueAttempt.status,
+    403,
+    'ordinary account cannot access management queue',
+  );
+
+  const queueResponse = await api('/admin/incidents', {
+    headers: authHeaders(manager.accessToken),
+  });
+  assert.equal(queueResponse.status, 200);
+  const queueBody = await json(queueResponse);
+  const queuedIncident = queueBody.incidents.find((item) => item.id === incident.id);
+  assert.ok(queuedIncident, 'manager sees active incident in queue');
+  assert.equal(queuedIncident.ownerId, undefined, 'queue never exposes ownerId');
+
+  const detailBefore = await json(
+    await api(`/admin/incidents/${incident.id}`, {
+      headers: authHeaders(manager.accessToken),
+    }),
+  );
+  assert.equal(detailBefore.incident.ownerId, undefined);
+  assert.equal(detailBefore.incident.revision, 1);
+
+  const stalePatch = await api(`/admin/incidents/${incident.id}`, {
+    method: 'PATCH',
+    headers: {
+      ...authHeaders(manager.accessToken),
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ expectedRevision: 99, managementPriority: 'high' }),
+  });
+  assert.equal(stalePatch.status, 409, 'stale revision is rejected');
+
+  const classified = await api(`/admin/incidents/${incident.id}`, {
+    method: 'PATCH',
+    headers: {
+      ...authHeaders(manager.accessToken),
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      expectedRevision: 1,
+      managementPriority: 'high',
+      assignedTo: manager.id,
+    }),
+  });
+  assert.equal(classified.status, 200);
+  const classifiedDetail = (await json(classified)).incident;
+  assert.equal(classifiedDetail.managementPriority, 'high');
+  assert.equal(classifiedDetail.assignedTo, manager.id);
+  assert.equal(classifiedDetail.revision, 2);
+
+  const invalidSkip = await api(`/admin/incidents/${incident.id}/transitions`, {
+    method: 'POST',
+    headers: {
+      ...authHeaders(manager.accessToken),
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ expectedRevision: 2, toStatus: 'in_progress' }),
+  });
+  assert.equal(
+    invalidSkip.status,
+    400,
+    'received cannot transition directly to in_progress',
+  );
+
+  const underReview = await api(`/admin/incidents/${incident.id}/transitions`, {
+    method: 'POST',
+    headers: {
+      ...authHeaders(manager.accessToken),
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ expectedRevision: 2, toStatus: 'under_review' }),
+  });
+  assert.equal(underReview.status, 200);
+  assert.equal((await json(underReview)).incident.visibility, 'private');
+
+  const published = await api(`/admin/incidents/${incident.id}/publication`, {
+    method: 'POST',
+    headers: {
+      ...authHeaders(manager.accessToken),
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      expectedRevision: 3,
+      visibility: 'published',
+      publicSummary: 'Resumen público aprobado para prueba automatizada.',
+      approximateZone: 'Entorno de prueba sintética',
+    }),
+  });
+  assert.equal(published.status, 200);
+  assert.equal((await json(published)).incident.publishedRevision, 4);
+
+  const confirmationResponse = await api(
+    `/incidents/${incident.publicId}/confirmations`,
+    {
+      method: 'POST',
+      headers: {
+        ...authHeaders(second.accessToken),
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ outcome: 'still_active' }),
+    },
+  );
+  assert.equal(confirmationResponse.status, 201);
+
+  const detailWithConfirmation = await json(
+    await api(`/admin/incidents/${incident.id}`, {
+      headers: authHeaders(manager.accessToken),
+    }),
+  );
+  assert.equal(detailWithConfirmation.incident.confirmationSummary.stillActiveCount, 1);
+
+  const managerEvidence = await api(
+    `/admin/incidents/${incident.id}/attachments/${attachment.id}`,
+    { headers: authHeaders(manager.accessToken) },
+  );
+  assert.equal(managerEvidence.status, 200);
+
+  const managerAuditDenied = await api('/admin/audit-events', {
+    headers: authHeaders(manager.accessToken),
+  });
+  assert.equal(managerAuditDenied.status, 403, 'manager cannot read admin audit log');
+
+  const adminAudit = await api(`/admin/audit-events?entityId=${incident.id}`, {
+    headers: authHeaders(administrator.accessToken),
+  });
+  assert.equal(adminAudit.status, 200);
+  const auditBody = await json(adminAudit);
+  assert.ok(auditBody.events.length >= 4);
+  assert.ok(
+    auditBody.events.every(
+      (event) =>
+        !JSON.stringify(event).includes(first.email) &&
+        !JSON.stringify(event).includes('Incidencia sintética'),
+    ),
+    'audit log does not expose informant email or raw description',
+  );
+  console.log(
+    '✓ Sprint 8 roles, incident management transitions, publication, evidence audit and admin audit log',
+  );
 
   const deleted = await api('/me', {
     method: 'DELETE',
