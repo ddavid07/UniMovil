@@ -18,7 +18,7 @@ Los incrementos de los Sprints 1–7 se integraron mediante [PR #50](https://git
 
 ## Planes propuestos
 
-Los Sprints 8–13 son propuestas sujetas a refinamiento y selección antes de iniciar cada uno.
+El Sprint 8 tiene refinamiento funcional del Product Owner registrado y sigue pendiente de Sprint Planning y selección. Los Sprints 9–13 son propuestas sujetas a refinamiento y selección antes de iniciar cada uno.
 
 - [Sprint 8 — gestión de incidencias y auditoría](sprint-08/README.md)
 - [Sprint 9 — avisos y restricciones del campus](sprint-09/README.md)

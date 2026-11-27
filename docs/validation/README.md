@@ -4,7 +4,7 @@ Este directorio reúne la trazabilidad entre requisitos (`HU-XXX` y criterios `H
 
 ## Contenido
 
-- [Matriz de trazabilidad](traceability.md): relación de las 69 historias de usuario (344 criterios) con sus pruebas reales en Jest, API (`tsx --test`), integración con Supabase local, smoke web en Chromium y límites vigentes.
+- [Matriz de trazabilidad](traceability.md): relación de las 69 historias de usuario (354 criterios) con sus pruebas reales en Jest, API (`tsx --test`), integración con Supabase local, smoke web en Chromium y límites vigentes.
 
 ## Referencias
 
