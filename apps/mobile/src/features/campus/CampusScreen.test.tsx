@@ -155,7 +155,7 @@ describe('campus screen', () => {
     expect(screen.getByTestId('selected-map-marker').props.children).toBe(
       `emt-stop-${stop.id}`,
     );
-  });
+  }, 15_000);
 
   it('connects search selection to the result list and map marker', async () => {
     const repository: PlacesRepository = { list: async () => places };

@@ -1,5 +1,15 @@
 import type { IncidentCategory, IncidentStatus } from '@unimovil/contracts';
 
+export function localDate(value: string): string {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime())
+    ? 'Fecha no disponible'
+    : new Intl.DateTimeFormat('es-ES', {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+      }).format(date);
+}
+
 export const INCIDENT_CATEGORY_LABELS: Readonly<Record<IncidentCategory, string>> = {
   access_obstruction: 'Obstáculo en un acceso',
   lift_or_elevator: 'Ascensor o elevador',

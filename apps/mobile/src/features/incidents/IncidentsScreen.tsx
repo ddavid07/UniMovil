@@ -26,8 +26,9 @@ import { API_BASE_URL } from '../account/api-config';
 import { localPlacesRepository } from '../campus/data/repository';
 import { createSearchIndex, searchPlaces, type Place } from '../campus/domain/places';
 import { colors } from '../../shared/theme';
-import { INCIDENT_CATEGORY_LABELS, INCIDENT_STATUS_LABELS } from './labels';
+import { INCIDENT_CATEGORY_LABELS, INCIDENT_STATUS_LABELS, localDate } from './labels';
 import { isWithinIncidentZone } from './domain/incident-zone';
+import { ConfirmationForm, OwnIncidentDetail } from './IncidentFollowUp';
 
 const CATEGORY_OPTIONS: readonly IncidentCategory[] = incidentCategories;
 const PRIORITY_OPTIONS: readonly IncidentPriority[] = incidentPriorities;
@@ -57,21 +58,24 @@ function newIdempotencyKey(): string {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`;
 }
 
-function localDate(value: string): string {
-  const date = new Date(value);
-  return Number.isNaN(date.getTime())
-    ? 'Fecha no disponible'
-    : new Intl.DateTimeFormat('es-ES', {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-      }).format(date);
-}
-
 export function IncidentsScreen() {
   const { user, request } = useAuth();
+  return (
+    <IncidentContent key={user?.id ?? 'anonymous'} user={user} request={request} />
+  );
+}
+
+function IncidentContent({
+  user,
+  request,
+}: Pick<ReturnType<typeof useAuth>, 'user' | 'request'>) {
   const { incidentId } = useLocalSearchParams<{ incidentId?: string }>();
   const [feed, setFeed] = useState<readonly PublicIncident[]>([]);
   const [ownIncidents, setOwnIncidents] = useState<readonly OwnIncident[]>([]);
+  const [ownListState, setOwnListState] = useState<'loading' | 'ready' | 'error'>(
+    'loading',
+  );
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [places, setPlaces] = useState<readonly Place[]>([]);
   const [categoryFilter, setCategoryFilter] = useState<IncidentCategory | 'all'>('all');
   const [statusFilter, setStatusFilter] = useState<IncidentStatus | 'all'>('all');
@@ -129,22 +133,23 @@ export function IncidentsScreen() {
   }, [categoryFilter, statusFilter]);
 
   const loadOwnIncidents = useCallback(async (): Promise<void> => {
-    if (!user) {
-      setOwnIncidents([]);
-      return;
-    }
+    if (!user) return;
+    setOwnListState('loading');
     try {
       const response = await request('/me/incidents');
       const result = (await response.json()) as { incidents: OwnIncident[] };
       setOwnIncidents(result.incidents);
-    } catch (cause) {
-      setError(
-        cause instanceof Error
-          ? cause.message
-          : 'No se pudo cargar el historial propio.',
-      );
+      setOwnListState('ready');
+    } catch {
+      setOwnListState('error');
     }
   }, [request, user]);
+
+  const updateOwnStatus = useCallback((id: string, status: IncidentStatus) => {
+    setOwnIncidents((current) =>
+      current.map((item) => (item.id === id ? { ...item, status } : item)),
+    );
+  }, []);
 
   useEffect(() => {
     void localPlacesRepository.list().then(setPlaces);
@@ -424,6 +429,17 @@ export function IncidentsScreen() {
                 <Pressable accessibilityRole="link" onPress={() => router.replace('/')}>
                   <Text style={styles.link}>Ver mapa del campus</Text>
                 </Pressable>
+                {user ? (
+                  <ConfirmationForm
+                    path={`/incidents/${encodeURIComponent(incident.publicId)}`}
+                    status={incident.status}
+                    request={request}
+                  />
+                ) : (
+                  <Link href="/account" style={styles.link}>
+                    Inicia sesión para confirmar esta incidencia
+                  </Link>
+                )}
               </View>
             ))}
           </View>
@@ -586,7 +602,22 @@ export function IncidentsScreen() {
             <Text accessibilityRole="header" style={styles.sectionTitle}>
               Mis incidencias
             </Text>
-            {ownIncidents.length === 0 ? (
+            {ownListState === 'loading' ? (
+              <Text accessibilityLiveRegion="polite">Cargando tus incidencias…</Text>
+            ) : ownListState === 'error' ? (
+              <View>
+                <Text accessibilityRole="alert">
+                  No se han podido cargar tus incidencias.
+                </Text>
+                <Pressable
+                  accessibilityRole="button"
+                  onPress={() => void loadOwnIncidents()}
+                  style={styles.secondaryButton}
+                >
+                  <Text style={styles.secondaryButtonText}>Reintentar la consulta</Text>
+                </Pressable>
+              </View>
+            ) : ownIncidents.length === 0 ? (
               <Text style={styles.body}>Todavía no has enviado incidencias.</Text>
             ) : (
               ownIncidents.map((incident) => (
@@ -605,6 +636,28 @@ export function IncidentsScreen() {
                     {incident.latitude.toFixed(4)}, {incident.longitude.toFixed(4)} ·
                     referencia {incident.publicId}
                   </Text>
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityState={{ expanded: expandedId === incident.id }}
+                    accessibilityLabel={`${expandedId === incident.id ? 'Ocultar' : 'Ver'} detalle de ${incident.publicId}`}
+                    style={styles.secondaryButton}
+                    onPress={() =>
+                      setExpandedId((current) =>
+                        current === incident.id ? null : incident.id,
+                      )
+                    }
+                  >
+                    <Text style={styles.secondaryButtonText}>
+                      {expandedId === incident.id ? 'Ocultar detalle' : 'Ver detalle'}
+                    </Text>
+                  </Pressable>
+                  {expandedId === incident.id && (
+                    <OwnIncidentDetail
+                      incidentId={incident.id}
+                      request={request}
+                      onStatus={updateOwnStatus}
+                    />
+                  )}
                 </View>
               ))
             )}
