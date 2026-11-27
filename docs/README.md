@@ -10,6 +10,7 @@ Este directorio reúne la documentación versionada junto al código. Su conteni
 - [Desarrollo local](development/README.md): instalación, API, Supabase local, migraciones, builds nativos y exportación web.
 - [Fuentes de datos y atribuciones](development/data-sources.md): catálogo, cartografía, red de rutas, horarios de EMT y marca institucional.
 - [Iteraciones](iterations/README.md): índice, planes y resultados de los Sprints 1–13; incluye una [plantilla común](iterations/sprint-template.md).
+- [Validación y trazabilidad](validation/README.md): matriz `HU ↔ criterios ↔ pruebas` y verificación de los incrementos.
 - [Riesgos](risks/README.md): índice y plan transversal de reducción, supervisión y gestión del riesgo.
 - [Sprint 1](iterations/sprint-01/README.md): fundamentos y primer flujo de mapa y búsqueda.
 - [Sprint 2](iterations/sprint-02/README.md): ubicación en primer plano y filtros del mapa; evidencia y límites del incremento integrado.
