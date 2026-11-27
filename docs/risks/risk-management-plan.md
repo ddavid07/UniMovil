@@ -2,7 +2,7 @@
 
 - **Proyecto:** UniMovil, plataforma de orientación y movilidad para el Campus de Moncloa de la UCM.
 - **Equipo:** Equipo UniMovil.
-- **Última revisión documental:** 26 de noviembre de 2026.
+- **Última revisión documental:** 27 de noviembre de 2026 (ampliado con riesgos de equipo, ritmo, integración de monorepo y uso de IA; mantiene las comprobaciones técnicas del 26 de noviembre de 2026).
 - **Ámbito:** estado documentado de los Sprints 1–7 y riesgos relevantes para los siguientes incrementos y para una futura operación del producto.
 - **Método:** estrategia proactiva, análisis de probabilidad y consecuencia, priorización SQAS-SEI y acciones de reducción, supervisión y gestión (RSGR), según los [materiales de gestión de riesgos](../assets/course-materials/lecture-notes/topic-05-risk-management.pdf) y el [material de RSGR](../assets/course-materials/lecture-notes/topic-07-4-risk-management.pdf).
 
@@ -58,17 +58,21 @@ Las puntuaciones son una valoración cualitativa del estado documentado, no medi
 | ----- | --------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- | :-----------: | :----------: | :----: | :--: | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | RG-02 | No disponer de una ruta accesible respaldada por datos confirmados o inferir accesibilidad sin evidencia suficiente.                          | Técnico / datos             | Probable (4)  | Crítica (4)  | **IN** |  16  | HU-024 permanece abierta; el cliente aplica una respuesta segura y no afirma accesibilidad no verificada.                                                    |
 | RG-06 | Usar cuentas o reportes con datos reales antes de resolver operación, privacidad, retención, correo y moderación institucional.               | Operación / privacidad      | Probable (4)  | Crítica (4)  | **IN** |  16  | Los Sprints 6–7 se probaron con Supabase local y datos sintéticos; el riesgo aceptado es para ese desarrollo local.                                          |
+| RG-10 | Incorporar código, tests o documentación generados con asistencia de IA sin revisión, pruebas comprendidas ni dominio del equipo.             | Proceso / equipo            | Probable (4)  | Crítica (4)  | **IN** |  16  | El monorepo combina Expo, MapLibre, NestJS, Drizzle y Supabase; requiere PRs acotadas y comprensión verificable antes de cada RTF.                           |
 | RG-05 | No detectar defectos específicos de iOS nativo por falta de builds y validación con macOS/Xcode en los Sprints 1–7.                           | Técnico / verificación      | Frecuente (5) |  Seria (3)   | **H**  |  15  | Excepción documentada en esos Sprints; una exportación JavaScript no equivale a validación nativa.                                                           |
 | RG-01 | Que la cobertura, el grafo peatonal o los lugares derivados de OpenStreetMap estén incompletos, cambien o no representen la situación actual. | Técnico / datos             | Probable (4)  |  Seria (3)   | **H**  |  12  | Las fuentes y fechas están trazadas; son datos comunitarios y no certifican apertura, conexión ni condiciones del campus.                                    |
+| RG-11 | Acumular trabajo entre iteraciones y perder ritmo semanal durante los Sprints 8–13 por carga académica o falta de reparto claro.              | Proyecto / planificación    | Probable (4)  |  Seria (3)   | **H**  |  12  | Sprints 8–13 siguen propuestos e incluyen `apps/admin`, avisos, catálogo y accesibilidad transversal; se mitiga dividiendo en cortes semanales.              |
 | RG-03 | Que las teselas raster estándar de OpenStreetMap no estén disponibles o no sean apropiadas para un piloto o uso público sostenido.            | Técnico / proveedor externo | Ocasional (3) |  Seria (3)   | **M**  |  9   | El uso actual se limita a navegación interactiva de bajo volumen; el proveedor futuro no está elegido.                                                       |
 | RG-04 | Que los horarios estáticos de EMT dejen de reflejar el servicio vigente.                                                                      | Técnico / datos externos    | Ocasional (3) |  Seria (3)   | **M**  |  9   | El snapshot tiene fecha y procedencia; no ofrece llegadas en tiempo real.                                                                                    |
 | RG-07 | Que una alerta de dependencia conocida siga sin corrección compatible o reaparezca tras cambios de paquetes.                                  | Técnico / mantenimiento     | Ocasional (3) |  Seria (3)   | **M**  |  9   | `npm audit --omit=optional` detectó 8 vulnerabilidades moderadas y ninguna alta o crítica el 26/11/2026; las correcciones sugeridas requieren cambios major. |
+| RG-12 | Desalineación entre código, contratos, documentación y Wiki tras refactorizaciones o cambios rápidos sin actualizar trazabilidad.             | Proceso / configuración     | Ocasional (3) |  Seria (3)   | **M**  |  9   | Reconciliado en PR #58–#63 (`HU-XXX.n`, matriz de trazabilidad y Wiki); exige mantener `docs/` como fuente única en cada PR.                                 |
+| RG-13 | Romper contratos compartidos, reglas ESLint/TypeScript o el pipeline CI al incorporar `apps/admin` en los Sprints 8–10.                       | Técnico / integración       | Ocasional (3) |  Seria (3)   | **M**  |  9   | El monorepo solo incluye `api`, `mobile` y `contracts`; `apps/admin` (React/Vite) deberá integrarse en cortes pequeños validados en local y CI.              |
 | RG-08 | Que la configuración efectiva de GitHub no coincida con los workflows y la política de CI versionados.                                        | Proyecto / configuración    |  Remota (2)   |  Seria (3)   | **L**  |  6   | Protección de `main`, tres checks requeridos, cero aprobaciones, auto-merge y opciones de fusión verificados el 26/11/2026; persiste riesgo de deriva.       |
 | RG-09 | Exponer credenciales, tokens o datos personales en el repositorio, cliente, artefactos o registros.                                           | Seguridad / privacidad      |  Remota (2)   | Crítica (4)  | **M**  |  8   | Secret scanning, push protection y Dependabot security updates están habilitados; los patrones no asociados a proveedores están deshabilitados.              |
 
 ### 2.1. Criterio de intervención
 
-Las fichas de nivel **IN** y **H** reciben tratamiento prioritario porque afectan a la cobertura segura de rutas, a la futura operación con datos reales, a la validación de iOS y a la fiabilidad de la cartografía. Los riesgos de nivel **M** también tienen medidas de reducción y respuesta en este plan; se revaloran cuando se actualiza una dependencia o fuente, se cambia la configuración remota o se prepara un piloto o una versión pública. La priorización no asigna fechas ni supone que una propuesta de Sprint esté seleccionada.
+Las fichas de nivel **IN** y **H** reciben tratamiento prioritario porque afectan a la cobertura segura de rutas, a la futura operación con datos reales, al dominio real del código asistido por IA, a la planificación semanal de Sprints 8–13, a la validación de iOS y a la fiabilidad de la cartografía. Los riesgos de nivel **M** también tienen medidas de reducción y respuesta en este plan; se revaloran cuando se actualiza una dependencia o fuente, se introduce un workspace nuevo como `apps/admin`, se cambia la configuración remota o se prepara un piloto o una versión pública. La priorización no asigna fechas ni supone que una propuesta de Sprint esté seleccionada.
 
 ## 3. Fichas RSGR
 
@@ -144,6 +148,38 @@ Las fichas de nivel **IN** y **H** reciben tratamiento prioritario porque afecta
 - **Supervisión:** revisar diffs y artefactos antes de integrarlos, comprobar el contenido de las plantillas de entorno y verificar los controles de GitHub cuando cambien.
 - **Gestión:** revocar y rotar de inmediato cualquier credencial expuesta, retirar el secreto del servicio y del historial conforme al procedimiento aplicable, evaluar el acceso a datos y registrar la respuesta sin volver a copiar el valor comprometido.
 
+### RG-10 — Dependencia de código o textos generados con IA sin comprensión del equipo
+
+- **Valoración:** Probable (4) × Crítica (4) = **IN (16)**.
+- **Evidencia:** [AGENTS.md](../../AGENTS.md) regula explícitamente la asistencia de agentes de código sobre un monorepo amplio (Expo, MapLibre, NestJS, Drizzle y Supabase). Si un cambio generado con IA se integra sin entender sus invariantes o sin verificar qué comprueban sus pruebas, el equipo pierde capacidad de mantenimiento y defensa técnica.
+- **Reducción:** trabajar en cortes y Pull Requests pequeños por historia o bloque documental, exigir lectura del diff antes de hacer commit, validar en local `format:check`, `lint`, `typecheck`, `test:ci` y `api:test`, y acompañar cada cambio funcional con pruebas comprensibles por su autor.
+- **Supervisión:** revisar en cada PR que los contratos, casos negativos y documentos afectados coinciden con la arquitectura real; comprobar antes de cada Revisión Técnica Formal que cada miembro explica la lógica de los módulos que firma.
+- **Gestión:** si se detecta código opaco o documentación no contrastada con la ejecución real, detener nuevas ampliaciones sobre ese bloque, simplificarlo o rehacerlo en cortes revisados y corregir cualquier afirmación no comprobada.
+
+### RG-11 — Pérdida de ritmo semanal y acumulación de trabajo en Sprints 8–13
+
+- **Valoración:** Probable (4) × Seria (3) = **H (12)**.
+- **Evidencia:** tras los Sprints 1–7 permanecen propuestos los Sprints 8–13 (panel administrativo, avisos, gestión del catálogo, importadores y accesibilidad/resiliencia transversal) dentro de un calendario académico con exámenes y entregas paralelas entre cinco integrantes.
+- **Reducción:** dividir cada Sprint en cortes verticales independientes (contratos y esquema, API con pruebas, interfaz, cierre documental), asignar responsables por historia al planificar cada iteración y priorizar funcionalidades mínimas demostrables antes que abarcar un Sprint completo en bloque.
+- **Supervisión:** revisar semanalmente el avance real en GitHub (ramas activas, PRs abiertas, estado de CI y tablero de backlog) y hacer visibles los bloqueos en coordinación con el Scrum Master.
+- **Gestión:** si baja la capacidad del equipo por exámenes o bloqueos técnicos, recortar el Sprint Backlog al objetivo esencial acordado con el Product Owner y documentar honestamente el trabajo aplazado en el plan del Sprint y en el backlog.
+
+### RG-12 — Desfase entre código, contratos, documentación y Wiki
+
+- **Valoración:** Ocasional (3) × Seria (3) = **M (9)**.
+- **Evidencia:** tras la reconstrucción del baseline (`PR #50`) fueron necesarias varias iteraciones documentales (`PR #58`–`#63`) para alinear la Wiki, numerar criterios `HU-XXX.n`, añadir evaluación INVEST y construir la matriz real de trazabilidad. El repositorio distingue la documentación principal en `docs/` de la Wiki como capa de navegación.
+- **Reducción:** mantener `docs/` como única fuente de verdad (sin duplicar tablas completas en la Wiki), usar el checklist de [CONTRIBUTING.md](../../CONTRIBUTING.md) para actualizar historias, backlog, trazabilidad y planes en la misma PR de código y separar claramente planes futuros de incrementos cerrados.
+- **Supervisión:** comprobar en cada cierre de Sprint que `product-backlog.md`, `docs/validation/traceability.md`, `docs/iterations/` y la Wiki reflejan exactamente los archivos, scripts y pruebas presentes en `main`.
+- **Gestión:** cuando se detecte una discrepancia o enlace desactualizado, abrir una PR documental acotada antes de continuar añadiendo nuevas historias encima.
+
+### RG-13 — Integración del monorepo y CI al incorporar `apps/admin`
+
+- **Valoración:** Ocasional (3) × Seria (3) = **M (9)**.
+- **Evidencia:** actualmente `workspaces` en `package.json` cubre `apps/api`, `apps/mobile` y `packages/contracts`, mientras que `apps/admin` (React/Vite según [ADR-0002](../adr/0002-application-architecture-and-stack.md)) aún no existe. El workflow [ci.yml](../../.github/workflows/ci.yml) ejecuta formato, ESLint, `typecheck` de todas las workspaces, pruebas y exportaciones en cada PR.
+- **Reducción:** diseñar la entrada de `apps/admin` en un corte dedicado de Sprint 8 reutilizando `packages/contracts`, `eslint.config.mjs` y `tsconfig.base.json`, sin duplicar tipos DTO ni alterar los scripts requeridos por `apps/mobile` y `apps/api`.
+- **Supervisión:** ejecutar en local la cadena completa (`format:check`, `lint`, `typecheck`, `test:ci`, `api:test` y exportaciones) cada vez que cambie la configuración raíz o un contrato compartido.
+- **Gestión:** si un cambio transversal rompe el pipeline CI (como ocurre también ante actualizaciones externas detectadas por `check:expo`), aislar la corrección en una rama `build/` o `fix/` específica antes de reanudar nuevas funcionalidades.
+
 ## 4. Seguimiento y revisión
 
 - Los **Developers** mantienen las señales y acciones técnicas junto al código, los datos y el Sprint afectado.
@@ -156,6 +192,7 @@ Las fichas de nivel **IN** y **H** reciben tratamiento prioritario porque afecta
 ## 5. Referencias
 
 - [Product Backlog](../backlog/product-backlog.md)
+- [Matriz de trazabilidad](../validation/traceability.md)
 - [Planes y resultados de Sprints](../iterations/README.md)
 - [Metodología de trabajo](../methodology/README.md)
 - [ADRs](../adr/README.md)
