@@ -152,21 +152,24 @@
 - **Prioridad:** Media
 - **Historia:** Como administrador, quiero consultar los cambios administrativos, para saber quién modificó la información y cuándo.
 - **Criterios de aceptación:**
-  - **HU-077.1** El registro incluye usuario, fecha, acción y elemento afectado.
-  - **HU-077.2** Permite filtrar por usuario, tipo de acción y periodo.
-  - **HU-077.3** No permite modificar ni borrar registros desde la interfaz ordinaria.
-  - **HU-077.4** No expone contraseñas, tokens ni secretos.
-  - **HU-077.5** Se conserva información suficiente para investigar cambios.
-- **Reglas y dependencias:** El periodo de conservación debe definirse conforme a la política de la plataforma.
+  - **HU-077.1** La persona administradora autorizada puede consultar eventos de gestión de incidencias y filtrar por actor, acción, identificador del elemento y periodo.
+  - **HU-077.2** Cada evento muestra actor, fecha, acción, tipo e identificador del elemento afectado y resultado; estado, categoría, prioridad de gestión, asignación y publicación muestran los valores anterior y nuevo mediante campos permitidos.
+  - **HU-077.3** Los eventos se muestran del más reciente al más antiguo. La consulta permite recorrer resultados sin cambiar ni eliminar registros.
+  - **HU-077.4** También quedan visibles los intentos autenticados rechazados por permiso o transición inválida, identificados por un código de motivo; los intentos anónimos no se incorporan a esta consulta funcional.
+  - **HU-077.5** No se muestran contraseñas, tokens, correos, contenido de fotografías, descripciones originales, respuestas privadas ni cargas completas de solicitudes.
+  - **HU-077.6** La auditoría refleja cada acción administrativa satisfactoria que cambie categoría, prioridad de gestión, asignación, estado o publicación, además de accesos autorizados a evidencias privadas.
+  - **HU-077.7** La consulta no incluye la identidad de quienes aportan confirmaciones de HU-056; solo muestra los agregados vigentes definidos en esa historia.
+- **Refinamiento del Product Owner — Sprint 8 (27-11-2026):** HU-077 cubre en este corte la auditoría de incidencias, no los cambios de catálogo, rutas o transporte de futuros incrementos. El identificador del actor es interno y estable; no se necesita exponer su correo. Los detalles se limitan a los campos permitidos para la acción, sin copiar el contenido completo del reporte ni de las evidencias.
+- **Reglas y dependencias:** La consulta se reserva a administradores autorizados, no a gestores por el mero hecho de tramitar incidencias. La interfaz ordinaria no ofrece edición ni borrado. No se establece un plazo de conservación ni una política de borrado excepcional sin aprobación competente; hasta entonces, el alcance se limita a datos sintéticos en Supabase local y no autoriza operar con datos reales o un servicio remoto.
 
 **Análisis INVEST:**
 
 - **I · Independiente.** Se apoya en la tabla de eventos auditables creada en Sprint 8; cualquier módulo posterior solo emite eventos hacia ella.
-- **N · Negociable.** Se pueden acordar los filtros iniciales, paginación y lista blanca de campos mostrados.
+- **N · Negociable.** Se puede ajustar la presentación de resultados y paginación sin cambiar los filtros o límites de información acordados.
 - **V · Valiosa.** Aporta rendición de cuentas y capacidad de diagnóstico ante cambios erróneos o accesos indebidos.
-- **E · Estimable.** Consulta paginada de solo lectura con filtros, redacción estricta de secretos y autorización exclusiva de rol administrador delimitan la historia.
+- **E · Estimable.** Consulta de solo lectura con filtros por actor, acción, elemento y periodo, redacción estricta y autorización exclusiva de rol administrador delimitan la historia.
 - **S · Pequeña.** Vista de consulta filtrada en `apps/admin` + endpoint solo lectura cabe perfectamente en Sprint 8.
-- **T · Comprobable.** Realizar acción administrativa verificando evento sin secretos, filtrar por actor/fecha y comprobar denegación de edición o borrado.
+- **T · Comprobable.** Realizar una acción de gestión y una lectura de evidencia, comprobar sus eventos sin contenido sensible, filtrar por actor/fecha y comprobar denegación de edición o borrado.
 
 ## HU-078 — Consultar estadísticas de uso
 

@@ -41,7 +41,19 @@ La verificación integrada requiere el stack local activo, migraciones aplicadas
 npm run test:local-supabase
 ```
 
-El comando crea y elimina cuentas de prueba, ejecuta el API temporalmente y comprueba registro/confirmación, sesión web, recuperación, favoritos, aislamiento, incidencias, bucket privado y borrado. El API local está en `http://127.0.0.1:3001/api`, la documentación OpenAPI en `/api/docs`, y Supabase Studio y Mailpit se exponen en los puertos que informa el CLI. No se configura un proyecto Supabase remoto.
+El comando crea y elimina cuentas de prueba, ejecuta el API temporalmente y comprueba registro/confirmación, sesión web, recuperación, favoritos, aislamiento, incidencias, bucket privado, roles/transiciones/moderación de gestión, auditoría administrativa y borrado. El API local está en `http://127.0.0.1:3001/api`, la documentación OpenAPI en `/api/docs`, y Supabase Studio y Mailpit se exponen en los puertos que informa el CLI. No se configura un proyecto Supabase remoto.
+
+## Panel administrativo (`apps/admin`)
+
+El panel de gestión de incidencias y auditoría (Sprint 8) es una aplicación separada con React, Vite y TypeScript conforme a [ADR-0002](../adr/0002-application-architecture-and-stack.md). Utiliza la sesión web BFF (`credentials: 'include'`) mediante el proxy local `/api` hacia `http://127.0.0.1:3001` y no almacena tokens en el navegador.
+
+```bash
+npm run admin:dev
+npm run admin:test
+npm run admin:build
+```
+
+En local, el panel se sirve en `http://127.0.0.1:5173`. Para acceder a la cola (`manager` o `admin`) o a la consulta de auditoría (`admin`), el rol debe existir en `unimovil.account_roles` para la cuenta sintética local; la relación UCM del perfil nunca concede permisos.
 
 ## Cliente público web
 

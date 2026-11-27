@@ -44,7 +44,7 @@ export class AccountController {
     );
     const profile = result.rows[0];
     if (!profile) throw new NotFoundException('No se encontró el perfil.');
-    return { id: user.id, email: user.email, ...profile };
+    return { id: user.id, email: user.email, role: user.role, ...profile };
   }
 
   @Patch()

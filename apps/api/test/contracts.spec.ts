@@ -1,8 +1,13 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
+  adminIncidentPublicationSchema,
+  adminIncidentTransitionSchema,
+  adminIncidentUpdateSchema,
+  auditQuerySchema,
   createIncidentSchema,
   favoriteSchema,
+  incidentConfirmationSchema,
   profilePatchSchema,
 } from '@unimovil/contracts';
 
@@ -55,6 +60,52 @@ describe('shared API contracts', () => {
     assert.equal(
       profilePatchSchema.safeParse({ relationship: 'student', role: 'admin' }).success,
       false,
+    );
+  });
+
+  it('validates Sprint 8 management, publication, confirmation and audit schemas', () => {
+    assert.equal(
+      adminIncidentUpdateSchema.safeParse({
+        expectedRevision: 1,
+        managementPriority: 'high',
+      }).success,
+      true,
+    );
+    assert.equal(
+      adminIncidentUpdateSchema.safeParse({ expectedRevision: 1 }).success,
+      false,
+    );
+    assert.equal(
+      adminIncidentPublicationSchema.safeParse({
+        expectedRevision: 1,
+        visibility: 'published',
+      }).success,
+      false,
+    );
+    assert.equal(
+      adminIncidentPublicationSchema.safeParse({
+        expectedRevision: 1,
+        visibility: 'published',
+        publicSummary: 'Acceso lateral cerrado temporalmente.',
+        approximateZone: 'Facultad de Informática',
+      }).success,
+      true,
+    );
+    assert.equal(
+      adminIncidentTransitionSchema.safeParse({
+        expectedRevision: 1,
+        toStatus: 'under_review',
+      }).success,
+      true,
+    );
+    assert.equal(
+      incidentConfirmationSchema.safeParse({ outcome: 'still_active' }).success,
+      true,
+    );
+    assert.equal(
+      auditQuerySchema.safeParse({ action: 'update_incident', page: 1, limit: 25 })
+        .success,
+      true,
     );
   });
 });

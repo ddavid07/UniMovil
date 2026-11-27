@@ -43,6 +43,23 @@ export class DatabaseService implements OnModuleDestroy {
     }
   }
 
+  async withServerTransaction<T>(
+    operation: (client: PoolClient) => Promise<T>,
+  ): Promise<T> {
+    const client = await this.pool.connect();
+    try {
+      await client.query('BEGIN');
+      const result = await operation(client);
+      await client.query('COMMIT');
+      return result;
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
   async runtimeQuery<Row extends QueryResultRow = QueryResultRow>(
     text: string,
     values: readonly unknown[] = [],

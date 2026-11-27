@@ -1,6 +1,13 @@
 import { z } from 'zod';
 import { isWithinCampusCoverage } from './campus-coverage';
+import {
+  incidentCategories,
+  incidentPriorities,
+  type IncidentCategory,
+  type IncidentStatus,
+} from './incident-management';
 export { isWithinCampusCoverage };
+export * from './incident-management';
 
 export const relationshipSchema = z.enum([
   'student',
@@ -28,25 +35,6 @@ export const favoriteSchema = z.object({
   resourceId: z.string().trim().min(1).max(160),
 });
 
-export const incidentCategories = [
-  'access_obstruction',
-  'lift_or_elevator',
-  'adapted_access_or_service',
-  'parking',
-  'bicycle_resource',
-  'other',
-] as const;
-
-export const incidentStatuses = [
-  'received',
-  'under_review',
-  'in_progress',
-  'resolved',
-  'closed',
-] as const;
-
-export const incidentPriorities = ['low', 'normal', 'high'] as const;
-
 export const campusCoordinatesSchema = z
   .object({
     latitude: z.number().finite().min(-90).max(90),
@@ -64,15 +52,13 @@ export const createIncidentSchema = z.object({
 });
 
 export type FavoriteInput = z.infer<typeof favoriteSchema>;
-export type IncidentCategory = (typeof incidentCategories)[number];
-export type IncidentStatus = (typeof incidentStatuses)[number];
-export type IncidentPriority = (typeof incidentPriorities)[number];
 export type CreateIncidentInput = z.infer<typeof createIncidentSchema>;
 
 export interface PublicIncident {
   publicId: string;
   category: IncidentCategory;
   description: string;
+  approximateZone?: string | null;
   status: IncidentStatus;
   updatedAt: string;
   latitude: number;

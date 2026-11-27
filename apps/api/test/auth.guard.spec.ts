@@ -33,6 +33,7 @@ describe('AuthGuard', () => {
       id: '2d72bf36-8a74-4ef2-9eaf-2f389b33f9ba',
       email: 'person@example.test',
       source: 'bearer',
+      role: 'user',
     };
     const guard = new AuthGuard({
       authenticateBearer: async (token: string) => {
@@ -64,6 +65,7 @@ describe('AuthGuard', () => {
         id: '2d72bf36-8a74-4ef2-9eaf-2f389b33f9ba',
         email: null,
         source: 'cookie',
+        role: 'user',
       }),
       isAllowedOrigin: () => false,
     } as unknown as AuthService);

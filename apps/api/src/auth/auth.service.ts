@@ -7,6 +7,7 @@ import {
 import { createClient, type Session, type User } from '@supabase/supabase-js';
 import { createCipheriv, createDecipheriv, createHash, randomBytes } from 'node:crypto';
 import { parse, serialize } from 'cookie';
+import type { AccountRole } from '@unimovil/contracts';
 import { DatabaseService } from '../database/database.service';
 
 const WEB_SESSION_COOKIE = 'unimovil_session';
@@ -16,6 +17,7 @@ export interface AuthenticatedUser {
   id: string;
   email: string | null;
   source: 'bearer' | 'cookie';
+  role: AccountRole;
 }
 
 interface StoredTokens {
@@ -89,7 +91,8 @@ export class AuthService {
   async authenticateBearer(token: string): Promise<AuthenticatedUser> {
     const { data, error } = await this.client().auth.getUser(token);
     if (error || !data.user) throw new UnauthorizedException('La sesión no es válida.');
-    return this.toIdentity(data.user, 'bearer');
+    const role = await this.resolveRole(data.user.id);
+    return this.toIdentity(data.user, 'bearer', role);
   }
 
   async signUp(
@@ -118,7 +121,7 @@ export class AuthService {
     email: string,
     password: string,
   ): Promise<{
-    user: Pick<User, 'id' | 'email'>;
+    user: Pick<User, 'id' | 'email'> & { role: AccountRole };
     cookie: string;
   }> {
     const { data, error } = await this.client().auth.signInWithPassword({
@@ -130,8 +133,9 @@ export class AuthService {
         'No se pudo iniciar sesión. Comprueba el correo y la contraseña.',
       );
     }
+    const role = await this.resolveRole(data.user.id);
     return {
-      user: { id: data.user.id, email: data.user.email },
+      user: { id: data.user.id, email: data.user.email, role },
       cookie: await this.createWebSession(data.session),
     };
   }
@@ -199,7 +203,8 @@ export class AuthService {
         [sessionHash, this.encrypt(tokens), new Date(data.session.expires_at! * 1000)],
       );
     }
-    return { id: row.user_id, email: null, source: 'cookie' };
+    const role = await this.resolveRole(row.user_id);
+    return { id: row.user_id, email: null, source: 'cookie', role };
   }
 
   async createMobileWebSession(
@@ -346,10 +351,20 @@ export class AuthService {
     });
   }
 
+  private async resolveRole(userId: string): Promise<AccountRole> {
+    const result = await this.database.runtimeQuery<{ role: string }>(
+      'SELECT role FROM unimovil.account_roles WHERE user_id = $1',
+      [userId],
+    );
+    const role = result.rows[0]?.role;
+    return role === 'manager' || role === 'admin' ? role : 'user';
+  }
+
   private toIdentity(
     user: User,
     source: AuthenticatedUser['source'],
+    role: AccountRole,
   ): AuthenticatedUser {
-    return { id: user.id, email: user.email ?? null, source };
+    return { id: user.id, email: user.email ?? null, source, role };
   }
 }

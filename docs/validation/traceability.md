@@ -1,16 +1,17 @@
 # Matriz de trazabilidad (HU ↔ Criterios ↔ Pruebas)
 
-Esta matriz relaciona las **69 historias de usuario** y sus **344 criterios de aceptación (`HU-XXX.n`)** con los ADR aplicables, el Sprint correspondiente y las pruebas existentes en el repositorio. No agrupa resultados de distintos corredores en una sola cifra: cada capa de verificación se identifica con su script o suite real.
+Esta matriz relaciona las **69 historias de usuario** y sus **354 criterios de aceptación (`HU-XXX.n`)** con los ADR aplicables, el Sprint correspondiente y las pruebas existentes en el repositorio. No agrupa resultados de distintos corredores en una sola cifra: cada capa de verificación se identifica con su script o suite real.
 
 ## 1. Capas de verificación del repositorio
 
-| Capa / Script                 | Ubicación real                        | Alcance cubierto                                                                                                |
-| ----------------------------- | ------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| **Jest (`npm run test:ci`)**  | `apps/mobile/src/**/*.test.{ts,tsx}`  | 19 suites (64 pruebas) de dominio, catálogo, filtrado, rutas, GTFS, mapa, accesibilidad y pantalla principal.   |
-| **API (`npm run api:test`)**  | `apps/api/test/*.spec.ts`             | 3 archivos / 4 suites (11 pruebas) de `AuthGuard`, contratos compartidos Zod e imágenes/evidencias.             |
-| **Supabase local**            | `scripts/test-local-supabase.mjs`     | 11 comprobaciones de integración end-to-end contra API + Auth + Postgres/PostGIS + Storage privado y BFF/CSRF.  |
-| **Smoke Web Chromium**        | `scripts/test-web.mjs`                | Recorrido automatizado sobre `apps/mobile/dist` en `1280 × 800` y `390 × 844` (mapa, búsqueda, ruta y bus 44).  |
-| **Validación nativa Android** | Emulador Android API 36 (Sprints 1–7) | Comprobación manual documentada en `docs/iterations/sprint-01..07/README.md` (sin validación nativa iOS local). |
+| Capa / Script                    | Ubicación real                        | Alcance cubierto                                                                                                                                                            |
+| -------------------------------- | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Jest (`npm run test:ci`)**     | `apps/mobile/src/**/*.test.{ts,tsx}`  | 19 suites (64 pruebas) de dominio, catálogo, filtrado, rutas, GTFS, mapa, accesibilidad y pantalla principal.                                                               |
+| **API (`npm run api:test`)**     | `apps/api/test/*.spec.ts`             | 5 archivos / 9 suites (24 pruebas) de `AuthGuard`, `RolesGuard`, contratos compartidos Zod, evidencias y gestión/transiciones/auditoría.                                    |
+| **Admin (`npm run admin:test`)** | `apps/admin/test/*.spec.ts`           | 2 suites (5 pruebas) de dominio de gestión, transiciones, moderación y cliente BFF de `apps/admin`.                                                                         |
+| **Supabase local**               | `scripts/test-local-supabase.mjs`     | Comprobaciones e2e contra API + Auth + Postgres/PostGIS + Storage privado + BFF/CSRF + roles/gestión/auditoría — pendientes de ejecución local con Docker (CI las ejecuta). |
+| **Smoke Web Chromium**           | `scripts/test-web.mjs`                | Recorrido automatizado sobre `apps/mobile/dist` en `1280 × 800` y `390 × 844` (mapa, búsqueda, ruta y bus 44).                                                              |
+| **Validación nativa Android**    | Emulador Android API 36 (Sprints 1–7) | Comprobación manual documentada en `docs/iterations/sprint-01..07/README.md` (sin validación nativa iOS local).                                                             |
 
 ## 2. Resumen de cobertura del catálogo
 
@@ -18,9 +19,9 @@ Esta matriz relaciona las **69 historias de usuario** y sus **344 criterios de a
 | ------------------------------------------ | :--------------: | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Implementada y publicada (Sprints 1–7)** |        34        | `HU-001`–`006`, `HU-010`–`015`, `HU-020`–`023`, `HU-025`–`027`, `HU-040`–`045`, `HU-050`–`053`, `HU-060`, `HU-090`–`091`, `HU-093`, `HU-099` |
 | **Corte implementado, historia abierta**   |        2         | `HU-024` (corte seguro sin ruta accesible confirmada), `HU-092` (aviso y permisos sin preferencias persistentes)                             |
-| **Propuesta para Sprints 8–13**            |        30        | Sprints 8–13 (pendientes de refinamiento y selección)                                                                                        |
+| **Propuesta para Sprints 8–13**            |        30        | Sprint 8 refinado por Product Owner, pendiente de selección; Sprints 9–13 pendientes de refinamiento y selección                             |
 | **Fuera del horizonte actual**             |        3         | `HU-028`, `HU-078`, `HU-079`                                                                                                                 |
-| **Total del Product Backlog**              |      **69**      | **344 criterios `HU-XXX.n`**                                                                                                                 |
+| **Total del Product Backlog**              |      **69**      | **354 criterios `HU-XXX.n`**                                                                                                                 |
 
 ---
 
@@ -80,18 +81,18 @@ Esta matriz relaciona las **69 historias de usuario** y sus **344 criterios de a
 
 ### Área 05 · Incidencias y comunicaciones (`HU-050`–`HU-059`)
 
-| HU     | Criterios     | Sprint | ADR                | Pruebas y evidencias vinculadas                                                                                                                          | Estado real                               |
-| ------ | ------------- | :----: | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| HU-050 | `HU-050.1..5` |   7    | ADR-0016, ADR-0018 | `apps/api/test/contracts.spec.ts`, `apps/api/test/incidents.service.spec.ts`, `scripts/test-local-supabase.mjs`                                          | Implementada localmente (privada)         |
-| HU-051 | `HU-051.1..5` |   7    | ADR-0016           | `apps/api/test/incidents.service.spec.ts` (5 pruebas MIME/WebP/EXIF/tamaño), `scripts/test-local-supabase.mjs` (`bucket is private`)                     | Implementada localmente (Storage privado) |
-| HU-052 | `HU-052.1..5` |   7    | ADR-0015, ADR-0018 | `apps/api/test/auth.guard.spec.ts`, `scripts/test-local-supabase.mjs` (aislamiento entre cuentas), recorrido Chromium y Android 36                       | Implementada localmente                   |
-| HU-053 | `HU-053.1..5` |   7    | ADR-0018           | `apps/mobile/src/features/incidents/domain/incident-zone.test.ts` (3 pruebas de radio), `scripts/test-local-supabase.mjs` (`public incident projection`) | Implementada con fixture sintético        |
-| HU-054 | `HU-054.1..5` |   8    | ADR-0002, ADR-0018 | Pendiente (Sprint 8: panel admin y cola de revisión)                                                                                                     | Propuesta Sprint 8                        |
-| HU-055 | `HU-055.1..5` |   8    | ADR-0018           | Pendiente (Sprint 8: transiciones e historial; estados ya contemplados en modelo)                                                                        | Propuesta Sprint 8                        |
-| HU-056 | `HU-056.1..4` |   8    | ADR-0018           | Pendiente (Sprint 8: confirmaciones comunitarias)                                                                                                        | Propuesta Sprint 8                        |
-| HU-057 | `HU-057.1..5` |   9    | ADR-0002, ADR-0010 | Pendiente (Sprint 9)                                                                                                                                     | Propuesta Sprint 9                        |
-| HU-058 | `HU-058.1..5` |   9    | ADR-0010           | Pendiente (Sprint 9)                                                                                                                                     | Propuesta Sprint 9                        |
-| HU-059 | `HU-059.1..5` |   9    | ADR-0002           | Pendiente (Sprint 9)                                                                                                                                     | Propuesta Sprint 9                        |
+| HU     | Criterios     | Sprint | ADR                                    | Pruebas y evidencias vinculadas                                                                                                                           | Estado real                                           |
+| ------ | ------------- | :----: | -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| HU-050 | `HU-050.1..5` |   7    | ADR-0016, ADR-0018                     | `apps/api/test/contracts.spec.ts`, `apps/api/test/incidents.service.spec.ts`, `scripts/test-local-supabase.mjs`                                           | Implementada localmente (privada)                     |
+| HU-051 | `HU-051.1..5` |   7    | ADR-0016                               | `apps/api/test/incidents.service.spec.ts` (5 pruebas MIME/WebP/EXIF/tamaño), `scripts/test-local-supabase.mjs` (`bucket is private`)                      | Implementada localmente (Storage privado)             |
+| HU-052 | `HU-052.1..5` |   7    | ADR-0015, ADR-0018                     | `apps/api/test/auth.guard.spec.ts`, `scripts/test-local-supabase.mjs` (aislamiento entre cuentas), recorrido Chromium y Android 36                        | Implementada localmente                               |
+| HU-053 | `HU-053.1..5` |   7    | ADR-0018                               | `apps/mobile/src/features/incidents/domain/incident-zone.test.ts` (3 pruebas de radio), `scripts/test-local-supabase.mjs` (`public incident projection`)  | Implementada con fixture sintético                    |
+| HU-054 | `HU-054.1..8` |   8    | ADR-0002, ADR-0015, ADR-0016, ADR-0018 | `apps/api/test/incident-management.spec.ts`, `apps/admin/test/incident-admin.spec.ts` (unitarias y build en verde); e2e Supabase pendiente de Docker      | Corte API + `apps/admin` en rama; e2e pendiente       |
+| HU-055 | `HU-055.1..7` |   8    | ADR-0015, ADR-0018                     | `apps/api/test/incident-management.spec.ts`, `apps/admin/test/incident-admin.spec.ts` (unitarias en verde); pendiente UI en cliente público               | Corte API + `apps/admin` en rama; pendiente móvil/web |
+| HU-056 | `HU-056.1..6` |   8    | ADR-0015, ADR-0018                     | Persistencia API (`incidents.service.ts`), agregado en `incident-management.service.ts`, `scripts/test-local-supabase.mjs` (pendiente UI cliente público) | Corte servidor + agregado admin; pendiente móvil/web  |
+| HU-057 | `HU-057.1..5` |   9    | ADR-0002, ADR-0010                     | Pendiente (Sprint 9)                                                                                                                                      | Propuesta Sprint 9                                    |
+| HU-058 | `HU-058.1..5` |   9    | ADR-0010                               | Pendiente (Sprint 9)                                                                                                                                      | Propuesta Sprint 9                                    |
+| HU-059 | `HU-059.1..5` |   9    | ADR-0002                               | Pendiente (Sprint 9)                                                                                                                                      | Propuesta Sprint 9                                    |
 
 ### Área 06 · Personalización y notificaciones (`HU-060`–`HU-066`)
 
@@ -107,33 +108,33 @@ Esta matriz relaciona las **69 historias de usuario** y sus **344 criterios de a
 
 ### Área 07 · Administración y datos (`HU-070`–`HU-080`)
 
-| HU     | Criterios     | Sprint | ADR                | Pruebas y evidencias vinculadas                                                              | Estado real                |
-| ------ | ------------- | :----: | ------------------ | -------------------------------------------------------------------------------------------- | -------------------------- |
-| HU-070 | `HU-070.1..5` |   10   | ADR-0002, ADR-0003 | Pendiente (`apps/admin` no implementada aún; Sprint 10)                                      | Propuesta Sprint 10        |
-| HU-071 | `HU-071.1..5` |   10   | ADR-0002, ADR-0003 | Pendiente (Sprint 10)                                                                        | Propuesta Sprint 10        |
-| HU-072 | `HU-072.1..5` |   11   | ADR-0013           | Pendiente (Sprint 11)                                                                        | Propuesta Sprint 11        |
-| HU-073 | `HU-073.1..5` |   10   | ADR-0017           | Pendiente (Sprint 10)                                                                        | Propuesta Sprint 10        |
-| HU-074 | `HU-074.1..5` |   11   | ADR-0004, ADR-0013 | Pendiente (Sprint 11; scripts manuales de importación en `scripts/`)                         | Propuesta Sprint 11        |
-| HU-075 | `HU-075.1..5` | 10, 11 | ADR-0004, ADR-0013 | Pendiente (Sprints 10–11; metadatos base documentados en `docs/development/data-sources.md`) | Propuesta Sprints 10–11    |
-| HU-076 | `HU-076.1..5` |   10   | ADR-0015           | Pendiente (Sprint 10)                                                                        | Propuesta Sprint 10        |
-| HU-077 | `HU-077.1..5` |   8    | ADR-0002, ADR-0018 | Pendiente (Sprint 8)                                                                         | Propuesta Sprint 8         |
-| HU-078 | `HU-078.1..5` |   —    | ADR-0014           | Sin implementación (finalidad y privacidad pendientes)                                       | Fuera del horizonte actual |
-| HU-079 | `HU-079.1..5` |   —    | ADR-0002           | Sin implementación (formatos y privacidad pendientes)                                        | Fuera del horizonte actual |
-| HU-080 | `HU-080.1..5` |   11   | ADR-0004, ADR-0013 | Pendiente (Sprint 11)                                                                        | Propuesta Sprint 11        |
+| HU     | Criterios     | Sprint | ADR                          | Pruebas y evidencias vinculadas                                                                                                                                                           | Estado real                                     |
+| ------ | ------------- | :----: | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| HU-070 | `HU-070.1..5` |   10   | ADR-0002, ADR-0003           | Pendiente (`apps/admin` no implementada aún; Sprint 10)                                                                                                                                   | Propuesta Sprint 10                             |
+| HU-071 | `HU-071.1..5` |   10   | ADR-0002, ADR-0003           | Pendiente (Sprint 10)                                                                                                                                                                     | Propuesta Sprint 10                             |
+| HU-072 | `HU-072.1..5` |   11   | ADR-0013                     | Pendiente (Sprint 11)                                                                                                                                                                     | Propuesta Sprint 11                             |
+| HU-073 | `HU-073.1..5` |   10   | ADR-0017                     | Pendiente (Sprint 10)                                                                                                                                                                     | Propuesta Sprint 10                             |
+| HU-074 | `HU-074.1..5` |   11   | ADR-0004, ADR-0013           | Pendiente (Sprint 11; scripts manuales de importación en `scripts/`)                                                                                                                      | Propuesta Sprint 11                             |
+| HU-075 | `HU-075.1..5` | 10, 11 | ADR-0004, ADR-0013           | Pendiente (Sprints 10–11; metadatos base documentados en `docs/development/data-sources.md`)                                                                                              | Propuesta Sprints 10–11                         |
+| HU-076 | `HU-076.1..5` |   10   | ADR-0015                     | Pendiente (Sprint 10)                                                                                                                                                                     | Propuesta Sprint 10                             |
+| HU-077 | `HU-077.1..7` |   8    | ADR-0002, ADR-0015, ADR-0018 | `apps/api/test/incident-management.spec.ts`, `apps/api/test/roles.guard.spec.ts`, `apps/admin/test/incident-admin.spec.ts` (unitarias y build en verde); e2e Supabase pendiente de Docker | Corte API + `apps/admin` en rama; e2e pendiente |
+| HU-078 | `HU-078.1..5` |   —    | ADR-0014                     | Sin implementación (finalidad y privacidad pendientes)                                                                                                                                    | Fuera del horizonte actual                      |
+| HU-079 | `HU-079.1..5` |   —    | ADR-0002                     | Sin implementación (formatos y privacidad pendientes)                                                                                                                                     | Fuera del horizonte actual                      |
+| HU-080 | `HU-080.1..5` |   11   | ADR-0004, ADR-0013           | Pendiente (Sprint 11)                                                                                                                                                                     | Propuesta Sprint 11                             |
 
 ### Área 08 · Seguridad, privacidad y calidad (`HU-090`–`HU-098`)
 
-| HU     | Criterios     |  Sprint  | ADR                  | Pruebas y evidencias vinculadas                                                                                                                   | Estado real                               |
-| ------ | ------------- | :------: | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| HU-090 | `HU-090.1..5` |    6     | ADR-0014, 0015, 0016 | `apps/api/test/auth.guard.spec.ts`, `scripts/test-local-supabase.mjs` (sesión BFF, CSRF, aislamiento y borrado); `.github/workflows/codeql.yml`   | Implementada localmente                   |
-| HU-091 | `HU-091.1..5` | 6, 8, 10 | ADR-0015, ADR-0018   | `apps/api/test/auth.guard.spec.ts` (3 pruebas), `scripts/test-local-supabase.mjs`; ampliación prevista para roles admin en Sprint 8               | Implementada para usuario/propietario     |
-| HU-092 | `HU-092.1..5` |  6, 12   | ADR-0009, ADR-0015   | `CampusScreen.test.tsx` (flujo previo de permiso), `domain/location.test.ts` (6), `scripts/test-local-supabase.mjs`                               | **Corte implementado (historia abierta)** |
-| HU-093 | `HU-093.1..4` |    6     | ADR-0015             | `scripts/test-local-supabase.mjs` (`account profile and ownership`), validación Android 36                                                        | Implementada localmente                   |
-| HU-094 | `HU-094.1..5` |    13    | ADR-0005             | Estados parciales cubiertos en `CampusScreen.test.tsx` y `domain/location.test.ts`; cierre transversal en Sprint 13                               | Propuesta Sprint 13                       |
-| HU-095 | `HU-095.1..5` |    13    | ADR-0011             | Controles base en `PlaceResults.test.tsx`, `MapAttribution.test.tsx`, `CampusMap.test.tsx` y `scripts/test-web.mjs`; auditoría integral Sprint 13 | Propuesta Sprint 13                       |
-| HU-096 | `HU-096.1..5` |    13    | ADR-0001             | Pendiente (Sprint 13)                                                                                                                             | Propuesta Sprint 13                       |
-| HU-097 | `HU-097.1..5` |    8     | ADR-0018             | Pendiente (Sprint 8: trazabilidad de cambios y auditoría administrativa)                                                                          | Propuesta Sprint 8                        |
-| HU-098 | `HU-098.1..4` |    13    | ADR-0001             | Pendiente (Sprint 13)                                                                                                                             | Propuesta Sprint 13                       |
+| HU     | Criterios     |  Sprint  | ADR                          | Pruebas y evidencias vinculadas                                                                                                                                    | Estado real                                 |
+| ------ | ------------- | :------: | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------- |
+| HU-090 | `HU-090.1..5` |    6     | ADR-0014, 0015, 0016         | `apps/api/test/auth.guard.spec.ts`, `scripts/test-local-supabase.mjs` (sesión BFF, CSRF, aislamiento y borrado); `.github/workflows/codeql.yml`                    | Implementada localmente                     |
+| HU-091 | `HU-091.1..5` | 6, 8, 10 | ADR-0015, ADR-0018           | `apps/api/test/auth.guard.spec.ts`, `apps/api/test/roles.guard.spec.ts`, `scripts/test-local-supabase.mjs` (ampliación roles gestor/admin en rama Sprint 8)        | Implementada usuario; roles gestión en rama |
+| HU-092 | `HU-092.1..5` |  6, 12   | ADR-0009, ADR-0015           | `CampusScreen.test.tsx` (flujo previo de permiso), `domain/location.test.ts` (6), `scripts/test-local-supabase.mjs`                                                | **Corte implementado (historia abierta)**   |
+| HU-093 | `HU-093.1..4` |    6     | ADR-0015                     | `scripts/test-local-supabase.mjs` (`account profile and ownership`), validación Android 36                                                                         | Implementada localmente                     |
+| HU-094 | `HU-094.1..5` |    13    | ADR-0005                     | Estados parciales cubiertos en `CampusScreen.test.tsx` y `domain/location.test.ts`; cierre transversal en Sprint 13                                                | Propuesta Sprint 13                         |
+| HU-095 | `HU-095.1..5` |    13    | ADR-0011                     | Controles base en `PlaceResults.test.tsx`, `MapAttribution.test.tsx`, `CampusMap.test.tsx` y `scripts/test-web.mjs`; auditoría integral Sprint 13                  | Propuesta Sprint 13                         |
+| HU-096 | `HU-096.1..5` |    13    | ADR-0001                     | Pendiente (Sprint 13)                                                                                                                                              | Propuesta Sprint 13                         |
+| HU-097 | `HU-097.1..6` |    8     | ADR-0015, ADR-0016, ADR-0018 | `apps/api/test/incident-management.spec.ts`, `apps/api/test/roles.guard.spec.ts` (unitarias en verde); e2e Supabase pendiente de Docker (solo dominio incidencias) | Corte incidencias en rama; e2e pendiente    |
+| HU-098 | `HU-098.1..4` |    13    | ADR-0001                     | Pendiente (Sprint 13)                                                                                                                                              | Propuesta Sprint 13                         |
 
 ---
 
