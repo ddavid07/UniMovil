@@ -35,7 +35,8 @@ runtimeDatabaseUrl.password = runtimePassword;
 const values = {
   API_PORT: '3001',
   WEB_APP_URL: 'http://localhost:8081',
-  WEB_ORIGINS: 'http://localhost:8081,http://127.0.0.1:8081',
+  WEB_ORIGINS:
+    'http://localhost:8081,http://127.0.0.1:8081,http://localhost:5173,http://127.0.0.1:5173',
   SUPABASE_URL: environment.API_URL,
   SUPABASE_ANON_KEY: environment.ANON_KEY,
   SUPABASE_SERVICE_ROLE_KEY: environment.SERVICE_ROLE_KEY,

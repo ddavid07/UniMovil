@@ -33,6 +33,9 @@ try {
     'GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA unimovil TO unimovil_runtime',
   );
   await client.query(
+    'REVOKE UPDATE, DELETE ON unimovil.incident_audit_events FROM unimovil_runtime',
+  );
+  await client.query(
     'GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA unimovil TO unimovil_runtime',
   );
   await client.query('COMMIT');

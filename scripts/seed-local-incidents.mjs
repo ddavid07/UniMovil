@@ -17,13 +17,18 @@ await client.connect();
 try {
   await client.query(
     `INSERT INTO unimovil.incidents
-       (public_id, category, description, operational_status, visibility, location)
+       (public_id, category, description, public_summary, approximate_zone,
+        operational_status, visibility, revision, published_revision, location)
      VALUES (
        'local-demo-access-obstruction',
        'access_obstruction',
        'Ejemplo local sintético para probar el mapa. No describe una incidencia real.',
+       'Ejemplo local sintético para probar el mapa. No describe una incidencia real.',
+       'Entorno de Ciudad Universitaria (ejemplo sintético)',
        'under_review',
        'published',
+       1,
+       1,
        extensions.ST_SetSRID(
          extensions.ST_MakePoint(-3.7262::double precision, 40.4486::double precision),
          4326

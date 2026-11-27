@@ -1,9 +1,11 @@
 import {
+  Body,
   Controller,
   BadRequestException,
   Get,
   Headers,
   Inject,
+  Param,
   Post,
   Query,
   Req,
@@ -19,7 +21,11 @@ import { z } from 'zod';
 import { AuthGuard, CurrentUser } from '../auth/auth.guard';
 import type { AuthenticatedUser } from '../auth/auth.service';
 import { IncidentsService } from './incidents.service';
-import { incidentCategories, incidentStatuses } from '@unimovil/contracts';
+import {
+  incidentCategories,
+  incidentConfirmationSchema,
+  incidentStatuses,
+} from '@unimovil/contracts';
 
 @ApiTags('Incidencias')
 @Controller('incidents')
@@ -80,6 +86,30 @@ export class IncidentsController {
       idempotencyKey,
     );
   }
+
+  @Post(':publicId/confirmations')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'Confirmar si una incidencia publicada sigue activa' })
+  async confirmPublic(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('publicId') publicId: string,
+    @Body() body: unknown,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const parsed = incidentConfirmationSchema.safeParse(body);
+    if (!parsed.success) {
+      throw new BadRequestException('El estado de confirmación no es válido.');
+    }
+    response.setHeader('Cache-Control', 'no-store');
+    return {
+      confirmation: await this.incidents.upsertConfirmation(
+        user.id,
+        { publicId },
+        parsed.data.outcome,
+      ),
+    };
+  }
 }
 
 @ApiTags('Incidencias propias')
@@ -88,6 +118,39 @@ export class IncidentsController {
 @Controller('me/incidents')
 export class OwnIncidentsController {
   constructor(@Inject(IncidentsService) private readonly incidents: IncidentsService) {}
+
+  @Get(':incidentId')
+  @ApiOperation({ summary: 'Consultar el detalle y respuestas de una incidencia propia' })
+  async getOwnDetail(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('incidentId') incidentId: string,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    response.setHeader('Cache-Control', 'no-store');
+    return { incident: await this.incidents.getOwnDetail(user.id, incidentId) };
+  }
+
+  @Post(':incidentId/confirmations')
+  @ApiOperation({ summary: 'Confirmar si una incidencia propia sigue activa' })
+  async confirmOwn(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('incidentId') incidentId: string,
+    @Body() body: unknown,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const parsed = incidentConfirmationSchema.safeParse(body);
+    if (!parsed.success) {
+      throw new BadRequestException('El estado de confirmación no es válido.');
+    }
+    response.setHeader('Cache-Control', 'no-store');
+    return {
+      confirmation: await this.incidents.upsertConfirmation(
+        user.id,
+        { incidentId },
+        parsed.data.outcome,
+      ),
+    };
+  }
 
   @Get(':incidentId/attachments/:attachmentId')
   @ApiOperation({ summary: 'Descargar una evidencia privada propia' })
