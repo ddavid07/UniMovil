@@ -436,14 +436,20 @@ async function run() {
 
   const stalePatch = await api(`/admin/incidents/${incident.id}`, {
     method: 'PATCH',
-    headers: { ...authHeaders(manager.accessToken), 'Content-Type': 'application/json' },
+    headers: {
+      ...authHeaders(manager.accessToken),
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({ expectedRevision: 99, managementPriority: 'high' }),
   });
   assert.equal(stalePatch.status, 409, 'stale revision is rejected');
 
   const classified = await api(`/admin/incidents/${incident.id}`, {
     method: 'PATCH',
-    headers: { ...authHeaders(manager.accessToken), 'Content-Type': 'application/json' },
+    headers: {
+      ...authHeaders(manager.accessToken),
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({
       expectedRevision: 1,
       managementPriority: 'high',
@@ -458,7 +464,10 @@ async function run() {
 
   const invalidSkip = await api(`/admin/incidents/${incident.id}/transitions`, {
     method: 'POST',
-    headers: { ...authHeaders(manager.accessToken), 'Content-Type': 'application/json' },
+    headers: {
+      ...authHeaders(manager.accessToken),
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({ expectedRevision: 2, toStatus: 'in_progress' }),
   });
   assert.equal(
@@ -469,7 +478,10 @@ async function run() {
 
   const underReview = await api(`/admin/incidents/${incident.id}/transitions`, {
     method: 'POST',
-    headers: { ...authHeaders(manager.accessToken), 'Content-Type': 'application/json' },
+    headers: {
+      ...authHeaders(manager.accessToken),
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({ expectedRevision: 2, toStatus: 'under_review' }),
   });
   assert.equal(underReview.status, 200);
@@ -477,7 +489,10 @@ async function run() {
 
   const published = await api(`/admin/incidents/${incident.id}/publication`, {
     method: 'POST',
-    headers: { ...authHeaders(manager.accessToken), 'Content-Type': 'application/json' },
+    headers: {
+      ...authHeaders(manager.accessToken),
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({
       expectedRevision: 3,
       visibility: 'published',
@@ -492,7 +507,10 @@ async function run() {
     `/incidents/${incident.publicId}/confirmations`,
     {
       method: 'POST',
-      headers: { ...authHeaders(second.accessToken), 'Content-Type': 'application/json' },
+      headers: {
+        ...authHeaders(second.accessToken),
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({ outcome: 'still_active' }),
     },
   );

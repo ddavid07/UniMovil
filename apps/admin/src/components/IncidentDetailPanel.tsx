@@ -112,8 +112,8 @@ export function IncidentDetailPanel({
       <section className="card">
         <h2 style={{ marginTop: 0 }}>Detalle de revisión</h2>
         <p className="muted-text">
-          Selecciona una incidencia de la cola para revisar su información,
-          evidencias privadas, confirmaciones agregadas y moderación.
+          Selecciona una incidencia de la cola para revisar su información, evidencias
+          privadas, confirmaciones agregadas y moderación.
         </p>
       </section>
     );
@@ -133,10 +133,7 @@ export function IncidentDetailPanel({
         managementPriority: managementPriority || null,
         assignedTo: assignedTo || null,
       });
-      onIncidentUpdated(
-        response.incident,
-        'Clasificación y asignación actualizadas.',
-      );
+      onIncidentUpdated(response.incident, 'Clasificación y asignación actualizadas.');
     } catch (cause) {
       setActionError(
         cause instanceof Error ? cause.message : 'No se pudo actualizar la incidencia.',
@@ -309,8 +306,8 @@ export function IncidentDetailPanel({
         <div>
           <dt>Confirmaciones vigentes (30 días)</dt>
           <dd>
-            Sigue activa: {incident.confirmationSummary.stillActiveCount} ·
-            Solucionada: {incident.confirmationSummary.resolvedCount}
+            Sigue activa: {incident.confirmationSummary.stillActiveCount} · Solucionada:{' '}
+            {incident.confirmationSummary.resolvedCount}
             {incident.confirmationSummary.lastConfirmedAt
               ? ` (última: ${formatLocalDateTime(incident.confirmationSummary.lastConfirmedAt)})`
               : ''}
@@ -343,7 +340,8 @@ export function IncidentDetailPanel({
                   }}
                 >
                   <span>
-                    Evidencia {index + 1} · {(attachment.byteSize / 1024).toFixed(1)} KiB
+                    Evidencia {index + 1} · {(attachment.byteSize / 1024).toFixed(1)}{' '}
+                    KiB
                   </span>
                   <button
                     type="button"
@@ -377,9 +375,7 @@ export function IncidentDetailPanel({
             <select
               id="detail-category"
               value={category}
-              onChange={(event) =>
-                setCategory(event.target.value as IncidentCategory)
-              }
+              onChange={(event) => setCategory(event.target.value as IncidentCategory)}
             >
               {incidentCategories.map((item) => (
                 <option key={item} value={item}>
@@ -590,7 +586,8 @@ export function IncidentDetailPanel({
                   {STATUS_LABELS[entry.fromStatus]} → {STATUS_LABELS[entry.toStatus]}
                 </strong>{' '}
                 <span className="muted-text">
-                  ({formatLocalDateTime(entry.createdAt)} · rev. {entry.incidentRevision})
+                  ({formatLocalDateTime(entry.createdAt)} · rev.{' '}
+                  {entry.incidentRevision})
                 </span>
                 {entry.reason ? <div>Motivo: {entry.reason}</div> : null}
                 {entry.informantResponse ? (

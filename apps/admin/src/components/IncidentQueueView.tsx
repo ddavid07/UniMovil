@@ -58,8 +58,8 @@ export function IncidentQueueView({
         Cola de incidencias ({total})
       </h2>
       <p className="muted-text">
-        Por defecto muestra casos activos (recibida, en revisión y en proceso)
-        ordenados por última actualización ascendente, sin representar un SLA.
+        Por defecto muestra casos activos (recibida, en revisión y en proceso) ordenados
+        por última actualización ascendente, sin representar un SLA.
       </p>
 
       <div className="filters-grid">

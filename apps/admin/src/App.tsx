@@ -154,7 +154,10 @@ export function App() {
       <header className="admin-header">
         <div className="admin-brand">
           <h1>UniMovil · Administración</h1>
-          <p>Gestión de incidencias y auditoría (entorno local separado del cliente público)</p>
+          <p>
+            Gestión de incidencias y auditoría (entorno local separado del cliente
+            público)
+          </p>
         </div>
 
         {sessionUser ? (
@@ -208,9 +211,9 @@ export function App() {
           <section className="card" role="alert">
             <h2 style={{ marginTop: 0 }}>Acceso restringido</h2>
             <p>
-              Tu cuenta tiene el rol «{ROLE_LABELS[sessionUser.role]}». Solo las
-              cuentas con rol de gestor o administrador asignado desde servidor
-              pueden acceder a la gestión de incidencias.
+              Tu cuenta tiene el rol «{ROLE_LABELS[sessionUser.role]}». Solo las cuentas
+              con rol de gestor o administrador asignado desde servidor pueden acceder a
+              la gestión de incidencias.
             </p>
           </section>
         ) : (

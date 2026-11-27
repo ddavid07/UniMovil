@@ -190,10 +190,7 @@ export const incidentStatusHistory = appSchema.table(
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [
-    index('incident_status_history_incident_idx').on(
-      table.incidentId,
-      table.createdAt,
-    ),
+    index('incident_status_history_incident_idx').on(table.incidentId, table.createdAt),
   ],
 );
 

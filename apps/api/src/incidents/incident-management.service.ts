@@ -32,8 +32,7 @@ import { DatabaseService } from '../database/database.service';
 import { IncidentAuditService } from './incident-audit.service';
 import { IncidentsService } from './incidents.service';
 
-const UUID_PATTERN =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function assertUuid(value: string, fieldLabel: string): string {
   if (!UUID_PATTERN.test(value)) {
@@ -311,14 +310,18 @@ export class IncidentManagementService {
       ),
     ]);
 
-    const attachments: AdminIncidentAttachment[] = attachmentsResult.rows.map((row) => ({
-      ...row,
-      createdAt: toIsoTimestamp(row.createdAt),
-    }));
-    const statusHistory: IncidentStatusHistoryItem[] = historyResult.rows.map((row) => ({
-      ...row,
-      createdAt: toIsoTimestamp(row.createdAt),
-    }));
+    const attachments: AdminIncidentAttachment[] = attachmentsResult.rows.map(
+      (row) => ({
+        ...row,
+        createdAt: toIsoTimestamp(row.createdAt),
+      }),
+    );
+    const statusHistory: IncidentStatusHistoryItem[] = historyResult.rows.map(
+      (row) => ({
+        ...row,
+        createdAt: toIsoTimestamp(row.createdAt),
+      }),
+    );
     const summaryRow = confirmationsResult.rows[0];
     const confirmationSummary: ConfirmationSummary = {
       stillActiveCount: summaryRow?.stillActiveCount ?? 0,

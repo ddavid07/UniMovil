@@ -318,7 +318,9 @@ export const auditQuerySchema = z
 
 export type AdminIncidentQueueQuery = z.infer<typeof adminIncidentQueueQuerySchema>;
 export type AdminIncidentUpdateInput = z.infer<typeof adminIncidentUpdateSchema>;
-export type AdminIncidentTransitionInput = z.infer<typeof adminIncidentTransitionSchema>;
+export type AdminIncidentTransitionInput = z.infer<
+  typeof adminIncidentTransitionSchema
+>;
 export type AdminIncidentPublicationInput = z.infer<
   typeof adminIncidentPublicationSchema
 >;

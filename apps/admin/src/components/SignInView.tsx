@@ -19,9 +19,7 @@ export function SignInView({ onSignedIn }: SignInViewProps) {
       const response = await adminApiClient.signIn(email.trim(), password);
       onSignedIn(response.user);
     } catch (cause) {
-      setError(
-        cause instanceof Error ? cause.message : 'No se pudo iniciar sesión.',
-      );
+      setError(cause instanceof Error ? cause.message : 'No se pudo iniciar sesión.');
     } finally {
       setBusy(false);
     }
@@ -32,8 +30,8 @@ export function SignInView({ onSignedIn }: SignInViewProps) {
       <h2>Acceso al panel de gestión</h2>
       <p className="muted-text">
         Inicia sesión con una cuenta de gestor o administrador autorizada por el
-        servidor. La sesión se valida mediante cookie segura BFF sin almacenar
-        tokens en el navegador.
+        servidor. La sesión se valida mediante cookie segura BFF sin almacenar tokens en
+        el navegador.
       </p>
 
       {error ? (

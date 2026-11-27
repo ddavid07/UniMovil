@@ -120,7 +120,8 @@ describe('incident status state machine (HU-055)', () => {
       informantResponse: 'Respuesta',
     });
     assert.equal(closedTerminal.ok, false);
-    if (!closedTerminal.ok) assert.equal(closedTerminal.reasonCode, 'INVALID_TRANSITION');
+    if (!closedTerminal.ok)
+      assert.equal(closedTerminal.reasonCode, 'INVALID_TRANSITION');
 
     const selfDuplicate = validateIncidentTransition({
       incidentId: INCIDENT_ID,
@@ -316,10 +317,7 @@ describe('IncidentManagementService', () => {
       NotFoundException,
     );
     assert.equal(rejectedEvents.length, 1);
-    assert.equal(
-      (rejectedEvents[0] as { reasonCode: string }).reasonCode,
-      'NOT_FOUND',
-    );
+    assert.equal((rejectedEvents[0] as { reasonCode: string }).reasonCode, 'NOT_FOUND');
   });
 });
 

@@ -65,10 +65,7 @@ export class IncidentAuditService {
 
   constructor(@Inject(DatabaseService) private readonly database: DatabaseService) {}
 
-  async recordEvent(
-    input: RecordAuditEventInput,
-    client?: PoolClient,
-  ): Promise<void> {
+  async recordEvent(input: RecordAuditEventInput, client?: PoolClient): Promise<void> {
     const changes = sanitizeAuditChanges(input.changes);
     const sql = `INSERT INTO unimovil.incident_audit_events
        (actor_id, actor_role, action, outcome, reason_code,
@@ -93,7 +90,9 @@ export class IncidentAuditService {
     await this.database.runtimeQuery(sql, values);
   }
 
-  async recordRejectedAttempt(input: Omit<RecordAuditEventInput, 'outcome'>): Promise<void> {
+  async recordRejectedAttempt(
+    input: Omit<RecordAuditEventInput, 'outcome'>,
+  ): Promise<void> {
     try {
       await this.recordEvent({ ...input, outcome: 'rejected' });
     } catch {

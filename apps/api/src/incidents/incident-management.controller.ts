@@ -91,9 +91,7 @@ export class IncidentManagementController {
   ) {
     const parsed = adminIncidentUpdateSchema.safeParse(body);
     if (!parsed.success) {
-      throw new BadRequestException(
-        parsed.error.issues.map((issue) => issue.message),
-      );
+      throw new BadRequestException(parsed.error.issues.map((issue) => issue.message));
     }
     response.setHeader('Cache-Control', 'no-store');
     return {
@@ -113,17 +111,11 @@ export class IncidentManagementController {
   ) {
     const parsed = adminIncidentTransitionSchema.safeParse(body);
     if (!parsed.success) {
-      throw new BadRequestException(
-        parsed.error.issues.map((issue) => issue.message),
-      );
+      throw new BadRequestException(parsed.error.issues.map((issue) => issue.message));
     }
     response.setHeader('Cache-Control', 'no-store');
     return {
-      incident: await this.management.transitionIncident(
-        user,
-        incidentId,
-        parsed.data,
-      ),
+      incident: await this.management.transitionIncident(user, incidentId, parsed.data),
     };
   }
 
@@ -141,9 +133,7 @@ export class IncidentManagementController {
   ) {
     const parsed = adminIncidentPublicationSchema.safeParse(body);
     if (!parsed.success) {
-      throw new BadRequestException(
-        parsed.error.issues.map((issue) => issue.message),
-      );
+      throw new BadRequestException(parsed.error.issues.map((issue) => issue.message));
     }
     response.setHeader('Cache-Control', 'no-store');
     return {

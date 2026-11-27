@@ -12,10 +12,7 @@ import {
 import { createClient } from '@supabase/supabase-js';
 import { createHash, randomUUID } from 'node:crypto';
 import sharp from 'sharp';
-import {
-  createIncidentSchema,
-  type ConfirmationOutcome,
-} from '@unimovil/contracts';
+import { createIncidentSchema, type ConfirmationOutcome } from '@unimovil/contracts';
 import { DatabaseService } from '../database/database.service';
 
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
@@ -122,9 +119,12 @@ export class IncidentsService implements OnModuleInit, OnModuleDestroy {
   }
 
   async getOwnDetail(userId: string, incidentId: string) {
-    const incidentResult = await this.database.withRole('authenticated', userId, (client) =>
-      client.query(
-        `SELECT id, public_id AS "publicId", category, description,
+    const incidentResult = await this.database.withRole(
+      'authenticated',
+      userId,
+      (client) =>
+        client.query(
+          `SELECT id, public_id AS "publicId", category, description,
                 perceived_priority AS "perceivedPriority",
                 operational_status AS status, visibility,
                 closure_reason AS "closureReason",
@@ -133,8 +133,8 @@ export class IncidentsService implements OnModuleInit, OnModuleDestroy {
                 created_at AS "createdAt", updated_at AS "updatedAt"
          FROM unimovil.incidents
          WHERE id = $1 AND owner_id = $2`,
-        [incidentId, userId],
-      ),
+          [incidentId, userId],
+        ),
     );
     const incident = incidentResult.rows[0];
     if (!incident) throw new NotFoundException('No se encontró la incidencia.');

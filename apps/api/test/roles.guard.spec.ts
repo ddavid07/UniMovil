@@ -25,7 +25,11 @@ function makeContext(user?: AuthenticatedUser, params: Record<string, string> = 
 
 function makeGuard(
   requiredRoles: StaffRole[] | undefined,
-  auditTarget?: { entityType: AuditEntityType; paramName?: string; fallbackEntityId?: string },
+  auditTarget?: {
+    entityType: AuditEntityType;
+    paramName?: string;
+    fallbackEntityId?: string;
+  },
 ) {
   const recorded: unknown[] = [];
   const reflector = {

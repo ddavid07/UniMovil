@@ -73,7 +73,9 @@ async function apiJson<T>(
   return (await response.json()) as T;
 }
 
-function buildSearchParams(entries: Record<string, string | number | undefined>): string {
+function buildSearchParams(
+  entries: Record<string, string | number | undefined>,
+): string {
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(entries)) {
     if (value !== undefined && value !== '') {

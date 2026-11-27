@@ -120,7 +120,9 @@ export class OwnIncidentsController {
   constructor(@Inject(IncidentsService) private readonly incidents: IncidentsService) {}
 
   @Get(':incidentId')
-  @ApiOperation({ summary: 'Consultar el detalle y respuestas de una incidencia propia' })
+  @ApiOperation({
+    summary: 'Consultar el detalle y respuestas de una incidencia propia',
+  })
   async getOwnDetail(
     @CurrentUser() user: AuthenticatedUser,
     @Param('incidentId') incidentId: string,

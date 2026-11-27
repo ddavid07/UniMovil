@@ -43,7 +43,9 @@ export function AuditLogView() {
         entityType: entityType || undefined,
         entityId: entityId.trim() || undefined,
         outcome: outcome || undefined,
-        from: fromDate ? new Date(`${fromDate}T00:00:00.000Z`).toISOString() : undefined,
+        from: fromDate
+          ? new Date(`${fromDate}T00:00:00.000Z`).toISOString()
+          : undefined,
         to: toDate ? new Date(`${toDate}T23:59:59.999Z`).toISOString() : undefined,
         page,
         limit: 25,
@@ -231,7 +233,9 @@ export function AuditLogView() {
                 <tr key={event.id}>
                   <td>
                     <div>{formatLocalDateTime(event.occurredAt)}</div>
-                    <div className="muted-text">{formatUtcTimestamp(event.occurredAt)}</div>
+                    <div className="muted-text">
+                      {formatUtcTimestamp(event.occurredAt)}
+                    </div>
                   </td>
                   <td>
                     <div>{event.actorId}</div>

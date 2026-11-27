@@ -4,7 +4,6 @@ import {
   incidentCategories,
   incidentPriorities,
   type IncidentCategory,
-  type IncidentPriority,
   type IncidentStatus,
 } from './incident-management';
 export { isWithinCampusCoverage };

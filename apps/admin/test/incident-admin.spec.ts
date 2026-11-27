@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { adminApiClient, AdminApiError, resolveApiBaseUrl } from '../src/api/admin-client';
+import {
+  adminApiClient,
+  AdminApiError,
+  resolveApiBaseUrl,
+} from '../src/api/admin-client';
 import {
   canAccessAuditLog,
   canOperateManagementQueue,
@@ -55,7 +59,11 @@ describe('admin domain helpers', () => {
     assert.ok(validatePublicationDraft('published', '', 'Zona'));
     assert.ok(validatePublicationDraft('published', 'Resumen seguro', ''));
     assert.equal(
-      validatePublicationDraft('published', 'Resumen seguro', 'Facultad de Informática'),
+      validatePublicationDraft(
+        'published',
+        'Resumen seguro',
+        'Facultad de Informática',
+      ),
       null,
     );
     assert.equal(validatePublicationDraft('private', '', ''), null);
@@ -65,7 +73,10 @@ describe('admin domain helpers', () => {
 describe('adminApiClient', () => {
   it('resolves base URL and includes credentials for BFF cookie sessions', async () => {
     assert.equal(resolveApiBaseUrl(undefined), '/api');
-    assert.equal(resolveApiBaseUrl('http://127.0.0.1:3001/api/'), 'http://127.0.0.1:3001/api');
+    assert.equal(
+      resolveApiBaseUrl('http://127.0.0.1:3001/api/'),
+      'http://127.0.0.1:3001/api',
+    );
 
     let capturedInit: RequestInit | undefined;
     const mockFetch = (async (_url: string | URL | Request, init?: RequestInit) => {
@@ -76,7 +87,10 @@ describe('adminApiClient', () => {
       );
     }) as unknown as typeof fetch;
 
-    const result = await adminApiClient.listIncidents({ page: 1, limit: 25 }, mockFetch);
+    const result = await adminApiClient.listIncidents(
+      { page: 1, limit: 25 },
+      mockFetch,
+    );
     assert.equal(result.total, 0);
     assert.equal(capturedInit?.credentials, 'include');
   });

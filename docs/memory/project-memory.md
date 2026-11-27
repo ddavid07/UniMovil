@@ -177,12 +177,12 @@ El Product Backlog utiliza un guion en la columna de puntos cuando no existe un 
 
 El repositorio utiliza npm Workspaces y mantiene estos componentes:
 
-| Ruta                | Responsabilidad y estado                                                                          |
-| ------------------- | ------------------------------------------------------------------------------------------------- |
-| apps/mobile/        | Aplicación Expo para Android e iOS y cliente público exportable a web.                            |
-| apps/api/           | API NestJS para salud, identidad, cuentas e incidencias.                                          |
-| packages/contracts/ | Esquemas Zod, tipos compartidos y validación de cobertura aproximada del campus.                  |
-| supabase/           | Configuración reproducible del stack local de Supabase.                                           |
+| Ruta                | Responsabilidad y estado                                                                                          |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| apps/mobile/        | Aplicación Expo para Android e iOS y cliente público exportable a web.                                            |
+| apps/api/           | API NestJS para salud, identidad, cuentas e incidencias.                                                          |
+| packages/contracts/ | Esquemas Zod, tipos compartidos y validación de cobertura aproximada del campus.                                  |
+| supabase/           | Configuración reproducible del stack local de Supabase.                                                           |
 | apps/admin/         | Aplicación administrativa React/Vite (cola de incidencias y auditoría en rama de Sprint 8; sin catálogo todavía). |
 
 Las migraciones de PostgreSQL se mantienen con Drizzle en apps/api/drizzle/. El cliente y el API comparten los contratos disponibles desde packages/contracts/.
