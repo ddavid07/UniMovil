@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   Inject,
   Param,
   Patch,
@@ -100,6 +101,7 @@ export class IncidentManagementController {
   }
 
   @Post('incidents/:incidentId/transitions')
+  @HttpCode(200)
   @Roles('manager', 'admin')
   @AuditDeniedTarget('incident', 'incidentId')
   @ApiOperation({ summary: 'Aplicar una transición válida de estado operativo' })
@@ -120,6 +122,7 @@ export class IncidentManagementController {
   }
 
   @Post('incidents/:incidentId/publication')
+  @HttpCode(200)
   @Roles('manager', 'admin')
   @AuditDeniedTarget('incident', 'incidentId')
   @ApiOperation({
