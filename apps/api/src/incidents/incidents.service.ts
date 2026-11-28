@@ -127,7 +127,6 @@ export class IncidentsService implements OnModuleInit, OnModuleDestroy {
           `SELECT id, public_id AS "publicId", category, description,
                 perceived_priority AS "perceivedPriority",
                 operational_status AS status, visibility,
-                closure_reason AS "closureReason",
                 extensions.ST_Y(location::extensions.geometry) AS latitude,
                 extensions.ST_X(location::extensions.geometry) AS longitude,
                 created_at AS "createdAt", updated_at AS "updatedAt"
@@ -144,7 +143,7 @@ export class IncidentsService implements OnModuleInit, OnModuleDestroy {
       (client) =>
         client.query(
           `SELECT id, from_status AS "fromStatus", to_status AS "toStatus",
-                  closure_kind AS "closureKind", reason,
+                  closure_kind AS "closureKind",
                   informant_response AS "informantResponse",
                   created_at AS "createdAt"
            FROM unimovil.incident_status_history
