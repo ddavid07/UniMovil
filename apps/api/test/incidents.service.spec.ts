@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import sharp from 'sharp';
 import { IncidentsService } from '../src/incidents/incidents.service';
 import type { DatabaseService } from '../src/database/database.service';
@@ -96,6 +96,88 @@ describe('incident evidence processing', () => {
         mimetype: 'image/png',
       }),
       BadRequestException,
+    );
+  });
+});
+
+describe('own incident detail privacy (HU-055)', () => {
+  it('omits internal moderation reasons and actor identifiers from SQL queries and response', async () => {
+    const queries: string[] = [];
+    const database = {
+      withRole: async (
+        _role: string,
+        _userId: string | null,
+        op: (client: {
+          query: (sql: string) => Promise<{ rows: unknown[] }>;
+        }) => Promise<unknown>,
+      ) =>
+        op({
+          query: async (sql: string) => {
+            queries.push(sql);
+            if (sql.includes('FROM unimovil.incidents')) {
+              return {
+                rows: [
+                  {
+                    id: 'inc-1',
+                    publicId: 'pub-1',
+                    category: 'other',
+                    description: 'Acceso bloqueado',
+                    perceivedPriority: 'normal',
+                    status: 'resolved',
+                    visibility: 'private',
+                    latitude: 40.45,
+                    longitude: -3.72,
+                    createdAt: '2026-11-27T09:00:00.000Z',
+                    updatedAt: '2026-11-27T10:00:00.000Z',
+                  },
+                ],
+              };
+            }
+            return {
+              rows: [
+                {
+                  id: 'hist-1',
+                  fromStatus: 'under_review',
+                  toStatus: 'resolved',
+                  closureKind: null,
+                  informantResponse: 'El acceso vuelve a estar despejado.',
+                  createdAt: '2026-11-27T10:00:00.000Z',
+                },
+              ],
+            };
+          },
+        }),
+    } as unknown as DatabaseService;
+
+    const localService = new IncidentsService(database);
+    const detail = await localService.getOwnDetail('owner-1', 'inc-1');
+
+    const [incidentQuery, historyQuery] = queries;
+    assert.ok(incidentQuery && historyQuery);
+    assert.doesNotMatch(incidentQuery, /\bclosure_reason\b/i);
+    assert.doesNotMatch(historyQuery, /\breason\b|\bactor_id\b/i);
+    assert.equal('closureReason' in detail, false);
+    assert.equal(detail.statusHistory.length, 1);
+    const [firstHistory] = detail.statusHistory;
+    assert.ok(firstHistory);
+    assert.equal(firstHistory.informantResponse, 'El acceso vuelve a estar despejado.');
+    assert.equal('reason' in firstHistory, false);
+    assert.equal('actorId' in firstHistory, false);
+  });
+
+  it('throws NotFoundException when the incident does not belong to the user', async () => {
+    const database = {
+      withRole: async (
+        _role: string,
+        _userId: string | null,
+        op: (client: { query: () => Promise<{ rows: unknown[] }> }) => Promise<unknown>,
+      ) => op({ query: async () => ({ rows: [] }) }),
+    } as unknown as DatabaseService;
+
+    const localService = new IncidentsService(database);
+    await assert.rejects(
+      localService.getOwnDetail('other-user', 'inc-1'),
+      NotFoundException,
     );
   });
 });
