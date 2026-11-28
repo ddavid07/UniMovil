@@ -523,6 +523,46 @@ async function run() {
   );
   assert.equal(detailWithConfirmation.incident.confirmationSummary.stillActiveCount, 1);
 
+  const informantResponse = 'Respuesta visible para el informante.';
+  const internalNote = 'Nota interna de verificación.';
+  const resolved = await api(`/admin/incidents/${incident.id}/transitions`, {
+    method: 'POST',
+    headers: {
+      ...authHeaders(manager.accessToken),
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      expectedRevision: 4,
+      toStatus: 'resolved',
+      reason: internalNote,
+      informantResponse,
+    }),
+  });
+  assert.equal(resolved.status, 200);
+
+  const ownDetailPath = `/me/incidents/${incident.id}`;
+  const ownerResponse = await api(ownDetailPath, {
+    headers: authHeaders(first.accessToken),
+  });
+  assert.equal(ownerResponse.status, 200);
+  const ownerBody = await json(ownerResponse);
+  const ownerDetail = ownerBody.incident ?? ownerBody;
+  assert.ok(
+    ownerDetail.statusHistory.some(
+      (entry) =>
+        entry.toStatus === 'resolved' && entry.informantResponse === informantResponse,
+    ),
+    'owner sees the response for the resolved transition',
+  );
+  const ownerJson = JSON.stringify(ownerBody);
+  assert.doesNotMatch(ownerJson, /"(?:closureReason|reason|actorId)":/);
+  assert.ok(!ownerJson.includes(internalNote), 'owner cannot see the internal note');
+
+  const nonOwnerResponse = await api(ownDetailPath, {
+    headers: authHeaders(second.accessToken),
+  });
+  assert.equal(nonOwnerResponse.status, 404);
+
   const managerEvidence = await api(
     `/admin/incidents/${incident.id}/attachments/${attachment.id}`,
     { headers: authHeaders(manager.accessToken) },
