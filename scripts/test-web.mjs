@@ -1,6 +1,5 @@
 import assert from 'node:assert/strict';
-import { createReadStream, existsSync, readFileSync, statSync } from 'node:fs';
-import { createServer } from 'node:http';
+import { existsSync, readFileSync } from 'node:fs';
 import { extname, join, resolve, sep } from 'node:path';
 import { stdout } from 'node:process';
 import { fileURLToPath, URL } from 'node:url';
@@ -8,6 +7,7 @@ import { chromium } from 'playwright';
 
 const repositoryRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const exportDirectory = join(repositoryRoot, 'apps/mobile/dist');
+const baseUrl = 'http://localhost';
 const transitDataPath = join(
   repositoryRoot,
   'apps/mobile/src/features/campus/data/campus-transit.json',
@@ -27,53 +27,17 @@ const contentTypes = new Map([
   ['.woff2', 'font/woff2'],
 ]);
 
-function sendFile(response, filePath) {
-  response.writeHead(200, {
-    'Content-Type': contentTypes.get(extname(filePath)) ?? 'application/octet-stream',
-    'Cache-Control': 'no-store',
-  });
-  createReadStream(filePath).pipe(response);
-}
-
-function startStaticServer() {
-  assert.ok(
-    existsSync(join(exportDirectory, 'index.html')),
-    'Run npm run export:web first.',
-  );
-
-  const server = createServer((request, response) => {
-    const pathname = new URL(request.url ?? '/', 'http://localhost').pathname;
-    let requestedPath;
-
-    try {
-      requestedPath = resolve(exportDirectory, `.${decodeURIComponent(pathname)}`);
-    } catch {
-      response.writeHead(400).end('Invalid path');
-      return;
-    }
-
-    if (
-      requestedPath !== exportDirectory &&
-      !requestedPath.startsWith(`${exportDirectory}${sep}`)
-    ) {
-      response.writeHead(403).end('Forbidden');
-      return;
-    }
-
-    const filePath =
-      existsSync(requestedPath) && statSync(requestedPath).isFile()
-        ? requestedPath
-        : join(exportDirectory, 'index.html');
-    sendFile(response, filePath);
-  });
-
-  return new Promise((resolveServer, reject) => {
-    server.once('error', reject);
-    server.listen(0, '127.0.0.1', () => {
-      const address = server.address();
-      assert.ok(address && typeof address !== 'string');
-      resolveServer({ server, url: `http://127.0.0.1:${address.port}` });
-    });
+async function serveExport(route) {
+  const pathname = decodeURIComponent(new URL(route.request().url()).pathname);
+  const resource = pathname === '/' ? '/index.html' : pathname;
+  const file = extname(resource) ? resource : `${resource}.html`;
+  const path = resolve(exportDirectory, `.${file}`);
+  if (!path.startsWith(`${exportDirectory}${sep}`) || !existsSync(path)) {
+    return route.fulfill({ status: 404 });
+  }
+  return route.fulfill({
+    path,
+    contentType: contentTypes.get(extname(path)) ?? 'application/octet-stream',
   });
 }
 
@@ -94,11 +58,67 @@ function findSharedStopForLine44() {
   return sharedStop;
 }
 
-async function verifyViewport(browser, baseUrl, viewport) {
+const publicIncident = {
+  publicId: 'smoke-parking',
+  category: 'parking',
+  description: 'Incidencia de prueba en el aparcamiento.',
+  status: 'received',
+  updatedAt: '2026-11-27T10:00:00Z',
+  latitude: 40.45,
+  longitude: -3.72,
+};
+
+async function checkPageWidth(page, viewport) {
+  if (viewport.width < 500) {
+    const overflow = await page.evaluate(
+      'document.documentElement.scrollWidth > window.innerWidth',
+    );
+    assert.equal(
+      overflow,
+      false,
+      `Horizontal overflow on ${page.url()} at ${viewport.width}px.`,
+    );
+  }
+}
+
+async function verifyIncidents(page) {
+  await page.getByRole('link', { name: 'Incidencias', exact: true }).click();
+  await page.waitForURL(`${baseUrl}/incidents`);
+  await page.getByRole('heading', { name: 'Incidencias de movilidad' }).waitFor();
+  await page.getByRole('heading', { name: 'Incidencias públicas' }).waitFor();
+  await page.getByRole('button', { name: 'Actualizar' }).waitFor();
+  await page.getByRole('radio', { name: 'Todas', exact: true }).waitFor();
+  await page
+    .getByRole('textbox', { name: 'Buscar lugar para filtrar incidencias por zona' })
+    .waitFor();
+  await page.getByText(publicIncident.description, { exact: true }).waitFor();
+  await page
+    .getByRole('link', { name: 'Inicia sesión para confirmar esta incidencia' })
+    .waitFor();
+  await page.getByRole('radio', { name: 'En revisión' }).click();
+  await page.getByText('No hay incidencias publicadas en esta categoría.').waitFor();
+  await page.getByRole('radio', { name: 'Cualquier estado' }).click();
+  await page.getByText(publicIncident.description, { exact: true }).waitFor();
+}
+
+async function verifyViewport(browser, viewport) {
   const page = await browser.newPage({ viewport });
   const pageErrors = [];
   page.on('pageerror', (error) => pageErrors.push(error.message));
+  await page.route(`${baseUrl}/**`, serveExport);
   await page.route('https://tile.openstreetmap.org/**', (route) => route.abort());
+  await page.route('**/api/auth/session', (route) =>
+    route.fulfill({ json: { user: null } }),
+  );
+  await page.route(
+    (url) => url.pathname === '/api/incidents',
+    (route) => {
+      const status = new URL(route.request().url()).searchParams.get('status');
+      const incidents =
+        status && status !== publicIncident.status ? [] : [publicIncident];
+      return route.fulfill({ json: { incidents } });
+    },
+  );
 
   try {
     await page.goto(baseUrl, { waitUntil: 'networkidle' });
@@ -150,34 +170,32 @@ async function verifyViewport(browser, baseUrl, viewport) {
       'The selected stop should show schedule data or its empty state.',
     );
 
-    if (viewport.width < 500) {
-      const horizontalOverflow = await page.evaluate(
-        'document.documentElement.scrollWidth > window.innerWidth + 1',
-      );
-      assert.equal(
-        horizontalOverflow,
-        false,
-        'The narrow layout should not overflow horizontally.',
-      );
-    }
+    await checkPageWidth(page, viewport);
+    await verifyIncidents(page);
+    await checkPageWidth(page, viewport);
 
     assert.deepEqual(pageErrors, [], `Browser page errors at ${viewport.width}px.`);
-    stdout.write(`Web smoke passed at ${viewport.width} × ${viewport.height}\n`);
+    stdout.write(
+      `Web smoke passed for / and /incidents at ${viewport.width} × ${viewport.height}\n`,
+    );
   } finally {
     await page.close();
   }
 }
 
-const { server, url } = await startStaticServer();
+assert.ok(
+  existsSync(join(exportDirectory, 'index.html')),
+  'Run npm run export:web first.',
+);
 let browser;
 
 try {
-  browser = await chromium.launch({ headless: true });
-  await verifyViewport(browser, url, { width: 1280, height: 800 });
-  await verifyViewport(browser, url, { width: 390, height: 844 });
+  browser = await chromium.launch({
+    headless: true,
+    channel: process.env.PLAYWRIGHT_CHANNEL,
+  });
+  await verifyViewport(browser, { width: 1280, height: 800 });
+  await verifyViewport(browser, { width: 390, height: 844 });
 } finally {
   await browser?.close();
-  await new Promise((resolveServer, reject) => {
-    server.close((error) => (error ? reject(error) : resolveServer()));
-  });
 }
